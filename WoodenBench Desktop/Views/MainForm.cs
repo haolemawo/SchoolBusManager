@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using DevComponents.AdvTree;
+using WBPlatform.Logging;
 using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Metro;
 using DevComponents.DotNetBar.Metro.ColorTables;
@@ -148,7 +149,7 @@ namespace WBPlatform.DesktopClient.Views
 
         private void helpTile_Click(object sender, EventArgs e)
         {
-            LW.D("Clicked the Help Button, now navigating to the help page");
+            LW.I("Clicked the Help Button, now navigating to the help page");
             Process.Start("https://www.lhy0403.top/wb-help/");
         }
 

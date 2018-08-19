@@ -1,10 +1,10 @@
 ﻿using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.TableObject
 {
-    public class BusReport : DataTableObject
+    public class BusReport : DataTableObject<BusReport>
     {
         //以下对应云端字段名称
         public string TeacherID { get; set; }
@@ -16,7 +16,8 @@ namespace WBPlatform.TableObject
         public BusReport() { }
 
         public override string Table => WBConsts.TABLE_Mgr_WeekIssue;
-                //读字段信息
+        
+        //读字段信息
         public override void ReadFields(DataBaseIO input)
         {
             base.ReadFields(input);

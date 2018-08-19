@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace WBPlatform.StaticClasses
+namespace WBPlatform.StatusReport
 {
-    public class Rootobject
+    public class StatusReportObject
     {
         public DateTime ReportTime { get; set; }
         public int SessionsCount { get; set; }

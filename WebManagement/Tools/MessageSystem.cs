@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 
+using WBPlatform.Config;
 using WBPlatform.Database;
+using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 
@@ -21,7 +22,7 @@ namespace WBPlatform.WebManagement.Tools
         public static void StartProcessThread()
         {
             ProcThread.Start();
-            LW.D("\tCoreMessaging System Started!");
+            LW.I("\tCoreMessaging System Started!");
         }
 
 

@@ -5,6 +5,7 @@ using System.Threading;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
+using WBPlatform.Logging;
 
 namespace WBPlatform.WebManagement.Tools
 {
@@ -17,7 +18,7 @@ namespace WBPlatform.WebManagement.Tools
         public static void StartBackupThread()
         {
             NotificationBackupThread.Start();
-            LW.D("\tNotificationBackupThread Started!");
+            LW.I("\tNotificationBackupThread Started!");
         }
 
         public static void AddToSendList(string users, string Title, string Content)

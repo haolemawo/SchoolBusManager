@@ -20,7 +20,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (!ValidateSession()) return SessionError;
             if (!(CurrentUser.ObjectId == TeacherID)) return UserGroupError;
             //user.UserGroup.BusID == BusID &&
-            if (Cryptography.SHA256Encrypt(BusID + ";;" + Session + CurrentUser.ObjectId + ";;" + Session) != STAMP) return RequestIllegal;
+            if ((BusID + ";;" + Session + CurrentUser.ObjectId + ";;" + Session).SHA256Encrypt() != STAMP) return RequestIllegal;
             DBQuery BusQuery = new DBQuery();
             BusQuery.WhereEqualTo("objectId", BusID);
             BusQuery.WhereEqualTo("TeacherObjectID", TeacherID);

@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.WebManagement.Tools;
+using WBPlatform.Config;
 
 namespace WBPlatform.WebManagement.Controllers
 {
@@ -35,11 +32,7 @@ namespace WBPlatform.WebManagement.Controllers
                 }
                 else return RequestIllegal(ServerAction.MyClass_Index, XConfig.Messages["NotClassTeacher"], ResponceCode.Default);
             }
-            else
-            {
-                return LoginFailed("/ClassManager/Index/");
-            }
-
+            else return LoginFailed("/ClassManager/Index/");
         }
     }
 }

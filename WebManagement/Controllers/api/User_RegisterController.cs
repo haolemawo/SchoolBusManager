@@ -29,7 +29,7 @@ namespace WBPlatform.WebManagement.Controllers
                 {
                     if (ValidateSession())
                     {
-                        string password = Cryptography.SHA256Encrypt(dict["Password"]);
+                        string password = dict["Password"].SHA256Encrypt();
                         if (CurrentUser.UserName == dict["UserName"])
                         {
                             CurrentUser.Password = password;

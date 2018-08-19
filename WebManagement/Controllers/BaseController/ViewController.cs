@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
+using WBPlatform.Config;
+using WBPlatform.Logging;
 
 using WBPlatform.StaticClasses;
 using WBPlatform.WebManagement.Tools;

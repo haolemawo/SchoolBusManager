@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 
 using WBPlatform.StaticClasses;
+using WBPlatform.Config;
+using WBPlatform.Logging;
 
 namespace WBPlatform.WebManagement.Tools
 {
@@ -56,7 +58,7 @@ namespace WBPlatform.WebManagement.Tools
                     break;
             }
             Message = Message + "}";
-            LW.D("WeChat Message Sent: " + Message);
+            LW.I("WeChat Message Sent: " + Message);
             return PublicTools.HTTPPost("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + WeChatHelper.AccessToken, Message);
         }
     }

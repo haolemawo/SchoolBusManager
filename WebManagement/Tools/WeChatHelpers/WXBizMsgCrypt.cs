@@ -4,7 +4,6 @@ using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
-
 using WBPlatform.StaticClasses;
 //-40001 ： 签名验证错误
 //-40002 :  xml解析失败
@@ -18,31 +17,17 @@ using WBPlatform.StaticClasses;
 //-40010 :  base64解密异常
 namespace WBPlatform.WebManagement.Tools
 {
-    public class WXEncryptedXMLHelper
+    public class WeChatXMLHelper
     {
         private readonly string M_sToken;
         private string M_sEncodingAESKey;
         private readonly string M_sCorpID;
-        enum WXBizMsgCryptErrorCode
-        {
-            WXBizMsgCrypt_OK = 0,
-            WXBizMsgCrypt_ValidateSignature_Error = -40001,
-            WXBizMsgCrypt_ParseXml_Error = -40002,
-            WXBizMsgCrypt_ComputeSignature_Error = -40003,
-            WXBizMsgCrypt_IllegalAesKey = -40004,
-            WXBizMsgCrypt_ValidateCorpid_Error = -40005,
-            WXBizMsgCrypt_EncryptAES_Error = -40006,
-            WXBizMsgCrypt_DecryptAES_Error = -40007,
-            WXBizMsgCrypt_IllegalBuffer = -40008,
-            WXBizMsgCrypt_EncodeBase64_Error = -40009,
-            WXBizMsgCrypt_DecodeBase64_Error = -40010
-        };
 
         //构造函数
         // @param sToken: 企业微信后台，开发者设置的Token
         // @param sEncodingAESKey: 企业微信后台，开发者设置的EncodingAESKey
         // @param sCorpID: 企业号的CorpID
-        public WXEncryptedXMLHelper(string sToken, string sEncodingAESKey, string sCorpID)
+        public WeChatXMLHelper(string sToken, string sEncodingAESKey, string sCorpID)
         {
             M_sToken = sToken;
             M_sCorpID = sCorpID;
@@ -56,12 +41,12 @@ namespace WBPlatform.WebManagement.Tools
         // @param sEchoStr: 随机串，对应URL参数的echostr
         // @param sReplyEchoStr: 解密之后的echostr，当return返回0时有效
         // @return：成功0，失败返回对应的错误码
-        public int VerifyURL(string sMsgSignature, string sTimeStamp, string sNonce, string sEchoStr, ref string sReplyEchoStr)
+        public WeChatEncryptionErrorCode VerifyURL(string sMsgSignature, string sTimeStamp, string sNonce, string sEchoStr, ref string sReplyEchoStr)
         {
-            int ret = 0;
+            WeChatEncryptionErrorCode ret = 0;
             if (M_sEncodingAESKey.Length != 43)
             {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
+                return WeChatEncryptionErrorCode.IllegalAesKey;
             }
             ret = VerifySignature(M_sToken, sTimeStamp, sNonce, sEchoStr, sMsgSignature);
             if (0 != ret)
@@ -72,17 +57,17 @@ namespace WBPlatform.WebManagement.Tools
             string cpid = "";
             try
             {
-                sReplyEchoStr = Cryptography.WeChat_Cryptography.AES_decrypt(sEchoStr, M_sEncodingAESKey, ref cpid); //m_sCorpID);
+                sReplyEchoStr = WeChatCryptography.AES_decrypt(sEchoStr, M_sEncodingAESKey, ref cpid); //m_sCorpID);
             }
             catch (Exception)
             {
                 sReplyEchoStr = "";
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecryptAES_Error;
+                return WeChatEncryptionErrorCode.DecryptAES_Error;
             }
             if (cpid != M_sCorpID)
             {
                 sReplyEchoStr = "";
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateCorpid_Error;
+                return WeChatEncryptionErrorCode.ValidateCorpid_Error;
             }
             return 0;
         }
@@ -94,11 +79,11 @@ namespace WBPlatform.WebManagement.Tools
         // @param sPostData: 密文，对应POST请求的数据
         // @param sMsg: 解密后的原文，当return返回0时有效
         // @return: 成功0，失败返回对应的错误码
-        public int DecryptMsg(string sMsgSignature, string sTimeStamp, string sNonce, string sPostData, ref string sMsg)
+        public WeChatEncryptionErrorCode DecryptMsg(string sMsgSignature, string sTimeStamp, string sNonce, string sPostData, ref string sMsg)
         {
             if (M_sEncodingAESKey.Length != 43)
             {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
+                return WeChatEncryptionErrorCode.IllegalAesKey;
             }
             XmlDocument doc = new XmlDocument();
             XmlNode root;
@@ -111,32 +96,29 @@ namespace WBPlatform.WebManagement.Tools
             }
             catch (Exception)
             {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ParseXml_Error;
+                return WeChatEncryptionErrorCode.ParseXml_Error;
             }
             //verify signature
-            int ret = 0;
+            WeChatEncryptionErrorCode ret = 0;
             ret = VerifySignature(M_sToken, sTimeStamp, sNonce, sEncryptMsg, sMsgSignature);
-            if (ret != 0)
-                return ret;
+            if (ret != 0) return ret;
             //decrypt
             string cpid = "";
             try
             {
-                sMsg = Cryptography.WeChat_Cryptography.AES_decrypt(sEncryptMsg, M_sEncodingAESKey, ref cpid);
+                sMsg = WeChatCryptography.AES_decrypt(sEncryptMsg, M_sEncodingAESKey, ref cpid);
             }
             catch (FormatException)
             {
                 sMsg = "";
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecodeBase64_Error;
+                return WeChatEncryptionErrorCode.DecodeBase64_Error;
             }
             catch (Exception)
             {
                 sMsg = "";
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecryptAES_Error;
+                return WeChatEncryptionErrorCode.DecryptAES_Error;
             }
-            if (cpid != M_sCorpID)
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateCorpid_Error;
-            return 0;
+            return cpid != M_sCorpID ? WeChatEncryptionErrorCode.ValidateCorpid_Error : 0;
         }
 
         //将企业号回复用户的消息加密打包
@@ -146,25 +128,25 @@ namespace WBPlatform.WebManagement.Tools
         // @param sEncryptMsg: 加密后的可以直接回复用户的密文，包括msg_signature, timestamp, nonce, encrypt的xml格式的字符串,
         //						当return返回0时有效
         // return：成功0，失败返回对应的错误码
-        public int EncryptMsg(string sReplyMsg, string sTimeStamp, string sNonce, ref string sEncryptdeXMLMsg)
+        public WeChatEncryptionErrorCode EncryptMsg(string sReplyMsg, string sTimeStamp, string sNonce, ref string sEncryptdeXMLMsg)
         {
             if (M_sEncodingAESKey.Length != 43)
             {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
+                return WeChatEncryptionErrorCode.IllegalAesKey;
             }
             string raw = "";
             try
             {
-                raw = Cryptography.WeChat_Cryptography.AES_encrypt(sReplyMsg, M_sEncodingAESKey, M_sCorpID);
+                raw = WeChatCryptography.AES_encrypt(sReplyMsg, M_sEncodingAESKey, M_sCorpID);
             }
             catch (Exception)
             {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_EncryptAES_Error;
+                return WeChatEncryptionErrorCode.EncryptAES_Error;
             }
             string MsgSigature = "";
-            int ret = 0;
+            WeChatEncryptionErrorCode ret = 0;
             ret = GenarateSinature(M_sToken, sTimeStamp, sNonce, raw, ref MsgSigature);
-            if (0 != ret) return ret;
+            if (ret != WeChatEncryptionErrorCode.OK) return ret;
             sEncryptdeXMLMsg = "";
             sEncryptdeXMLMsg = sEncryptdeXMLMsg + "<xml><Encrypt><![CDATA[" + raw + "]]></Encrypt>";
             sEncryptdeXMLMsg = sEncryptdeXMLMsg + "<MsgSignature><![CDATA[" + MsgSigature + "]]></MsgSignature>";
@@ -174,7 +156,7 @@ namespace WBPlatform.WebManagement.Tools
             return 0;
         }
 
-        public class DictionarySort : IComparer
+        private class DictionarySort : IComparer
         {
             public int Compare(object oLeft, object oRight)
             {
@@ -185,12 +167,9 @@ namespace WBPlatform.WebManagement.Tools
                 int index = 0;
                 while (index < iLeftLength && index < iRightLength)
                 {
-                    if (sLeft[index] < sRight[index])
-                        return -1;
-                    else if (sLeft[index] > sRight[index])
-                        return 1;
-                    else
-                        index++;
+                    if (sLeft[index] < sRight[index]) return -1;
+                    else if (sLeft[index] > sRight[index]) return 1;
+                    else index++;
                 }
                 return iLeftLength - iRightLength;
 
@@ -198,22 +177,19 @@ namespace WBPlatform.WebManagement.Tools
         }
 
         //Verify Signature
-        private static int VerifySignature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt, string sSigture)
+        private static WeChatEncryptionErrorCode VerifySignature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt, string sSigture)
         {
             string hash = "";
-            int ret = 0;
+            WeChatEncryptionErrorCode ret = 0;
             ret = GenarateSinature(sToken, sTimeStamp, sNonce, sMsgEncrypt, ref hash);
-            if (ret != 0)
-                return ret;
-            if (hash == sSigture)
-                return 0;
-            else
-            {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateSignature_Error;
-            }
+            return ret != 0
+                ? ret
+                : hash == sSigture
+                    ? 0
+                    : WeChatEncryptionErrorCode.ValidateSignature_Error;
         }
 
-        private static int GenarateSinature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt, ref string sMsgSignature)
+        private static WeChatEncryptionErrorCode GenarateSinature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt, ref string sMsgSignature)
         {
             ArrayList AL = new ArrayList
             {
@@ -229,13 +205,11 @@ namespace WBPlatform.WebManagement.Tools
                 raw += AL[i];
             }
 
-            SHA1 sha;
-            ASCIIEncoding enc;
             string hash = "";
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            ASCIIEncoding enc = new ASCIIEncoding();
             try
             {
-                sha = new SHA1CryptoServiceProvider();
-                enc = new ASCIIEncoding();
                 byte[] dataToHash = enc.GetBytes(raw);
                 byte[] dataHashed = sha.ComputeHash(dataToHash);
                 hash = BitConverter.ToString(dataHashed).Replace("-", "");
@@ -243,10 +217,10 @@ namespace WBPlatform.WebManagement.Tools
             }
             catch (Exception)
             {
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ComputeSignature_Error;
+                return WeChatEncryptionErrorCode.ComputeSignature_Error;
             }
             sMsgSignature = hash;
-            return 0;
+            return  WeChatEncryptionErrorCode.OK;
         }
     }
 }

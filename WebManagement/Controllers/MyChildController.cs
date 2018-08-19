@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
+using WBPlatform.Config;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers

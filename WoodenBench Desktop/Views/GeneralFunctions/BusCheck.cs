@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using WBPlatform.Logging;
 using System.Data;
 using System.Drawing;
 using System.Text;
@@ -139,7 +140,7 @@ namespace WBPlatform.DesktopClient.Views
                 if (Database.DataBaseOperation.UpdateData(ref _item) == DBQueryStatus.ONE_RESULT)
                 {
                     ExDescription.Text = "成功更新项：" + _item.StudentName;
-                    LW.D("BusCheck: Succeed Updated Record: " + item.ObjectId);
+                    LW.I("BusCheck: Succeed Updated Record: " + item.ObjectId);
                 }
                 else
                 {

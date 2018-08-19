@@ -8,7 +8,9 @@ using WBPlatform.Database;
 using WBPlatform.DesktopClient.Users;
 using WBPlatform.DesktopClient.Views;
 using WBPlatform.StaticClasses;
+using WBPlatform.Config;
 using WBPlatform.TableObject;
+using WBPlatform.Logging;
 
 namespace WBPlatform.DesktopClient.StaticClasses
 {
@@ -17,9 +19,9 @@ namespace WBPlatform.DesktopClient.StaticClasses
         [STAThread]
         public static void Main()
         {
-            LW.SetLogLevel(LogLevel.Dbg);
+            LW.SetLogLevel(LogLevel.D);
             LW.InitLog();
-            LW.D("========= = Start WoodenBench for Schoolbus Windows Client = =========");
+            LW.I("========= = Start WoodenBench for Schoolbus Windows Client = =========");
             if (!XConfig.LoadConfig("XConfig.conf"))
             {
                 LW.E("Config Loading Failed! Check file...");
@@ -35,7 +37,7 @@ namespace WBPlatform.DesktopClient.StaticClasses
 
         public static void ApplicationExit()
         {
-            LW.D("Terminating Application.....");
+            LW.I("Terminating Application.....");
             Database.Connection.DatabaseSocketsClient.KillConnection();
             Application.Exit();
         }

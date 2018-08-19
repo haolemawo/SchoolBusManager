@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using WBPlatform.StaticClasses;
+using WBPlatform.Logging;
 
-namespace WBPlatform.Database.DBIOCommand
+namespace WBPlatform.Database.IO
 {
-    public class DataBaseIO
+    public sealed class DataBaseIO
     {
         public DataBaseIO() { }
         public DataBaseIO(Dictionary<string, object> data) { Data = data; }
@@ -14,29 +14,43 @@ namespace WBPlatform.Database.DBIOCommand
 
         public Dictionary<string, object> Data { get; private set; } = new Dictionary<string, object>();
 
+        public T GetT<T>(string Key) => (T)Convert.ChangeType(Data[Key], typeof(T));
 
-        public T GetT<T>(string Key)
+        public void Put(string column, object _data)
         {
-            if (Data.ContainsKey(Key)) return (T)Convert.ChangeType(Data[Key], typeof(T));
-            else throw new KeyNotFoundException("真的没有这个键..." + Key);
-        }
-
-        public void Put(string column, object data)
-        {
-            if (data == null) { LW.E("DBOutput: Put " + column + " as null, drop it..."); return; }
-            if (data is ICollection)
-            {
-                data = string.Join(",", (IEnumerable<string>)data);
-            }
+            if (_data == null) { LW.E("DBOutput: Put " + column + " as null, drop it..."); return; }
+            if (_data is ICollection) _data = string.Join(",", (IEnumerable<string>)_data);
             if (Data.ContainsKey(column))
             {
+                //Don't know why to delete first...
+                //Copied the implemention of Bmob Database SDK
                 Data.Remove(column);
-                Data.Add(column, data);
+                Data.Add(column, _data);
             }
-            else
-            {
-                Data.Add(column, data);
-            }
+            else Data.Add(column, _data);
         }
+    } 
+
+    /// <summary>
+    /// DO NOT CHANGE THE PROPERTY NAME --- 
+    /// RELATED TO DBSERVER SETTINGS...
+    /// </summary>
+    public class DataBaseSocketIO
+    {
+        public DBVerbs Verb { get; set; }
+        public DBQueryStatus ResultCode { get; set; }
+
+        public string TableName { get; set; } = "";
+        public DBQuery Query { get; set; }
+        public DataBaseIO[] DBObjects { get; set; }
+
+        public string Message { get; set; } = "";
+        public DataBaseException Exception { get; set; }
+    }
+
+    public class DataBaseException : Exception
+    {
+        public DataBaseException(string message) : base(message) { }
+        public DataBaseException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

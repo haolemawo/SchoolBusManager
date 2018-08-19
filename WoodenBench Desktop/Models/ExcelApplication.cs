@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WBPlatform.Logging;
 using System.Text;
 using WBPlatform.DesktopClient.DelegateClasses;
 

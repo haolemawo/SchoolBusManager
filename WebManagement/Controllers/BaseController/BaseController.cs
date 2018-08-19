@@ -14,10 +14,10 @@ namespace WBPlatform.WebManagement.Controllers
     public class BaseController : Controller
     {
         public static readonly string UID_CookieName = "identifiedUID";
-        public static int GetCount { get => SessionCollection.Count; }
+        public static int GetCount => SessionCollection.Count;
         private static Dictionary<string, UserIdentity> SessionCollection { get; set; } = new Dictionary<string, UserIdentity>();
 
-        protected UserObject CurrentUser { get => CurrentIdentity.User; }
+        protected UserObject CurrentUser => CurrentIdentity.User;
         protected UserIdentity CurrentIdentity { get; private set; } = UserIdentity.Default;
         protected TelemetryClient Telemetry { get; set; } = new TelemetryClient();
 
@@ -37,13 +37,12 @@ namespace WBPlatform.WebManagement.Controllers
         //}
 
         private string GetNewSession()
-            => Cryptography.SHA512Encrypt(
-                Cryptography.RandomString(10, true) +
+            => (Cryptography.RandomString(10, true) +
                 CurrentUser.UserName +
                 CurrentUser.UserGroup.ToString() +
                 DateTime.Now.TimeOfDay.TotalMilliseconds.ToString() +
                 Request.Headers["User-Agent"] +
-                CurrentUser.UserGroup.ToString());
+                CurrentUser.UserGroup.ToString()).SHA512Encrypt();
 
         protected void UpdateUser(UserObject _user)
         {
@@ -72,6 +71,9 @@ namespace WBPlatform.WebManagement.Controllers
                 Telemetry.Context.Session.Id = Session;
 
                 ViewData[UID_CookieName] = _userIC;
+                ViewData["cUser"] = CurrentUser;
+
+                ViewData["CurrentRequest"] = HttpContext;
 
                 Response.Cookies.Append("ai_user", _userIC);
                 Response.Cookies.Append("ai_session", HttpContext.Connection.RemoteIpAddress.ToString() + "-" + _userIC + Request.Cookies["Session"].Substring(0, 8) ?? "Unknown");

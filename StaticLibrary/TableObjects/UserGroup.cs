@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace WBPlatform.StaticClasses
+namespace WBPlatform.TableObject
 {
     public class UserGroup
     {

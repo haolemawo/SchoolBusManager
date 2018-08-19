@@ -75,7 +75,7 @@ namespace WBPlatform.DesktopClient.Views
 
         private void DochangePassword_Click(object sender, EventArgs e)
         {
-            if (prePassword.Text == "" || Cryptography.SHA256Encrypt(prePassword.Text) == CurrentUser.Password)
+            if (prePassword.Text == "" || prePassword.Text.SHA256Encrypt() == CurrentUser.Password)
             {
                 if (NewPassword1.Text == NewPassword2.Text)
                 {

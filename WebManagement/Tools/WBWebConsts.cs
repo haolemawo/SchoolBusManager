@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-using WBPlatform.WebManagement.Tools;
-
-namespace WBPlatform.StaticClasses
+﻿namespace WBPlatform.StaticClasses
 {
+    public enum GlobalMessageTypes
+    {
+        UCR_Created_TO_ADMIN = 0, UCR_Created__TO_User = 1,
+        UCR_Procced_TO_ADMIN = 2, UCR_Procceed_TO_User = 3,
+        User__Pending_Verify = 4, User__Finishd_Verify = 5,
+        Bus_Status_Report_TC = 6, Bus_Status_Report_TP = 7
+    }
     public enum ServerAction
     {
         WeChatLogin_PreExecute,
@@ -62,47 +64,18 @@ namespace WBPlatform.StaticClasses
     }
     public enum WeChatRMsg { text, image, voice, video, location, link, EVENT /*, _INJECTION_DEVELOPER_ERROR_REPORT*/ }
     public enum WeChatSMsg { text, image, voice, video, file, textcard, news, mpnews }
-    public static class WeChatHelper
+    public enum WeChatEncryptionErrorCode
     {
-        public static WXEncryptedXMLHelper WeChatEncryptor { get; set; }
-        public static string AccessTicket { get; set; }
-        public static string AccessToken { get; set; }
-        public static DateTime AvailableTime_Ticket { get; set; }
-        public static DateTime AvailableTime_Token { get; set; }
-        public static readonly string GetAccessToken_Url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?" + "corpid=" + XConfig.Current.WeChat.CorpID + "&corpsecret=" + XConfig.Current.WeChat.CorpSecret;
-
-
-        public static bool InitialiseExcryptor()
-        {
-            LW.D("Initialising WeChat Data Packet Encryptor.....");
-            WeChatEncryptor = new WXEncryptedXMLHelper(XConfig.Current.WeChat.sToken, XConfig.Current.WeChat.AESKey, XConfig.Current.WeChat.CorpID);
-            LW.D("WeChat Data Packet Encryptor Initialisation Finished!");
-            return true;
-        }
-
-        private static bool InitialiseWeChatCodes()
-        {
-            LW.D("Query New WeChat Keys....");
-            Dictionary<string, string> JSON;
-            LW.D("\tGetting Access Token....");
-            JSON = PublicTools.HTTPGet(GetAccessToken_Url);
-            AccessToken = JSON["access_token"];
-            AvailableTime_Token = DateTime.Now.AddSeconds(int.Parse(JSON["expires_in"]));
-            LW.D("\tGetting Ticket....");
-            JSON = PublicTools.HTTPGet("https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=" + AccessToken);
-            AccessTicket = JSON["ticket"];
-            AvailableTime_Ticket = DateTime.Now.AddSeconds(int.Parse(JSON["expires_in"]));
-            LW.D("WeChat Keys Initialised Successfully!");
-            return true;
-        }
-        public static bool ReNewWCCodes()
-        {
-            LW.D("Started Renew WeChat Operation Codes.....");
-            LW.D("\tChecking Access Tickets...");
-            if (AvailableTime_Ticket.Subtract(DateTime.Now).TotalMilliseconds <= 0) { InitialiseWeChatCodes(); return false; }
-            LW.D("\tChecking Tokens...");
-            if (AvailableTime_Token.Subtract(DateTime.Now).TotalMilliseconds <= 0) { InitialiseWeChatCodes(); return false; }
-            return true;
-        }
-    }
+        OK = 0,
+        ValidateSignature_Error = -40001,
+        ParseXml_Error = -40002,
+        ComputeSignature_Error = -40003,
+        IllegalAesKey = -40004,
+        ValidateCorpid_Error = -40005,
+        EncryptAES_Error = -40006,
+        DecryptAES_Error = -40007,
+        IllegalBuffer = -40008,
+        EncodeBase64_Error = -40009,
+        DecodeBase64_Error = -40010
+    };
 }

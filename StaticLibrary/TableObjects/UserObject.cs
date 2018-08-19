@@ -3,15 +3,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
-
-using static WBPlatform.StaticClasses.Cryptography;
 
 namespace WBPlatform.TableObject
 {
-    public class UserObject : DataTableObject
+    public class UserObject : DataTableObject<UserObject>
     {
         public override string Table => WBConsts.TABLE_Gen_UserTable;
         public string UserName { get; set; }

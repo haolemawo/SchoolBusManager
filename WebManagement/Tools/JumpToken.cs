@@ -39,7 +39,7 @@ namespace WBPlatform.WebManagement.Tools
             return true;
         }
 
-        public static string CreateTicket() => Cryptography.SHA256Encrypt(Cryptography.RandomString(20, true));
+        public static string CreateTicket() => Cryptography.RandomString(20, true).SHA256Encrypt();
 
         public static bool OnAccessed(string Token, out TicketInfo Info)
         {

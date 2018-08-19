@@ -4,7 +4,7 @@ using DevComponents.DotNetBar.Metro;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using WBPlatform.Logging;
 using System.Data;
 using System.Drawing;
 using System.Linq;

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using WBPlatform.TableObject;
 
 namespace WBPlatform.Database
 {
     public class DBQuery
     {
-        public DBQuery(string SortedBy = nameof(DataTableObject.UpdatedAt), bool IsAscending = false)
+        public DBQuery() : this(nameof(DataTableObject.UpdatedAt), false) { }
+        public DBQuery(string SortedBy, bool IsAscending)
         {
             this.SortedBy(SortedBy);
             var _ = IsAscending ? Ascending() : Descending();
@@ -36,7 +37,5 @@ namespace WBPlatform.Database
         public DBQuery Skip(int skip) { _Skip = skip; return this; }
         public DBQuery Ascending() { _Ascending = true; return this; }
         public DBQuery Descending() { _Ascending = false; return this; }
-
-        public override string ToString() => JsonConvert.SerializeObject(this);
     }
 }

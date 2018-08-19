@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
@@ -17,7 +15,7 @@ namespace WBPlatform.WebManagement.Controllers
         [HttpGet]
         public JsonResult Get(string BusID, string Column, string Content, string STAMP, string SALT)
         {
-            if (Cryptography.SHA256Encrypt(BusID + ";;" + SALT + Column + ";" + Content + ";;" + SALT) != STAMP) return RequestIllegal;
+            if ((BusID + ";;" + SALT + Column + ";" + Content + ";;" + SALT).SHA256Encrypt() != STAMP) return RequestIllegal;
 
             DBQuery query = new DBQuery();
             query.WhereEqualTo("objectId", BusID);

@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
+using System.Collections.Generic;
 
-using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.TableObject
 {
-    public class StudentObject : DataTableObject
+    public class StudentObject : DataTableObject<StudentObject>
     {
 
         public string StudentName { get; set; }

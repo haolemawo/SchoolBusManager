@@ -5,7 +5,9 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using WBPlatform.Logging;
 using Microsoft.AspNetCore;
+using WBPlatform.Config;
 using Microsoft.AspNetCore.Hosting;
 
 using WBPlatform.Database;
@@ -22,13 +24,13 @@ namespace WBPlatform.WebManagement
         public static CancellationTokenSource ServerStopToken { get; private set; } = new CancellationTokenSource();
         public static void Main(string[] args)
         {
-            LW.SetLogLevel(LogLevel.Dbg);
+            LW.SetLogLevel(LogLevel.D);
             LW.InitLog();
             StartUpTime = DateTime.Now;
-            LW.D("WoodenBench WebServer Starting....");
-            LW.D($"\t Startup Time {StartUpTime.ToString()}.");
+            LW.I("WoodenBench WebServer Starting....");
+            LW.I($"\t Startup Time {StartUpTime.ToString()}.");
             Version = new FileInfo(new string(Assembly.GetExecutingAssembly().CodeBase.Skip(8).ToArray())).LastWriteTime.ToString();
-            LW.D($"\t Version {Version}");
+            LW.I($"\t Version {Version}");
 
             var v = XConfig.LoadAll();
             if (!(v.Item1 && v.Item2)) return;
@@ -39,15 +41,15 @@ namespace WBPlatform.WebManagement
             DataBaseOperation.InitialiseClient();
             //DataBaseOperation.InitialiseClient(IPAddress.Loopback);
 
-            WeChatHelper.InitialiseExcryptor();
+            WeChatHelper.InitialiseEncryptor();
 
-            LW.D("Initialising Core Messaging Systems.....");
+            LW.I("Initialising Core Messaging Systems.....");
             WeChatMessageSystem.StartProcessThreads();
             WeChatMessageBackupService.StartBackupThread();
             MessagingSystem.StartProcessThread();
 
             var webHost = BuildWebHost(XConfig.Current.ApplicationInsightInstrumentationKey, args);
-            LW.D("Starting WebHost....");
+            LW.I("Starting WebHost....");
 
             WebServerTask = webHost.RunAsync(ServerStopToken.Token);
             WebServerTask.Wait();
@@ -56,7 +58,7 @@ namespace WBPlatform.WebManagement
 
         public static IWebHost BuildWebHost(string instrumentationKey, string[] args)
         {
-            LW.D("Building WebHost....");
+            LW.I("Building WebHost....");
             var host = WebHost.CreateDefaultBuilder(args)
                  .UseIISIntegration()
                  .UseKestrel()

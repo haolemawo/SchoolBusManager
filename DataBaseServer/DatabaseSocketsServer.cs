@@ -4,7 +4,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-using WBPlatform.Database.Internal;
+using WBPlatform.Config;
+using WBPlatform.Database.IO;
+using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.Database.DBServer
@@ -45,7 +47,7 @@ namespace WBPlatform.Database.DBServer
                 }
 
                 string remoteEndPoint = connection.RemoteEndPoint.ToString();
-                LW.D("Estalished a connection with " + remoteEndPoint);
+                LW.I("Estalished a connection with " + remoteEndPoint);
 
                 Thread thread = new Thread(new ParameterizedThreadStart(Recv))
                 {
@@ -66,8 +68,8 @@ namespace WBPlatform.Database.DBServer
             {
                 try
                 {
-                    string requestString = PublicTools.DecodeMessage(stream);
-                    LW.D("Recived Data: " + requestString);
+                    string requestString = PublicTools.DecodeDatabasePacket(stream);
+                    LW.I("Recived Data: " + requestString);
                     if (requestString.Length <= 5)
                     {
                         baseSocket.CloseAndDispose();
@@ -79,34 +81,34 @@ namespace WBPlatform.Database.DBServer
 
                     if (requestString == "openConnection")
                     {
-                        LW.D("C: Recieve an OpenConnection Request, from " + remoteEP);
-                        byte[] arrSendMsg = PublicTools.EncodeMessage(_MessageId, remoteEP);
+                        LW.I("C: Recieve an OpenConnection Request, from " + remoteEP);
+                        byte[] arrSendMsg = PublicTools.MakeDatabasePacket(_MessageId, remoteEP);
                         stream.Write(arrSendMsg, 0, arrSendMsg.Length);
                         stream.Flush();
-                        LW.D("C: Replied an OpenConnection Request, to " + remoteEP);
+                        LW.I("C: Replied an OpenConnection Request, to " + remoteEP);
                         _connectionOpened = true;
                     }
                     else if (_connectionOpened)
                     {
                         if (requestString == "HeartBeat")
                         {
-                            LW.D("B: Recieve a HearBeat, from " + remoteEP);
+                            LW.I("B: Recieve a HearBeat, from " + remoteEP);
                             DateTime rtime = DateTime.Now;
-                            byte[] arrSendMsg = PublicTools.EncodeMessage(_MessageId, rtime.ToNormalString());
+                            byte[] arrSendMsg = PublicTools.MakeDatabasePacket(_MessageId, rtime.ToNormalString());
                             stream.Write(arrSendMsg, 0, arrSendMsg.Length);
                             stream.Flush();
-                            LW.D("C: Replied a HearBeat, to " + remoteEP);
+                            LW.I("C: Replied a HearBeat, to " + remoteEP);
                         }
-                        else if (requestString.ToParsedObject(out DBInternal request))
+                        else if (requestString.ToParsedObject(out DataBaseSocketIO request))
                         {
                             QueryStrings[remoteEP] = requestString;
-                            LW.D("Q: " + remoteEP + " :: " + requestString);
+                            LW.I("Q: " + remoteEP + " :: " + requestString);
                             //It takes Time.....
                             string returnStr = DatabaseCore.ProcessRequest(request);
-                            byte[] arrSendMsg = PublicTools.EncodeMessage(_MessageId, returnStr);
+                            byte[] arrSendMsg = PublicTools.MakeDatabasePacket(_MessageId, returnStr);
                             stream.Write(arrSendMsg, 0, arrSendMsg.Length);
                             stream.Flush();
-                            LW.D("P: " + remoteEP + " :: " + returnStr);
+                            LW.I("P: " + remoteEP + " :: " + returnStr);
                         }
                         else
                         {

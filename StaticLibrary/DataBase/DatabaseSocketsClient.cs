@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Threading;
 
 using WBPlatform.StaticClasses;
+using WBPlatform.Config;
+using WBPlatform.Logging;
 
 namespace WBPlatform.Database.Connection
 {
@@ -41,15 +43,15 @@ namespace WBPlatform.Database.Connection
                 {
                     socketclient.Connect(remoteEndpoint);
                     stream = socketclient.GetStream();
-                    LW.D("\tDatabase Connection Estabilished!");
+                    LW.I("\tDatabase Connection Estabilished!");
                     if (IsFirstTimeInit)
                     {
                         ReceiverThread.Start();
                         DataBaseConnectionMaintainer.Start();
                         IsFirstTimeInit = false;
                     }
-                    SendData("openConnection", "00000", out string token);
-                    LW.D("\tDatabase Connected! Identity: " + token);
+                    SendCommand("openConnection", "00000", out string token);
+                    LW.I("\tDatabase Connected! Identity: " + token);
                     return true;
                 }
                 catch (Exception ex)
@@ -68,7 +70,7 @@ namespace WBPlatform.Database.Connection
             {
                 while (Connected)
                 {
-                    string requestString = PublicTools.DecodeMessage(stream);
+                    string requestString = PublicTools.DecodeDatabasePacket(stream);
                     _messages.Add(requestString.Substring(0, 5), requestString.Substring(5));
                 }
                 while (!Connected)
@@ -86,10 +88,10 @@ namespace WBPlatform.Database.Connection
                 try
                 {
                     string _mid = Cryptography.RandomString(5, false);
-                    byte[] packet = PublicTools.EncodeMessage(_mid, "HeartBeat");
+                    byte[] packet = PublicTools.MakeDatabasePacket(_mid, "HeartBeat");
                     if (CoreSend(packet, _mid, out string reply))
                     {
-                        LW.D("HeartBeat Succeed! " + reply);
+                        LW.I("HeartBeat Succeed! " + reply);
                     }
                     else
                     {
@@ -110,10 +112,10 @@ namespace WBPlatform.Database.Connection
         }
 
         //发送字符信息到服务端的方法
-        public static bool SendData(string sendMsg, string MessageId, out string rcvdMessage)
+        public static bool SendCommand(string sendMsg, string MessageId, out string rcvdMessage)
         {
             rcvdMessage = "";
-            byte[] mergedPackage = PublicTools.EncodeMessage(MessageId, sendMsg);
+            byte[] mergedPackage = PublicTools.MakeDatabasePacket(MessageId, sendMsg);
             while (!Connected)
             {
                 LW.E("Message Sent Waiting for connection....");

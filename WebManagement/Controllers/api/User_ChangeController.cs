@@ -34,7 +34,7 @@ namespace WBPlatform.WebManagement.Controllers
             else if (((string)Equals2Obj).ToLower() == "false") Equals2Obj = false;
             string[] SessionVerify = STAMP.Split("_v3_");
             if (SessionVerify.Length != 2) return RequestIllegal;
-            if (ValidateSession() && SessionVerify[0] == Cryptography.SHA256Encrypt(CurrentUser.ObjectId + Content + SessionVerify[1]))
+            if (ValidateSession() && SessionVerify[0] == (CurrentUser.ObjectId + Content + SessionVerify[1]).SHA256Encrypt())
             {
                 //user.objectId = SessionUser.objectId;
                 //user.UserGroup = SessionUser.UserGroup;

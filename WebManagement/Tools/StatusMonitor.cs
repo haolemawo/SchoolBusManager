@@ -7,8 +7,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using WBPlatform.Database.Connection;
+using WBPlatform.Config;
 using WBPlatform.StaticClasses;
 using WBPlatform.WebManagement.Controllers;
+using WBPlatform.Logging;
 
 namespace WBPlatform.WebManagement.Tools
 {
@@ -20,9 +22,9 @@ namespace WBPlatform.WebManagement.Tools
 
         public static void StartMonitorThread()
         {
-            LW.D("Starting Monitor Thread");
+            LW.I("Starting Monitor Thread");
             _MonitorThread.Start();
-            LW.D("Monitor Thread: Active");
+            LW.I("Monitor Thread: Active");
         }
         private static void ThreadWork()
         {

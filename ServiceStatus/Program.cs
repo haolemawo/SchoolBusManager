@@ -6,14 +6,16 @@ using System.Text;
 using System.Threading;
 
 using WBPlatform.StaticClasses;
+using WBPlatform.Config;
 
+using WBPlatform.Logging;
 namespace WBPlatform.ServiceStatus
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            LW.SetLogLevel(LogLevel.Dbg);
+            LW.SetLogLevel(LogLevel.D);
             LW.InitLog();
 
             var v = XConfig.LoadAll();

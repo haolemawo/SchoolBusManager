@@ -2,30 +2,38 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using WBPlatform.StaticClasses;
 
-namespace WBPlatform.StaticClasses
+namespace WBPlatform.Logging
 {
+    public class OnLogChangedEventArgs : EventArgs
+    {
+        public OnLogChangedEventArgs(string logString, LogLevel logLevel)
+        {
+            LogString = logString;
+            LogLevel = logLevel;
+        }
+        public string LogString { get; set; }
+        public LogLevel LogLevel { get; set; }
+    }
+
     public static class LW
     {
-        public class OnLogChangedEventArgs : EventArgs
-        {
-            public OnLogChangedEventArgs(string logString, LogLevel logType)
-            {
-                LogString = logString;
-                this.LogType = logType;
-            }
-            public string LogString { get; set; }
-            public LogLevel LogType { get; set; }
-        }
+
         public delegate void OnLogWrited(OnLogChangedEventArgs logchange, object sender);
         public static event OnLogWrited OnLog;
 
-        private static LogLevel _LogLevel { get; set; } = LogLevel.Err;
+
+        private static LogLevel _LogLevel { get; set; } = LogLevel.W;
         public static void SetLogLevel(LogLevel level) { _LogLevel = level; }
-        private static OnLogChangedEventArgs logEvent = new OnLogChangedEventArgs("", LogLevel.Dbg);
+
         private static StreamWriter Fs { get; set; }
         private static string LogFilePath { get; set; }
 
+        //Actually it should be a new instance when used, However, due to the "static" LW class, there's only one instance.
+        //To prevent instances takes up your memory, a constant instance is used...
+        public static OnLogChangedEventArgs LogEvent = new OnLogChangedEventArgs("", LogLevel.D);
 
         public static void InitLog()
         {
@@ -39,36 +47,61 @@ namespace WBPlatform.StaticClasses
         private static void WriteLog(LogLevel level, string Message)
         {
             if (level < _LogLevel) return;
-            string LogMsg = $"[{DateTime.Now.ToNormalString()}+{DateTime.Now.Millisecond.ToString("000")} - {(level.ToString().Length == 4 ? level.ToString() : (level.ToString() + " "))}] {Message}\r\n";
+            string LogMsg = $"[{DateTime.Now.ToDetailedString()} - {level.ToString()}] {Message}\r\n";
 
-            Debug.Write(LogMsg);
-            ConsoleColor _color = Console.ForegroundColor;
             switch (level)
             {
-                case LogLevel.Err:
+                case LogLevel.E:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogLevel.Info:
+                case LogLevel.I:
                     Console.ForegroundColor = ConsoleColor.Blue;
                     break;
-                case LogLevel.Dbg:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                case LogLevel.D:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+                case LogLevel.W:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
             }
+            Debug.Write(LogMsg);
             Console.Write(LogMsg);
-            Console.ForegroundColor = _color;
-            char[] p = LogMsg.ToCharArray();
-            lock (Fs)
-            {
-                Fs.Write(p, 0, p.Length);
-            }
-            logEvent.LogString = LogMsg;
-            logEvent.LogType = level;
-            OnLog?.Invoke(logEvent, new object());
+            Console.ResetColor();
+
+            Fs.Write(LogMsg);
+
+            LogEvent.LogString = LogMsg;
+            LogEvent.LogLevel = level;
+            OnLog?.Invoke(LogEvent, null);
         }
-        public static void D(string Message) => WriteLog(LogLevel.Info, Message);
-        public static void D(object Message) => WriteLog(LogLevel.Info, Message.ToString());
-        public static void E(string Message) => WriteLog(LogLevel.Err, Message);
-        public static void E(object Message) => WriteLog(LogLevel.Err, Message.ToString());
+
+        public static void D(string Message) => WriteLog(LogLevel.D, Message);
+        public static void I(string Message) => WriteLog(LogLevel.I, Message);
+        public static void W(string Message) => WriteLog(LogLevel.W, Message);
+        public static void E(string Message) => WriteLog(LogLevel.E, Message);
     }
+    #region Log Level
+    /// <summary>
+    /// LogLevel Enumerate used for <see cref="LW"/>
+    /// </summary>
+    public enum LogLevel
+    {
+        /// <summary>
+        /// Debug Log Level
+        /// </summary>
+        D = 0,
+        /// <summary>
+        /// Info Log Level
+        /// </summary>
+        I = 1,
+        /// <summary>
+        /// Warning Log Level
+        /// </summary>
+        W = 2,
+        /// <summary>
+        /// Error Log Level
+        /// </summary>
+        E = 3,
+    }
+    #endregion
 }

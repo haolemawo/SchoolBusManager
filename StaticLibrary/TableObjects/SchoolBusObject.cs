@@ -2,13 +2,12 @@
 
 using System.Collections.Generic;
 
-using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.TableObject
 {
-    public class SchoolBusObject : DataTableObject
+    public class SchoolBusObject : DataTableObject<SchoolBusObject>
     {
         public string BusName { get; set; }
         public string TeacherID { get; set; }

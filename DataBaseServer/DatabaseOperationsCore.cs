@@ -6,9 +6,10 @@ using System.Data.SqlClient;
 using System.Linq;
 
 using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
-using WBPlatform.Database.Internal;
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
+using WBPlatform.Config;
+using WBPlatform.Logging;
 
 namespace WBPlatform.Database.DBServer
 {
@@ -18,20 +19,20 @@ namespace WBPlatform.Database.DBServer
         public static void InitialiseDBConnection()
         {
             SqlConnectionStringBuilder conn = new SqlConnectionStringBuilder();
-            LW.D("Start Initiallising Database Connections.....");
+            LW.I("Start Initiallising Database Connections.....");
             conn.DataSource = XConfig.Current.Database.SQLServerIP + "," + XConfig.Current.Database.SQLServerPort;
             conn.UserID = XConfig.Current.Database.DatabaseUserName;
             conn.Password = XConfig.Current.Database.DatabasePassword;
             conn.TrustServerCertificate = true;
-            LW.D("DB Connection String Loaded!");
+            LW.I("DB Connection String Loaded!");
             sqlConnection = new SqlConnection(conn.ConnectionString);
             sqlConnection.Open();
-            LW.D("DB Connection Opened!");
+            LW.I("DB Connection Opened!");
         }
 
-        public static string ProcessRequest(DBInternal request)
+        public static string ProcessRequest(DataBaseSocketIO request)
         {
-            DBInternal reply = new DBInternal();
+            DataBaseSocketIO reply = new DataBaseSocketIO();
             try
             {
                 if (request == null) throw new NullReferenceException("Null Request....");
@@ -128,7 +129,7 @@ namespace WBPlatform.Database.DBServer
                 string[] queriesStringCollection = (from q in dbQuery.Contains select $"{q.Key} LIKE '%{PublicTools.EncodeString(q.Value)}%'").ToArray();
                 sqlCommand_Query += string.Join(" AND ", queriesStringCollection);
             }
-
+            string.Join(" ", sqlCommand_Query, " order by", dbQuery._SortedBy, dbQuery._Ascending ? "" : "desc");
             return sqlCommand_Query;
         }
 

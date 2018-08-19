@@ -47,7 +47,7 @@ namespace WBPlatform.StaticClasses.Properties {
         }
         
         /// <summary>
-        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性
         ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -57,24 +57,6 @@ namespace WBPlatform.StaticClasses.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 b770100ff0051b0c313c1a0e975711e6 的本地化字符串。
-        /// </summary>
-        internal static string BmobDatabaseApplicationID {
-            get {
-                return ResourceManager.GetString("BmobDatabaseApplicationID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 281fb4c79c3a3391ae6764fa56d1468d 的本地化字符串。
-        /// </summary>
-        internal static string BmobDatabaseREST {
-            get {
-                return ResourceManager.GetString("BmobDatabaseREST", resourceCulture);
             }
         }
     }

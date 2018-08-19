@@ -1,6 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+
+using System;
+
+using WBPlatform.Config;
 using WBPlatform.Database;
+using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
@@ -54,6 +58,7 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (Request.HasFormContentType)
                 {
+                    //POST DATA
                     Microsoft.AspNetCore.Http.IFormCollection form = Request.Form;
                     UserChangeRequestTypes types = (UserChangeRequestTypes)Enum.Parse(typeof(UserChangeRequestTypes), form[nameof(UserChangeRequest.RequestTypes)][0]);
                     string reason = form[nameof(UserChangeRequest.DetailTexts)][0];
@@ -82,16 +87,11 @@ namespace WBPlatform.WebManagement.Controllers
                 }
                 else
                 {
-
                     ViewData["cUser"] = CurrentUser.ToString();
                     return View(new UserChangeRequest() { UserID = CurrentUser.ObjectId });
                 }
             }
-            else
-            {
-
-                return LoginFailed("/" + ControllerName + "/" + nameof(RequestChange));
-            }
+            return LoginFailed("/" + ControllerName + "/" + nameof(RequestChange));
         }
 
         public IActionResult LoginFailed()

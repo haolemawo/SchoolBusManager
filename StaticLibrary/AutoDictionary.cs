@@ -8,34 +8,16 @@ namespace WBPlatform.StaticClasses
     {
         private Dictionary<TKey, TValue> _dict;
 
-        public AutoDictionary() : base()
-        {
-            _dict = new Dictionary<TKey, TValue>();
-        }
-        public AutoDictionary(IDictionary<TKey, TValue> v) : base()
-        {
-            _dict = (Dictionary<TKey,TValue>)v;
-        }
+        public AutoDictionary() : base() => _dict = new Dictionary<TKey, TValue>();
+        public AutoDictionary(IDictionary<TKey, TValue> v) : base() => _dict = (Dictionary<TKey, TValue>)v;
 
         public TValue this[TKey key]
         {
-            get
-            {
-                return ((IDictionary<TKey, TValue>)_dict).ContainsKey(key)
-                    ? ((IDictionary<TKey, TValue>)_dict)[key]
-                    : default(TValue);
-
-            }
+            get => ((IDictionary<TKey, TValue>)_dict).ContainsKey(key) ? ((IDictionary<TKey, TValue>)_dict)[key] : default(TValue);
             set
             {
-                if (ContainsKey(key))
-                {
-                    ((IDictionary<TKey, TValue>)_dict)[key] = value;
-                }
-                else
-                {
-                    Add(key, value);
-                }
+                if (ContainsKey(key)) ((IDictionary<TKey, TValue>)_dict)[key] = value;
+                else Add(key, value);
             }
         }
 

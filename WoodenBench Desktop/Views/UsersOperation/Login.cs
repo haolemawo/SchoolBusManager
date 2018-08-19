@@ -9,6 +9,7 @@ using WBPlatform.DesktopClient.StaticClasses;
 using WBPlatform.DesktopClient.Users;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
+using WBPlatform.Logging;
 
 using static WBPlatform.DesktopClient.StaticClasses.GlobalFunctions;
 
@@ -62,7 +63,7 @@ namespace WBPlatform.DesktopClient.Views
             Application.DoEvents();
             if (UserActivity.Login(UserNameTxt.Text, PswdTxt.Text, out UserObject user))
             {
-                LW.D($"Login succeed using username {UserNameTxt.Text}");
+                LW.I($"Login succeed using username {UserNameTxt.Text}");
                 if (user.UserGroup.IsAdmin || user.UserGroup.IsBusManager || user.UserGroup.IsClassTeacher)
                 {
                     DoLoginBtn.Enabled = true;

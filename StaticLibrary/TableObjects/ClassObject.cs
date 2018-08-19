@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.TableObject
 {
-    public class ClassObject : DataTableObject
+    public class ClassObject : DataTableObject<ClassObject> 
     {
         public string CDepartment { get; set; }
         public string CGrade { get; set; }

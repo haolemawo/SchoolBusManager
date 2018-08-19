@@ -17,7 +17,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             object Equals2Obj = EqualsTo;
-            if (Int32.TryParse((string)Equals2Obj, out int EqInt)) Equals2Obj = EqInt;
+            if (int.TryParse((string)Equals2Obj, out int EqInt)) Equals2Obj = EqInt;
             else if (((string)Equals2Obj).ToLower() == "true") Equals2Obj = true;
             else if (((string)Equals2Obj).ToLower() == "false") Equals2Obj = false;
             DBQuery query = new DBQuery();

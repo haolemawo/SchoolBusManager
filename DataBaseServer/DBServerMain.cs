@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using WBPlatform.Logging;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,7 +25,7 @@ namespace WBPlatform.Database.DBServer
             LW.OnLog += LogWritter_onLog;
         }
 
-        private void LogWritter_onLog(LW.OnLogChangedEventArgs logchange, object sender)
+        private void LogWritter_onLog(OnLogChangedEventArgs logchange, object sender)
         {
             logsTextbox.Invoke(new Action(delegate
             {

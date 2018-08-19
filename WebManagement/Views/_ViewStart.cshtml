@@ -1,4 +1,4 @@
 ﻿@{
     Layout = "_Layout";
-    LW.D("View Started! ViewData: " + ViewData.ToParsedString());
+    var Context = (Microsoft.AspNetCore.Http.HttpContext)ViewData["CurrentRequest"];
 }

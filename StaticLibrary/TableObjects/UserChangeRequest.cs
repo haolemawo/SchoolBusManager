@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using WBPlatform.Database;
-using WBPlatform.Database.DBIOCommand;
+﻿using Newtonsoft.Json;
+
+using System.Collections.Generic;
+
+using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.TableObject
 {
-    public class UserChangeRequest : DataTableObject
+    public class UserChangeRequest : DataTableObject<UserChangeRequest>
     {
         public override string Table => WBConsts.TABLE_Gen_UserRequest;
         public string UserID { get; set; }

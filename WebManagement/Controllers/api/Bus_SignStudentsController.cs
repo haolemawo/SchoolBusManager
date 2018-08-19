@@ -33,7 +33,7 @@ namespace WBPlatform.WebManagement.Controllers
             //P[2] = SALT
             string TeacherID = p[3];
             string StudentID = p[4];
-            if (Cryptography.SHA256Encrypt(SValue + p[2] + ";" + SType + BusID + TeacherID) != SignData) return RequestIllegal;
+            if ((SValue + p[2] + ";" + SType + BusID + TeacherID).SHA256Encrypt() != SignData) return RequestIllegal;
 
             DBQuery busFindQuery = new DBQuery();
             busFindQuery.WhereEqualTo("objectId", BusID);

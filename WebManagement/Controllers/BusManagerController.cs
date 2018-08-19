@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using WBPlatform.Database;
+using WBPlatform.Config;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;

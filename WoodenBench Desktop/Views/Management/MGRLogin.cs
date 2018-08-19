@@ -41,7 +41,7 @@ namespace WBPlatform.DesktopClient.Views
 
         private void LoginMgrBtn_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.Password == Cryptography.SHA256Encrypt(PasswordTxt.Text) && CurrentUser.UserName == UsrNameTxt.Text)
+            if (CurrentUser.Password == PasswordTxt.Text.SHA256Encrypt() && CurrentUser.UserName == UsrNameTxt.Text)
             {
                 if (CurrentUser.RealName == RealNameTxt.Text)
                 {

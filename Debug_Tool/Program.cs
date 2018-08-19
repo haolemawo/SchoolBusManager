@@ -4,6 +4,7 @@ using System.Net;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
+using WBPlatform.Logging;
 
 namespace Debug_Tool
 {
@@ -12,11 +13,11 @@ namespace Debug_Tool
         static void Main(string[] args)
         {
             LW.InitLog();
-            LW.SetLogLevel(LogLevel.Dbg);
+            LW.SetLogLevel(LogLevel.I);
             DataBaseOperation.InitialiseClient();
 
-            LW.D(DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("realname", "刘浩宇"), out UserObject me));
-            LW.D(me);
+            LW.D(DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("realname", "刘浩宇"), out UserObject me).ToString());
+            LW.D(me.ToParsedString());
             ClassObject co = new ClassObject()
             {
                 CDepartment = "学部",
@@ -24,9 +25,9 @@ namespace Debug_Tool
                 CNumber = "5班",
                 TeacherID = me.ObjectId
             };
-            LW.D(DataBaseOperation.CreateData(ref co));
+            LW.D(DataBaseOperation.CreateData(ref co).ToString());
             me.ClassList.Add(co.ObjectId);
-            LW.D(co);
+            LW.D(co.ToParsedString());
 
 
             SchoolBusObject bo = new SchoolBusObject()
@@ -34,9 +35,9 @@ namespace Debug_Tool
                 BusName = "校车方向1",
                 TeacherID = me.ObjectId
             };
-            LW.D(DataBaseOperation.CreateData(ref bo));
+            LW.D(DataBaseOperation.CreateData(ref bo).ToString());
 
-            LW.D(bo);
+            LW.D(bo.ToParsedString());
 
             for (int cn = 1; cn < 40; cn++)
             {
@@ -50,9 +51,9 @@ namespace Debug_Tool
                     CSChecked = false,
                     LSChecked = false
                 };
-                LW.D(DataBaseOperation.CreateData(ref stu));
+                LW.D(DataBaseOperation.CreateData(ref stu).ToString());
 
-                LW.D(stu);
+                LW.D(stu.ToParsedString());
                 if (cn < 21)
                 {
                     me.ChildList.Add(stu.ObjectId);
@@ -60,8 +61,8 @@ namespace Debug_Tool
             }
 
             me.HeadImagePath = "liuhaoyu.gif";
-            LW.D(DataBaseOperation.UpdateData(ref me));
-            LW.D(me);
+            LW.D(DataBaseOperation.UpdateData(ref me).ToString());
+            LW.D(me.ToParsedString());
         }
     }
 }

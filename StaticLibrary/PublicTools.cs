@@ -7,29 +7,35 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Web;
+using WBPlatform.Logging;
 
 namespace WBPlatform.StaticClasses
 {
     public static class PublicTools
     {
+        /// <summary>
+        /// Anti-Injection for Database...
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public static object EncodeString(object item) => item is string ? HttpUtility.UrlPathEncode(item as string) : item;
         public static object DecodeObject(object item) => item is string ? HttpUtility.UrlDecode(item as string) : item;
 
         public static Dictionary<string, string> HTTPGet(string URL)
         {
-            LW.D("HTTP - GET-rqst: " + URL);
+            LW.I("HTTP - GET-rqst: " + URL);
             HttpWebRequest request = WebRequest.Create(URL) as HttpWebRequest;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
             string resp = reader.ReadToEnd();
-            LW.D("HTTP - GET-rply: " + resp);
+            LW.I("HTTP - GET-rply: " + resp);
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(resp);
         }
 
         public static Dictionary<string, string> HTTPPost(string postUrl, string paramData)
         {
-            LW.D("HTTP - POST-rqst: " + postUrl + " WITH DATA : " + paramData);
+            LW.I("HTTP - POST-rqst: " + postUrl + " WITH DATA : " + paramData);
             byte[] byteArray = Encoding.UTF8.GetBytes(paramData);
             HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create(new Uri(postUrl));
             webReq.Method = "POST";
@@ -47,7 +53,7 @@ namespace WBPlatform.StaticClasses
             sr.Close();
             response.Close();
 
-            LW.D("HTTP - POST-rply: " + ret);
+            LW.I("HTTP - POST-rply: " + ret);
             Dictionary<string, string> dict = new Dictionary<string, string>();
             foreach (KeyValuePair<string, object> item in JsonConvert.DeserializeObject<Dictionary<string, object>>(ret))
             {
@@ -56,38 +62,17 @@ namespace WBPlatform.StaticClasses
             return dict;
         }
 
-        public static byte[] Int2Bytes(int n)
-        {
-            byte[] b = new byte[4];
-            for (int i = 0; i < 4; i++) { b[i] = (byte)(n >> (24 - (i * 8))); }
-            return b;
-        }
-
-
-        public static int BytesToInt(byte[] b)
-        {
-            int mask = 0xff;
-            int temp = 0;
-            int n = 0;
-            for (int i = 0; i < b.Length; i++)
-            {
-                n <<= 8;
-                temp = b[i] & mask;
-                n |= temp;
-            }
-            return n;
-        }
-        public static string DecodeMessage(NetworkStream stream)
+        public static string DecodeDatabasePacket(NetworkStream stream)
         {
             byte[] fsBytes;
             int ContentLenth;
             byte[] arrServerRecMsg = new byte[1];
             stream.Read(arrServerRecMsg, 0, 1);
-            int HeaderLenth = BytesToInt(arrServerRecMsg);
+            int HeaderLenth = arrServerRecMsg.ToInt32();
 
             arrServerRecMsg = new byte[HeaderLenth];
             stream.Read(arrServerRecMsg, 0, HeaderLenth);
-            ContentLenth = BytesToInt(arrServerRecMsg);
+            ContentLenth = arrServerRecMsg.ToInt32();
 
             int total = 0;
             int dataleft = ContentLenth;
@@ -102,11 +87,11 @@ namespace WBPlatform.StaticClasses
             }
             return Encoding.UTF8.GetString(fsBytes, 0, ContentLenth);
         }
-        public static byte[] EncodeMessage(string MessageId, string sendMsg)
+        public static byte[] MakeDatabasePacket(string MessageId, string sendMsg)
         {
             List<byte> mergedPackage = new List<byte>();
             byte[] arrClientSendMsg = Encoding.UTF8.GetBytes(MessageId + sendMsg);
-            byte[] Header = Int2Bytes(arrClientSendMsg.Length);
+            byte[] Header = arrClientSendMsg.Length.ToBytesArray();
             byte HeaderSize = Convert.ToByte(Header.Length);
             mergedPackage.Add(HeaderSize);
             mergedPackage.AddRange(Header);
