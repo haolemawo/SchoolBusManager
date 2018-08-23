@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>07/14/2018 18:10:28</publishTime>
+      <publishTime>08/23/2018 15:55:07</publishTime>
     </File>
     <File Include="appsettings.json">
       <publishTime>07/31/2018 00:21:24</publishTime>
@@ -20,34 +20,37 @@
       <publishTime>04/02/2017 13:24:52</publishTime>
     </File>
     <File Include="bundleconfig.json">
-      <publishTime>08/06/2018 22:03:58</publishTime>
+      <publishTime>08/23/2018 17:05:47</publishTime>
     </File>
     <File Include="Connected Services/Application Insights/ConnectedService.json">
       <publishTime>07/31/2018 00:21:24</publishTime>
     </File>
     <File Include="dotnet-aspnet-codegenerator-design.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:56:36</publishTime>
     </File>
     <File Include="libman.json">
       <publishTime>07/14/2018 17:20:39</publishTime>
     </File>
     <File Include="Microsoft.AI.DependencyCollector.dll">
-      <publishTime>07/19/2018 21:14:38</publishTime>
+      <publishTime>08/14/2018 20:12:18</publishTime>
     </File>
     <File Include="Microsoft.AI.PerfCounterCollector.dll">
-      <publishTime>07/19/2018 21:24:30</publishTime>
+      <publishTime>08/14/2018 20:47:04</publishTime>
     </File>
     <File Include="Microsoft.AI.ServerTelemetryChannel.dll">
-      <publishTime>07/19/2018 21:27:28</publishTime>
+      <publishTime>08/14/2018 20:13:44</publishTime>
     </File>
     <File Include="Microsoft.AI.WindowsServer.dll">
-      <publishTime>07/19/2018 21:22:46</publishTime>
+      <publishTime>08/14/2018 20:45:40</publishTime>
     </File>
     <File Include="Microsoft.ApplicationInsights.AspNetCore.dll">
-      <publishTime>07/31/2018 17:01:56</publishTime>
+      <publishTime>08/21/2018 22:38:58</publishTime>
     </File>
     <File Include="Microsoft.ApplicationInsights.dll">
-      <publishTime>07/19/2018 21:24:18</publishTime>
+      <publishTime>08/14/2018 20:11:26</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.Razor.Language.dll">
+      <publishTime>08/20/2018 09:55:30</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.CSharp.Workspaces.dll">
       <publishTime>07/13/2018 21:48:42</publishTime>
@@ -55,35 +58,44 @@
     <File Include="Microsoft.CodeAnalysis.Workspaces.dll">
       <publishTime>07/13/2018 21:48:42</publishTime>
     </File>
+    <File Include="Microsoft.Extensions.DependencyInjection.Abstractions.dll">
+      <publishTime>08/20/2018 09:57:52</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyInjection.dll">
+      <publishTime>08/20/2018 09:58:04</publishTime>
+    </File>
     <File Include="Microsoft.Extensions.PlatformAbstractions.dll">
-      <publishTime>07/27/2018 10:10:49</publishTime>
+      <publishTime>08/22/2018 18:10:07</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:55:18</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Core.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:56:32</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:56:34</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:56:32</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:56:24</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>08/20/2018 09:56:34</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll">
-      <publishTime>07/13/2018 21:48:29</publishTime>
+      <publishTime>08/20/2018 09:56:34</publishTime>
     </File>
     <File Include="Newtonsoft.Json.dll">
       <publishTime>06/18/2017 13:57:10</publishTime>
     </File>
     <File Include="NuGet.Frameworks.dll">
       <publishTime>07/13/2018 21:48:31</publishTime>
+    </File>
+    <File Include="package-lock.json">
+      <publishTime>08/23/2018 15:57:12</publishTime>
     </File>
     <File Include="package.json">
       <publishTime>08/06/2018 21:51:35</publishTime>
@@ -119,19 +131,19 @@
       <publishTime>04/22/2018 09:30:28</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>08/11/2018 09:44:58</publishTime>
+      <publishTime>08/24/2018 00:40:04</publishTime>
     </File>
     <File Include="WebManagement.deps.json">
-      <publishTime>08/11/2018 09:44:58</publishTime>
+      <publishTime>08/24/2018 00:40:04</publishTime>
     </File>
     <File Include="WebManagement.dll">
-      <publishTime>08/11/2018 09:35:58</publishTime>
+      <publishTime>08/24/2018 00:14:41</publishTime>
     </File>
     <File Include="WebManagement.dll.config">
-      <publishTime>08/10/2018 22:19:08</publishTime>
+      <publishTime>08/23/2018 21:13:56</publishTime>
     </File>
     <File Include="WebManagement.pdb">
-      <publishTime>08/11/2018 09:35:58</publishTime>
+      <publishTime>08/24/2018 00:14:41</publishTime>
     </File>
     <File Include="WebManagement.PrecompiledViews.dll">
       <publishTime>06/11/2018 14:34:26</publishTime>
@@ -140,19 +152,19 @@
       <publishTime>06/14/2018 23:13:12</publishTime>
     </File>
     <File Include="WebManagement.runtimeconfig.json">
-      <publishTime>08/11/2018 09:44:58</publishTime>
+      <publishTime>08/24/2018 00:40:04</publishTime>
     </File>
     <File Include="WebManagement.Views.dll">
-      <publishTime>08/11/2018 09:35:58</publishTime>
+      <publishTime>08/24/2018 00:39:29</publishTime>
     </File>
     <File Include="WebManagement.Views.pdb">
-      <publishTime>08/11/2018 09:35:58</publishTime>
+      <publishTime>08/24/2018 00:39:29</publishTime>
     </File>
     <File Include="WoodenBench_Helper.dll">
-      <publishTime>08/11/2018 09:35:45</publishTime>
+      <publishTime>08/24/2018 00:11:20</publishTime>
     </File>
     <File Include="WoodenBench_Helper.pdb">
-      <publishTime>08/11/2018 09:35:45</publishTime>
+      <publishTime>08/24/2018 00:11:20</publishTime>
     </File>
     <File Include="wwwroot/Backgrounds/404-1.jpg">
       <publishTime>06/26/2018 17:27:25</publishTime>
@@ -224,7 +236,7 @@
       <publishTime>06/26/2018 17:27:26</publishTime>
     </File>
     <File Include="wwwroot/css/WBWeb.min.css">
-      <publishTime>08/10/2018 22:19:10</publishTime>
+      <publishTime>08/23/2018 21:13:58</publishTime>
     </File>
     <File Include="wwwroot/dev/css/bootstrap-grid.css">
       <publishTime>07/12/2018 09:22:44</publishTime>
@@ -754,6 +766,15 @@
     <File Include="wwwroot/dev/js/lib/jquery.slim.min.map">
       <publishTime>07/14/2018 15:21:22</publishTime>
     </File>
+    <File Include="wwwroot/dev/js/service.d.ts">
+      <publishTime>08/24/2018 00:23:05</publishTime>
+    </File>
+    <File Include="wwwroot/dev/js/service.js">
+      <publishTime>08/24/2018 00:23:05</publishTime>
+    </File>
+    <File Include="wwwroot/dev/js/service.js.map">
+      <publishTime>08/24/2018 00:23:05</publishTime>
+    </File>
     <File Include="wwwroot/dev/js/UserActivity.js">
       <publishTime>08/10/2018 22:19:10</publishTime>
     </File>
@@ -830,7 +851,7 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/crpto-js.min.js">
-      <publishTime>08/10/2018 22:19:11</publishTime>
+      <publishTime>08/23/2018 21:13:58</publishTime>
     </File>
     <File Include="wwwroot/js/CryptoJS/aes.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
@@ -1013,13 +1034,13 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/library.min.js">
-      <publishTime>08/10/2018 22:19:11</publishTime>
+      <publishTime>08/23/2018 21:13:58</publishTime>
     </File>
     <File Include="wwwroot/js/npm.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/service.min.js">
-      <publishTime>08/10/2018 22:19:11</publishTime>
+      <publishTime>08/24/2018 00:39:26</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
