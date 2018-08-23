@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>WBPlatform.DesktopClient.StaticClasses.GlobalFunctions</StartupObject>
+    <StartupObject>WBPlatform.DesktopClient.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>MainICON.ico</ApplicationIcon>
@@ -96,6 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
     <Compile Include="StaticClasses\EventDriver.cs" />
     <Compile Include="Models\ExcelApplication.cs" />
     <Compile Include="StaticClasses\FileIO.cs" />

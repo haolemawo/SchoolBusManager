@@ -11,7 +11,7 @@ using WBPlatform.WebManagement.Tools;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/parent/getMyChild")]
+    [Route(getMyChildRoute)]
     public class GetMyChildController : APIController
     {
         [HttpGet]
@@ -25,13 +25,7 @@ namespace WBPlatform.WebManagement.Controllers
             switch (DataBaseOperation.QueryMultipleData(new DBQuery().WhereValueContainedInArray("objectId", CurrentUser.ChildList.ToArray()), out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
-                default:
-                    dict.Add("count", StudentList.Count.ToString());
-                    for (int i = 0; i < StudentList.Count; i++)
-                        dict.Add("num_" + i.ToString(), StudentList[i].ToString());
-                    dict.Add("ErrCode", "0");
-                    dict.Add("ErrMessage", "null");
-                    return Json(dict);
+                default: return Json(new { StudentList.Count, StudentList });
             }
         }
     }

@@ -10,30 +10,28 @@ using WBPlatform.WebManagement.Tools;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/gen/GetName")]
+    [Route(getUNameRoute)]
     public class Gen_GetName : APIController
     {
         [HttpGet]
         public JsonResult Get(string UserID)
         {
-            if (ValidateSession())
+            if (!ValidateSession()) return SessionError;
+            if (string.IsNullOrEmpty(UserID)) return RequestIllegal;
+            string uName = "";
+            switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", UserID), out UserObject user))
             {
-                if (string.IsNullOrEmpty(UserID))
-                {
-                    return RequestIllegal; 
-                }
-                else
-                {
-                    switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", UserID), out UserObject user))
-                    {
-                        case DBQueryStatus.INTERNAL_ERROR:
-                        case DBQueryStatus.MORE_RESULTS: return InternalError;
-                        case DBQueryStatus.NO_RESULTS: return SpecialisedInfo($"未知用户({UserID})");
-                        default: return SpecialisedInfo($"{user.RealName}({user.ObjectId})");
-                    }
-                }
+                case DBQueryStatus.INTERNAL_ERROR:
+                case DBQueryStatus.MORE_RESULTS:
+                    return InternalError;
+                case DBQueryStatus.NO_RESULTS:
+                    uName = $"未知用户({UserID})";
+                    break;
+                default:
+                    uName = $"{user.RealName}({user.ObjectId})";
+                    break;
             }
-            else return SessionError;
+            return Json(new { Name = uName });
         }
     }
 }

@@ -13,21 +13,14 @@
   /////////////////////////////////////////////BOOTSTRAP  &&  JQUERY
   {
     "outputFileName": "wwwroot/js/library.min.js",
-    "inputFiles": [
-      "wwwroot/dev/js/lib/jquery.js",
-      "wwwroot/dev/js/lib/bootstrap.js"
-    ],
-    // Optionally specify minification options
-    "minify": {
-      "enabled": true
-    }
+    "inputFiles": [ "wwwroot/dev/js/lib/jquery.js", "wwwroot/dev/js/lib/bootstrap.js" ],
+    "minify": { "enabled": true }
   },
   //JS FIlES...
   {
     "outputFileName": "wwwroot/js/service.min.js",
     "inputFiles": [
-      "wwwroot/dev/js/Base64.js",
-      "wwwroot/dev/js/UserActivity.js"
+      "wwwroot/dev/js/service.js"
     ],
     // Optionally specify minification options
     "minify": {
@@ -38,7 +31,7 @@
   //JS FIlES...
   {
     "outputFileName": "wwwroot/js/crpto-js.min.js",
-    "inputFiles": ["wwwroot/dev/js/Crypto-Js/crypto-js.js"],
+    "inputFiles": [ "wwwroot/dev/js/Crypto-Js/crypto-js.js" ],
     // Optionally specify minification options
     "minify": {
       "enabled": true,

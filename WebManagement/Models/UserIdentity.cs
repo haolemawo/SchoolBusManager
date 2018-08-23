@@ -16,10 +16,12 @@ namespace WBPlatform.WebManagement.Tools
             SetLastActive();
         }
 
+        public string ApiTicket { get; private set; }
         public UserObject User { get; }
         public string UserAgent { get; }
         public DateTime LastActive { get; private set; }
 
+        public void SetApiTicket(string Ticket) => ApiTicket = Ticket;
         public void SetLastActive() => LastActive = DateTime.Now;
         public static UserIdentity Default => new UserIdentity("Unknown", UserObject.Default);
     }

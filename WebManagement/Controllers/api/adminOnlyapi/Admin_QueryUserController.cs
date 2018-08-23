@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/admin/QueryUsers")]
+    [Route(ADMIN_queryUserRoute)]
     public class Admin_QueryUsers : APIController
     {
         [HttpGet]

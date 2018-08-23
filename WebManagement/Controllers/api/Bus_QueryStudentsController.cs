@@ -9,17 +9,13 @@ using WBPlatform.TableObject;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/bus/QueryStudents")]
+    [Route(queryStudentsRoute)]
     public class QueryStudentsController : APIController
     {
         [HttpGet]
-        public JsonResult Get(string BusID, string Column, string Content, string STAMP, string SALT)
+        public JsonResult Get(string BusID, string Column, string Content)
         {
-            if ((BusID + ";;" + SALT + Column + ";" + Content + ";;" + SALT).SHA256Encrypt() != STAMP) return RequestIllegal;
-
-            DBQuery query = new DBQuery();
-            query.WhereEqualTo("objectId", BusID);
-            switch (DataBaseOperation.QueryMultipleData(query, out List<SchoolBusObject> BusList))
+            switch (DataBaseOperation.QueryMultipleData(new DBQuery().WhereEqualTo("objectId", BusID), out List<SchoolBusObject> BusList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 case DBQueryStatus.NO_RESULTS: return DataBaseError;
@@ -29,23 +25,13 @@ namespace WBPlatform.WebManagement.Controllers
                         if (int.TryParse((string)Equals2Obj, out int EqInt)) Equals2Obj = EqInt;
                         else if (((string)Equals2Obj).ToLower() == "true") Equals2Obj = true;
                         else if (((string)Equals2Obj).ToLower() == "false") Equals2Obj = false;
-                        DBQuery query2 = new DBQuery();
-                        query2.WhereEqualTo("BusID", BusList[0].ObjectId);
-                        query2.WhereEqualTo(Column, Equals2Obj);
+
+                        DBQuery query2 = new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId).WhereEqualTo(Column, Equals2Obj);
+
                         switch (DataBaseOperation.QueryMultipleData(query2, out List<StudentObject> StudentList))
                         {
                             case DBQueryStatus.INTERNAL_ERROR: return InternalError;
-                            case DBQueryStatus.NO_RESULTS: return DataBaseError;
-                            default:
-
-                                Dictionary<string, string> dict = new Dictionary<string, string> { { "count", StudentList.Count.ToString() } };
-                                for (int i = 0; i < StudentList.Count; i++)
-                                {
-                                    dict.Add("num_" + i.ToString(), StudentList[i].ToString());
-                                }
-                                dict.Add("ErrCode", "0");
-                                dict.Add("ErrMsg", "null");
-                                return Json(dict);
+                            default: return Json(0, new { StudentList.Count, StudentList }, "null");
                         }
                     }
             }

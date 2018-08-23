@@ -20,7 +20,6 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (CurrentUser.UserGroup.IsBusManager)
                 {
-                    ViewData["cUser"] = CurrentUser.ToString();
                     return View();
                 }
                 else
@@ -39,7 +38,6 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                ViewData["cUser"] = CurrentUser.ToString();
                 return View();
             }
             else
@@ -79,8 +77,6 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-
-                ViewData["cUser"] = CurrentUser.ToString();
                 if (CurrentUser.UserGroup.IsBusManager)
                 {
                     DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("TeacherObjectID", CurrentUser.ObjectId), out SchoolBusObject busObject);

@@ -17,6 +17,7 @@ namespace WBPlatform.WebManagement.Controllers
     {
         public const string ControllerName = "Home";
         public override IActionResult Index()
+
         {
             ViewData["where"] = "Home";
             if (ValidateSession())

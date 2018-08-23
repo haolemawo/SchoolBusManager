@@ -16,7 +16,7 @@ namespace WBPlatform.Database.DBServer
         static Socket socketwatch = null;
         //定义一个集合，存储客户端信息
         //static Dictionary<string, Socket> clientConnectionItems { get; set; } = new Dictionary<string, Socket>();
-        public static AutoDictionary<string, string> QueryStrings { get; set; } = new Dictionary<string, string>();
+        public static AutoDictionary<string, string> QueryStrings { get; set; } = new AutoDictionary<string, string>();
         public static void InitialiseSockets()
         {
             socketwatch = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

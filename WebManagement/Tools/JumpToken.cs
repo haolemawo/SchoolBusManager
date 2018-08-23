@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Security.Cryptography;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.WebManagement.Tools

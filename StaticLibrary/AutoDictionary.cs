@@ -4,51 +4,16 @@ using System.Collections.Generic;
 
 namespace WBPlatform.StaticClasses
 {
-    public class AutoDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public class AutoDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TValue : class
     {
-        private Dictionary<TKey, TValue> _dict;
-
-        public AutoDictionary() : base() => _dict = new Dictionary<TKey, TValue>();
-        public AutoDictionary(IDictionary<TKey, TValue> v) : base() => _dict = (Dictionary<TKey, TValue>)v;
-
-        public TValue this[TKey key]
+        public new TValue this[TKey key]
         {
-            get => ((IDictionary<TKey, TValue>)_dict).ContainsKey(key) ? ((IDictionary<TKey, TValue>)_dict)[key] : default(TValue);
+            get => ContainsKey(key) ? ((Dictionary<TKey, TValue>)this)[key] : null;
             set
             {
-                if (ContainsKey(key)) ((IDictionary<TKey, TValue>)_dict)[key] = value;
+                if (ContainsKey(key)) this[key] = value;
                 else Add(key, value);
             }
-        }
-
-        public ICollection<TKey> Keys => ((IDictionary<TKey, TValue>)_dict).Keys;
-
-        public ICollection<TValue> Values => ((IDictionary<TKey, TValue>)_dict).Values;
-
-        public int Count => ((IDictionary<TKey, TValue>)_dict).Count;
-
-        public bool IsReadOnly => ((IDictionary<TKey, TValue>)_dict).IsReadOnly;
-
-        public void Add(TKey key, TValue value) => ((IDictionary<TKey, TValue>)_dict).Add(key, value);
-        public void Add(KeyValuePair<TKey, TValue> item) => ((IDictionary<TKey, TValue>)_dict).Add(item);
-        public void Clear() => ((IDictionary<TKey, TValue>)_dict).Clear();
-        public bool Contains(KeyValuePair<TKey, TValue> item) => ((IDictionary<TKey, TValue>)_dict).Contains(item);
-        public bool ContainsKey(TKey key) => ((IDictionary<TKey, TValue>)_dict).ContainsKey(key);
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => ((IDictionary<TKey, TValue>)_dict).CopyTo(array, arrayIndex);
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => ((IDictionary<TKey, TValue>)_dict).GetEnumerator();
-        public bool Remove(TKey key) => ((IDictionary<TKey, TValue>)_dict).Remove(key);
-        public bool Remove(KeyValuePair<TKey, TValue> item) => ((IDictionary<TKey, TValue>)_dict).Remove(item);
-        public bool TryGetValue(TKey key, out TValue value) => ((IDictionary<TKey, TValue>)_dict).TryGetValue(key, out value);
-        IEnumerator IEnumerable.GetEnumerator() => ((IDictionary<TKey, TValue>)_dict).GetEnumerator();
-
-        public static implicit operator AutoDictionary<TKey, TValue>(Dictionary<TKey, TValue> v)
-        {
-            return new AutoDictionary<TKey, TValue>() { _dict = v };
-        }
-
-        public static implicit operator Dictionary<TKey, TValue>(AutoDictionary<TKey, TValue> v)
-        {
-            return new Dictionary<TKey, TValue>(v._dict);
         }
     }
 }

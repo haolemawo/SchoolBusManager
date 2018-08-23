@@ -24,7 +24,6 @@ namespace WBPlatform.WebManagement.Controllers
                         case DBQueryStatus.ONE_RESULT:
                             ViewData["ClassName"] = string.Join(" ", myClass.CDepartment, myClass.CGrade, myClass.CNumber);
                             ViewData["ClassID"] = myClass.ObjectId;
-                            ViewData["cUser"] = CurrentUser.ToString();
                             return View();
                         default:
                             return DatabaseError(ServerAction.MyClass_Index, XConfig.Messages["MultipleClassIDsFound"]);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ using WBPlatform.WebManagement.Tools;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/users/Change")]
+    [Route(userChangeRoute)]
     public class User_ChangeController : APIController
     {
         [HttpGet]
@@ -46,26 +47,16 @@ namespace WBPlatform.WebManagement.Controllers
                     case "password":
                         CurrentUser.Password = (string)Equals2Obj;
                         break;
-                    case "notice":
-                        //user.WebNotiSeen = (bool)Equals2Obj;
-                        break;
-                    case "firstlogin":
-                        //user.FirstLogin = (bool)Equals2Obj;
-                        break;
                     default:
-
                         break;
                 }
 
                 var _tempUser = CurrentUser;
                 if (DataBaseOperation.UpdateData(ref _tempUser) == 0)
                 {
-                    Dictionary<string, string> dict = CurrentUser.ToDictionary();
                     UpdateUser(_tempUser);
-                    dict.Add("ErrCode", "0");
-                    dict.Add("ErrMessage", "null");
-                    dict.Add("updated_At", DateTime.Now.ToString());
-                    return Json(dict);
+                    var result = new { ErrCode = 0, ErrMessage = "null", updated_At = DateTime.Now.ToNormalString(), user = CurrentUser };
+                    return Json(result);
                 }
                 else return InternalError;
             }

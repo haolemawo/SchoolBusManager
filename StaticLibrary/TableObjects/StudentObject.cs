@@ -50,20 +50,5 @@ namespace WBPlatform.TableObject
             output.Put("CSChecked", CSChecked);
             output.Put("LSChecked", LSChecked);
         }
-        public Dictionary<string, string> ToDictionary()
-        {
-            return new Dictionary<string, string>
-            {
-                { "StuID", ObjectId },
-                { "Name", StudentName },
-                { "Sex", Sex },
-                { "BusID", BusID },
-                { "ClassID", ClassID },
-                { "ComingChecked", CSChecked.ToString().ToLower() },
-                { "LeavingChecked", LSChecked.ToString() },
-                { "ParentLeavingChecked", AHChecked.ToString() },
-            };
-        }
-        public override string ToString() => JsonConvert.SerializeObject(ToDictionary());
     }
 }

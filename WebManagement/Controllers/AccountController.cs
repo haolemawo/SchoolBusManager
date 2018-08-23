@@ -18,7 +18,6 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = HomeController.ControllerName;
             if (ValidateSession())
             {
-                ViewData["cUser"] = CurrentUser.ToString();
                 return View(CurrentUser);
             }
             else
@@ -87,7 +86,6 @@ namespace WBPlatform.WebManagement.Controllers
                 }
                 else
                 {
-                    ViewData["cUser"] = CurrentUser.ToString();
                     return View(new UserChangeRequest() { UserID = CurrentUser.ObjectId });
                 }
             }

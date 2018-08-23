@@ -18,17 +18,12 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = HomeController.ControllerName;
             if (ValidateSession())
             {
-
-                if (CurrentUser.ChildList.Count > 0)
-                {
-                    ViewData["cUser"] = CurrentUser.ToString();
-                    return View();
-                }
-                else return PermissionDenied(ServerAction.MyChild_Index, XConfig.Messages["NotParent"], ResponceCode.Default);
+                return (CurrentUser.ChildList.Count <= 0 && !CurrentUser.UserGroup.IsParent)
+                    ? PermissionDenied(ServerAction.MyChild_Index, XConfig.Messages["NotParent"], ResponceCode.Default)
+                    : View();
             }
             else
             {
-
                 return LoginFailed("/" + ControllerName);
             }
 
@@ -64,7 +59,6 @@ namespace WBPlatform.WebManagement.Controllers
                 {
                     ViewData["ChildNum_" + i.ToString()] = ToBeSignedStudents[i].ToString();
                 }
-                ViewData["cUser"] = CurrentUser.ToString();
                 ViewData["cBusID"] = BusID;
                 ViewData["cTeacherID"] = BusTeacherID;
                 return View();

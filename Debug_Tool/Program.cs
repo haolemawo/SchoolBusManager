@@ -5,6 +5,7 @@ using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.Logging;
+using WBPlatform.Config;
 
 namespace Debug_Tool
 {
@@ -12,11 +13,24 @@ namespace Debug_Tool
     {
         static void Main(string[] args)
         {
+            LW.SetLogLevel(LogLevel.D);
             LW.InitLog();
-            LW.SetLogLevel(LogLevel.I);
+            XConfig.LoadConfig("XConfig.conf");
             DataBaseOperation.InitialiseClient();
-
-            LW.D(DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("realname", "刘浩宇"), out UserObject me).ToString());
+            UserObject me = new UserObject()
+            {
+                HeadImagePath = "liuhaoyu.gif",
+                Password = "",
+                PhoneNumber = "18632738306",
+                Sex = "M",
+                UserGroup = new UserGroup(true, true, true, true),
+                UserName = "liuhaoyu",
+                Precision = 3,
+                RealName = "刘浩宇",
+                CurrentPoint = new System.Drawing.PointF(0, 0)
+            };
+            LW.D(DataBaseOperation.CreateData(ref me).ToParsedString());
+            //LW.D(DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("realname", "刘浩宇"), out UserObject me).ToString());
             LW.D(me.ToParsedString());
             ClassObject co = new ClassObject()
             {
@@ -54,7 +68,7 @@ namespace Debug_Tool
                 LW.D(DataBaseOperation.CreateData(ref stu).ToString());
 
                 LW.D(stu.ToParsedString());
-                if (cn < 21)
+                if (RandomBool)
                 {
                     me.ChildList.Add(stu.ObjectId);
                 }
@@ -64,5 +78,6 @@ namespace Debug_Tool
             LW.D(DataBaseOperation.UpdateData(ref me).ToString());
             LW.D(me.ToParsedString());
         }
+        public static bool RandomBool => new Random().Next(0, 2) == 1;
     }
 }

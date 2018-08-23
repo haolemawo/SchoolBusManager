@@ -1,53 +1,38 @@
-﻿using System.Collections;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using System.Collections.Generic;
-
-using Microsoft.AspNetCore.Mvc;
-
+using System.Linq;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/bus/GetStudents")]
+    [Route(getBusStudentsRoute)]
     public class GetStudentsController : APIController
     {
-        [HttpGet]
-        public JsonResult Get(string BusID, string TeacherID, string Session, string STAMP)
+        [HttpGet] 
+        public JsonResult Get(string BusID, string TeacherID, string Session)
         {
             if (!ValidateSession()) return SessionError;
             if (!(CurrentUser.ObjectId == TeacherID)) return UserGroupError;
             //user.UserGroup.BusID == BusID &&
-            if ((BusID + ";;" + Session + CurrentUser.ObjectId + ";;" + Session).SHA256Encrypt() != STAMP) return RequestIllegal;
             DBQuery BusQuery = new DBQuery();
             BusQuery.WhereEqualTo("objectId", BusID);
             BusQuery.WhereEqualTo("TeacherObjectID", TeacherID);
-            switch (DataBaseOperation.QueryMultipleData(BusQuery, out List<SchoolBusObject> BusList))
+            if (DataBaseOperation.QueryMultipleData(BusQuery, out List<SchoolBusObject> BusList) == DBQueryStatus.INTERNAL_ERROR) return InternalError;
+
+            if (BusList.Count == 0)
             {
-                case DBQueryStatus.INTERNAL_ERROR: return InternalError;
-                default:
-                    {
-                        if (BusList.Count == 0)
-                        {
-                            BusList.Add(new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到校车", TeacherID = CurrentUser.ObjectId });
-                        }
-                        DBQuery StudentQuery = new DBQuery();
-                        StudentQuery.WhereEqualTo("BusID", BusList[0].ObjectId);
-                        Dictionary<string, string> dict = new Dictionary<string, string>();
-                        switch (DataBaseOperation.QueryMultipleData(StudentQuery, out List<StudentObject> StudentList))
-                        {
-                            case DBQueryStatus.INTERNAL_ERROR: return DataBaseError;
-                            default:
-                                dict.Add("count", StudentList.Count.ToString());
-                                for (int i = 0; i < StudentList.Count; i++)
-                                    dict.Add("num_" + i.ToString(), StudentList[i].ToString());
-                                dict.Add("ErrCode", "0");
-                                dict.Add("ErrMessage", "null");
-                                return Json(dict);
-                        }
-                    }
+                return DataBaseError;
+            }
+            DBQuery StudentQuery = new DBQuery();
+            StudentQuery.WhereEqualTo("BusID", BusList[0].ObjectId);
+            switch (DataBaseOperation.QueryMultipleData(StudentQuery, out List<StudentObject> StudentList))
+            {
+                case DBQueryStatus.INTERNAL_ERROR: return DataBaseError;
+                default: return Json(new { StudentList.Count, StudentList });
             }
         }
     }

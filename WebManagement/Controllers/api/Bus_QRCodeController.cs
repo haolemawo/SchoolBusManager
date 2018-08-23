@@ -12,7 +12,7 @@ using WBPlatform.WebManagement.Properties;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("image/Jpeg")]
-    [Route("api/QRCode")]
+    [Route(getQRCode)]
     public class QRCodeController : APIController
     {
         public void Get(string Data)

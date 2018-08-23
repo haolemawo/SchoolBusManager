@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-
+﻿
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -32,6 +31,10 @@ namespace WBPlatform.TableObject
             base.ReadFields(input);
             UserName = input.GetString("Username");
             Password = input.GetString("Password");
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                Password = "#######################";
+            }
             Sex = input.GetString("Sex");
 
             UserGroup = new UserGroup(
@@ -103,34 +106,7 @@ namespace WBPlatform.TableObject
 
         public string GetFullIdentity() => string.Join("-", GetIdentifiableCode(), RealName);
         public static UserObject Default => new UserObject().SetDefault();
-        public override string ToString() => JsonConvert.SerializeObject(ToDictionary());
         public string GetClassIdString(string Splitter) => string.Join(Splitter, ClassList.ToArray());
         public string GetChildIdString(string Splitter) => string.Join(Splitter, ChildList.ToArray());
-
-        public Dictionary<string, string> ToDictionary()
-        {
-            return new Dictionary<string, string>
-            {
-                { "userID", ObjectId },
-                { "RealName", RealName },
-                { "Username", UserName },
-                { "CreatedAt", CreatedAt.ToString("yyyy-MM-dd HH:mm:ss") },
-                { "HeadImagePath", HeadImagePath },
-                { "PhoneNumber", PhoneNumber },
-                { "hasPassword", (!string.IsNullOrEmpty(Password)).ToString() },
-                { "Sex", Sex },
-                //UserGroup
-                { "IsBusTeacher", UserGroup.IsBusManager.ToString().ToLower() },
-                { "IsParent" ,UserGroup.IsParent.ToString().ToLower()},
-                { "IsClassTeacher" , UserGroup.IsClassTeacher.ToString().ToLower() },
-                { "IsAdmin" , UserGroup.IsAdmin.ToString().ToLower() },
-
-                { "ClassIDs", GetChildIdString(";") },
-                { "ChildIDs", GetClassIdString(";") },
-                { "LocationX", CurrentPoint.X.ToString()},
-                { "LocationY", CurrentPoint.Y.ToString()},
-                { "Precision", Precision.ToString() }
-            };
-        }
     }
 }

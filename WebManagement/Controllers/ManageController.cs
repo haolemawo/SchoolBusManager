@@ -24,8 +24,7 @@ namespace WBPlatform.WebManagement.Controllers
                     LW.E("Someone trying access illegal page!, Page: index, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                     return NotFound();
                 }
-
-                ViewData["cUser"] = CurrentUser.ToString();
+                
                 return View(CurrentUser);
             }
             else

@@ -13,7 +13,7 @@ using WBPlatform.WebManagement.Tools;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/WeChatMessage")]
+    [Route(WeChat_Interface_Route)]
     public class WeChat_MessageController : APIController
     {
 

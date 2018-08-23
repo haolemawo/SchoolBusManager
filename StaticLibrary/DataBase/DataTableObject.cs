@@ -3,13 +3,17 @@ using System.Collections.Generic;
 
 using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
+using Newtonsoft.Json;
 
 namespace WBPlatform.TableObject
 {
     public abstract class DataTableObject
     {
+        [JsonIgnore]
         public const string DefaultObjectID = "0000000000";
+        [JsonIgnore]
         public readonly DateTime DefaultTime = DateTime.MinValue;
+        [JsonIgnore]
         public abstract string Table { get; }
         public virtual string ObjectId { get; set; }
         public virtual DateTime CreatedAt { get; internal set; }
@@ -31,10 +35,7 @@ namespace WBPlatform.TableObject
             }
         }
     }
-    public abstract class DataTableObject<T> : DataTableObject where T : new()
-    {
-        public virtual T Default => new T();
-    }
+    public abstract class DataTableObject<T> : DataTableObject where T : new() { }
 
     public class DataTableComparer<T> : IEqualityComparer<T> where T : DataTableObject<T>, new()
     {

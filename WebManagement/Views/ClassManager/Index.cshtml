@@ -27,25 +27,23 @@
     </div>
 </div>
 <script>
-    var CurrentUser = JSON.parse(decodeURI("@Uri.EscapeUriString(ViewData["cUser"].ToString())"));
-    //var ChildCount = decodeURI("Uri.EscapeUriString(ViewData["ChildCount"].ToString())");
-    document.getElementById("UserID").innerHTML = "你好，" + CurrentUser.RealName;
-    $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath);
-
-    var ClassID = decodeURI("@Uri.EscapeUriString(ViewData["ClassID"].ToString())")
-
-    function GetStudentsCallback(data)
     {
-        $("#totalNum").text("坐校车学生人数：" + data.count + "人");
-        for (var i = 0; i < data.count; i++)
-        {
-            var TMP = JSON.parse(eval("data.num_" + i));
-            var Came = TMP.ComingChecked.toLowerCase() === "true";
-            var Leaved = TMP.LeavingChecked.toLowerCase() === "true";
-            var CHome = TMP.ParentLeavingChecked.toLowerCase() === "true";
+        //var ChildCount = decodeURI("Uri.EscapeUriString(ViewData["ChildCount"].ToString())");
+        document.getElementById("UserID").innerHTML = "你好，" + wbWeb.CurrentUser.RealName;
+        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
+
+        var ClassID = "@Html.Raw(ViewData["ClassID"])"
+
+        var data = wbWeb.GetClassStudents(ClassID);
+        $("#totalNum").text("坐校车学生人数：" + data.Count + "人");
+        for (var i = 0; i < data.Count; i++) {
+            var TMP = data.StudentList[i];
+            var Came = TMP.CHChecked;
+            var Leaved = TMP.LSChecked;
+            var CHome = TMP.LHChecked;
             var fff =
-                "<div id='" + TMP.StuID + "' class=\"row\">" +
-                "<div class=\"col text-underline\">" + "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.StuID + "&ClassID=" + TMP.ClassID + "&from=ClassManager&BusID=" + TMP.BusID + "\">" + TMP.Name + "</a></div>" +
+                "<div id='" + TMP.ObjectId + "' class=\"row\">" +
+                "<div class=\"col text-underline\">" + "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=ClassManager&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "</a></div>" +
                 "<div class=\"col\"\">" + (Leaved ? "完成😊" : "&nbsp;❌") + "</div>" +
                 "<div class=\"col\">" + (CHome ? "完成😊" : "&nbsp;❌") + "</div>" +
                 "<div class=\"col\">" + (Came ? "完成😊" : "&nbsp;❌") + "</div>";
@@ -53,5 +51,4 @@
             $("#StudentIDs").append("<br />");
         }
     }
-    GetClassStudents(ClassID, CurrentUser.userID, GetStudentsCallback);
 </script>

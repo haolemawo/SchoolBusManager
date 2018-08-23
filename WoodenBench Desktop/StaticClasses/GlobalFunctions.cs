@@ -14,32 +14,8 @@ using WBPlatform.Logging;
 
 namespace WBPlatform.DesktopClient.StaticClasses
 {
-    public static partial class GlobalFunctions
+    public class CurrentInstance
     {
-        [STAThread]
-        public static void Main()
-        {
-            LW.SetLogLevel(LogLevel.D);
-            LW.InitLog();
-            LW.I("========= = Start WoodenBench for Schoolbus Windows Client = =========");
-            if (!XConfig.LoadConfig("XConfig.conf"))
-            {
-                LW.E("Config Loading Failed! Check file...");
-                return;
-            }
-            
-            DataBaseOperation.InitialiseClient();            
-            Application.EnableVisualStyles();
-            Application.Run(LoginWindow.Default);
-        }
-
         public static UserObject CurrentUser { get; set; } = UserObject.Default;
-
-        public static void ApplicationExit()
-        {
-            LW.I("Terminating Application.....");
-            Database.Connection.DatabaseSocketsClient.KillConnection();
-            Application.Exit();
-        }
     }
 }

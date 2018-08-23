@@ -13,18 +13,15 @@ using WBPlatform.WebManagement.Tools;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/admin/ProcessUserRequest")]
+    [Route(ADMIN_procUserRequestRoute)]
     public class Admin_ProcessUserRequest : APIController
     {
         [HttpGet]
         public JsonResult Get(string reqId, string mode, string detail)
         {
-            if (!ValidateSession())
-                return SessionError;
-            if (!CurrentUser.UserGroup.IsAdmin)
-                return UserGroupError;
-            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT)
-                return DataBaseError;
+            if (!ValidateSession()) return SessionError;
+            if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
+            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             request.SolverID = CurrentUser.ObjectId;
             switch (mode)
@@ -42,12 +39,11 @@ namespace WBPlatform.WebManagement.Controllers
                 default: return RequestIllegal;
             }
 
-            if (DataBaseOperation.UpdateData(ref request) != DBQueryStatus.ONE_RESULT)
-                return DataBaseError;
-            if (request.Status != UCRProcessStatus.Accepted)
-                return SpecialisedInfo("提交成功");
-            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT)
-                return DataBaseError;
+            if (DataBaseOperation.UpdateData(ref request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+
+            if (request.Status != UCRProcessStatus.Accepted) return SpecialisedInfo("提交成功");
+
+            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             switch (request.RequestTypes)
             {

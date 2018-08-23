@@ -70,7 +70,7 @@
                     <label>提交者ID：</label>
                     <div id="userID" class="container">
                         @Model.UserID
-                        <button class="btn btn-sm btn-default" onclick="GetName('@Model.UserID', 'userID' ,getName_Callback)">查看</button>
+                        <button class="btn btn-sm btn-default" onclick="GetName('@Model.UserID', 'userID')">查看</button>
                     </div>
                     <label>处理状态：</label>
                     @switch (Model.Status)
@@ -92,7 +92,7 @@
                         <label>处理者ID：</label>
                         <div id="solveID" class="container">
                             @(string.IsNullOrEmpty(Model.SolverID) ? "未处理" : Model.SolverID)
-                            <button class="btn btn-sm btn-default" onclick="GetName('@Model.SolverID', 'solveID', getName_Callback)">查看</button>
+                            <button class="btn btn-sm btn-default" onclick="GetName('@Model.SolverID', 'solveID')">查看</button>
                         </div>
                     }
                 </div>
@@ -157,8 +157,9 @@
 @if (!isListView)
 {
     <script>
-        function getName_Callback(HTMLNode, data) {
-            if (data.ErrCode == "0") $("#" + HTMLNode).html(data.ErrMessage);
+        function GetName(uid, ElementID) {
+            var data = wbWeb.GetName(uid);
+            $("#" + ElementID).html(data.Name);
         }
     </script>
     @if (isManage && !isListView)

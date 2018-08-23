@@ -21,7 +21,7 @@ using WBPlatform.DesktopClient.Properties;
 using WBPlatform.DesktopClient.StaticClasses;
 using WBPlatform.DesktopClient.Users;
 
-using static WBPlatform.DesktopClient.StaticClasses.GlobalFunctions;
+using static WBPlatform.DesktopClient.StaticClasses.CurrentInstance;
 
 namespace WBPlatform.DesktopClient.Views
 {
@@ -81,7 +81,7 @@ namespace WBPlatform.DesktopClient.Views
                 CurrentUser.ObjectId +
                 "</div>";
             if (CurrentUser.HeadImagePath != "#")
-                FileIO.DownloadFile("https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath, Environment.CurrentDirectory + "//Temp//" + GlobalFunctions.CurrentUser.ObjectId + "-HImg");
+                FileIO.DownloadFile("https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath, Environment.CurrentDirectory + "//Temp//" + CurrentInstance.CurrentUser.ObjectId + "-HImg");
 
             if (CurrentUser.UserGroup.IsAdmin) userRole.Text += "管理员;";
             if (CurrentUser.UserGroup.IsClassTeacher) userRole.Text += "班主任;";

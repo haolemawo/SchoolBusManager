@@ -11,7 +11,7 @@ using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.Logging;
 
-using static WBPlatform.DesktopClient.StaticClasses.GlobalFunctions;
+using static WBPlatform.DesktopClient.StaticClasses.CurrentInstance;
 
 namespace WBPlatform.DesktopClient.Views
 {
@@ -115,7 +115,11 @@ namespace WBPlatform.DesktopClient.Views
 
         private void UsrLoginWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ApplicationExit();
+            void ApplicationExit()
+            {
+                LW.I("Terminating Application.....");
+                Application.Exit();
+            }
         }
     }
 }

@@ -87,11 +87,6 @@
 </div>
 
 <script>
-    {
-        var currentBus;
-        var CurrentUser = JSON.parse(decodeURI("@Uri.EscapeUriString((string)ViewData["cUser"])"));
-
-        $("#UserID").text("你好，" + CurrentUser.RealName);
-        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath);
-    }
+    $("#UserID").text("你好，" + wbWeb.CurrentUser.RealName);
+    $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
 </script>

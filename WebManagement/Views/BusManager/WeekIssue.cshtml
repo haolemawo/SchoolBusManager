@@ -28,34 +28,19 @@
     </div>
 </div>
 <script>
-    {
-        var currentBus;
-        var CurrentUser = JSON.parse(decodeURI("@Uri.EscapeUriString((string)ViewData["cUser"])"));
-        GetMgmtBus(CurrentUser.userID, getCookie("Session"), BusCallBack);
+    var CurrentBus = wbWeb.GetMgmtBus();
+    $("#UserID").text("你好，" + wbWeb.CurrentUser.RealName);
+    $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
+    $("#BusDirection").text("我的校车: " + CurrentBus.Bus.BusName);
+    
+    function NewReport() {
+        $("#NewRptBtn").attr("disabled", "");
+        var TypeX = $("#selection")[0].selectedIndex;
 
-        $("#UserID").text("你好，" + CurrentUser.RealName);
-        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath);
-
-        function BusCallBack(data) {
-            currentBus = data;
-            $("#BusDirection").text("我的校车: " + currentBus.Name);
-        }
-        
-        function NewCallBack(data) {
-            if (data === false)
-                return;
-            $("#NewRptBtn").removeAttr("disabled");
-            $("#NewRptBtn").text("提交成功");
-            alert("提交成功，马上返回主页！");
-            location.href = "/";
-            p = data;
-        }
-
-        function NewReport() {
-            $("#NewRptBtn").attr("disabled", "");
-            var TypeX = $("#selection")[0].selectedIndex;
-
-            UserNewReport(CurrentUser.userID, currentBus.BusID, TypeX, $("#content").val(), NewCallBack);
-        }
+        wbWeb.BusIssueReport(CurrentBus.Bus.ObjectId, TypeX, $("#content").val());
+        $("#NewRptBtn").removeAttr("disabled");
+        $("#NewRptBtn").text("提交成功");
+        alert("提交成功，马上返回主页！");
+        location.href = "/";
     }
 </script>

@@ -11,7 +11,7 @@ using WBPlatform.WebManagement.Tools;
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/users/Register")]
+    [Route(userRegisterRoute)]
     public class User_RegisterController : APIController
     {
         [HttpPost]

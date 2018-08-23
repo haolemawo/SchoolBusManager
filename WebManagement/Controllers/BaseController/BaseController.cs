@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
+using System.Security.Cryptography;
 
 namespace WBPlatform.WebManagement.Controllers
 {
@@ -15,7 +17,7 @@ namespace WBPlatform.WebManagement.Controllers
     {
         public static readonly string UID_CookieName = "identifiedUID";
         public static int GetCount => SessionCollection.Count;
-        private static Dictionary<string, UserIdentity> SessionCollection { get; set; } = new Dictionary<string, UserIdentity>();
+        private static AutoDictionary<string, UserIdentity> SessionCollection { get; set; } = new AutoDictionary<string, UserIdentity>();
 
         protected UserObject CurrentUser => CurrentIdentity.User;
         protected UserIdentity CurrentIdentity { get; private set; } = UserIdentity.Default;
@@ -58,9 +60,11 @@ namespace WBPlatform.WebManagement.Controllers
             string Session = Request.Cookies["Session"];
             string UA = Request.Headers["User-Agent"];
             if (string.IsNullOrWhiteSpace(Session) || string.IsNullOrWhiteSpace(UA)) return false;
+
             //if (SessionCollection.ContainsKey(SessionString) && (UA == "JumpToken_FreeLogin" || SessionCollection[SessionString].UserAgent == UA))
-            if (SessionCollection.ContainsKey(Session) && (SessionCollection[Session].UserAgent == UA))
+            if (SessionCollection[Session] != null && SessionCollection[Session].UserAgent == UA)
             {
+
                 lock (SessionCollection) SessionCollection[Session].SetLastActive();
                 CurrentIdentity = SessionCollection[Session];
                 User.AddIdentity(CurrentIdentity.Identity);
@@ -71,13 +75,21 @@ namespace WBPlatform.WebManagement.Controllers
                 Telemetry.Context.Session.Id = Session;
 
                 ViewData[UID_CookieName] = _userIC;
-                ViewData["cUser"] = CurrentUser;
-
+                ViewData["cUser"] = CurrentUser.ToParsedString().Replace(CurrentUser.Password, "Looking for Password?");
                 ViewData["CurrentRequest"] = HttpContext;
 
                 Response.Cookies.Append("ai_user", _userIC);
                 Response.Cookies.Append("ai_session", HttpContext.Connection.RemoteIpAddress.ToString() + "-" + _userIC + Request.Cookies["Session"].Substring(0, 8) ?? "Unknown");
                 Response.Cookies.Append("ai_authUser", CurrentUser.UserName);
+
+                //API CALL
+                if (Request.Headers["X-Requested-With"].Count == 1)
+                {
+                    if (Request.Headers["X-WoodenBench-Protection"].Count != 1) return false;
+                    string ProtectionString = Request.Headers["X-WoodenBench-Protection"].First();
+                    //CryptoJS.SHA384("{0}:{1}:{2}".format(this.Session, this.ApiTicket, window.navigator.userAgent)
+                    return ProtectionString == string.Format("{0}:{1}:{2}", Session, SessionCollection[Session].ApiTicket + "-" + CurrentIdentity.Identity.Name, UA).SHA384Encrypt();
+                }
                 return true;
             }
             else return false;

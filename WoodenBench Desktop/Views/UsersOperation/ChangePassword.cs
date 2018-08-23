@@ -11,7 +11,7 @@ using DevComponents.DotNetBar;
 using WBPlatform.DesktopClient.Users;
 using WBPlatform.StaticClasses;
 
-using static WBPlatform.DesktopClient.StaticClasses.GlobalFunctions;
+using static WBPlatform.DesktopClient.StaticClasses.CurrentInstance;
 
 namespace WBPlatform.DesktopClient.Views
 {

@@ -1,78 +1,55 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 using Microsoft.AspNetCore.Mvc;
 
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
     [Produces("application/json")]
-    [Route("api/bus/SignStudents")]
+    [Route(signStudentsRoute)]
     public class Bus_SignStudentsController : APIController
     {
         [HttpGet]
-        public JsonResult GET(string BusID, string SignData, string Data)
+        public JsonResult GET(string BusID, string Data)
         {
             //THIS FUNCTION IS SHARED BY BUSTEACHER AND PARENTS
-            if (!ValidateSession())
-                return SessionError;
-            if (!(CurrentUser.UserGroup.IsParent || CurrentUser.UserGroup.IsBusManager || CurrentUser.UserGroup.IsAdmin)) return UserGroupError;
+            if (!ValidateSession()) return SessionError;
+            if (!CurrentUser.UserGroup.IsParent && !CurrentUser.UserGroup.IsBusManager) return UserGroupError;
 
-            string str = Encoding.UTF8.GetString(Convert.FromBase64String(Data));
-            if (str.Contains(";") && str.Split(';').Length != 5) return RequestIllegal;
-            string[] p = str.Split(';');
-            string SType = p[0];
-            string SValue = p[1];
-            //P[2] = SALT
-            string TeacherID = p[3];
-            string StudentID = p[4];
-            if ((SValue + p[2] + ";" + SType + BusID + TeacherID).SHA256Encrypt() != SignData) return RequestIllegal;
+            string str = Cryptography.Base64Decode(Data);
+            if (!str.Contains(";")) return RequestIllegal;
+            string[] DataCollection = str.Split(';');
+            if (DataCollection.Length != 4) return RequestIllegal;
 
-            DBQuery busFindQuery = new DBQuery();
-            busFindQuery.WhereEqualTo("objectId", BusID);
-            busFindQuery.WhereEqualTo("TeacherObjectID", TeacherID);
-            switch (DataBaseOperation.QueryMultipleData(busFindQuery, out List<SchoolBusObject> BusList))
+            switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", BusID).WhereEqualTo("TeacherObjectID", DataCollection[2]), out SchoolBusObject Bus))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 case DBQueryStatus.NO_RESULTS: return DataBaseError;
                 default:
-                    if (BusList.Count == 1 && BusList[0].ObjectId == BusID && BusList[0].TeacherID == TeacherID)
+                    string StudentID = DataCollection[3];
+                    DBQuery _stuQuery = new DBQuery();
+                    _stuQuery.WhereEqualTo("objectId", StudentID);
+                    _stuQuery.WhereEqualTo("BusID", BusID);
+                    switch (DataBaseOperation.QuerySingleData(_stuQuery, out StudentObject Student))
                     {
-                        DBQuery _stuQuery = new DBQuery();
-                        _stuQuery.WhereEqualTo("objectId", StudentID);
-                        _stuQuery.WhereEqualTo("BusID", BusID);
-                        switch (DataBaseOperation.QueryMultipleData(_stuQuery, out List<StudentObject> StuList))
-                        {
-                            case DBQueryStatus.INTERNAL_ERROR: return InternalError;
-                            case DBQueryStatus.NO_RESULTS: return DataBaseError;
-                            default:
-                                if (!bool.TryParse(SValue, out bool Value)) return RequestIllegal;
-                                StudentObject stu = StuList[0];
-                                if (SType.ToLower() == "leave") stu.LSChecked = Value;
-                                else if (SType.ToLower() == "pleave") stu.AHChecked = Value;
-                                else if (SType.ToLower() == "come") stu.CSChecked = Value;
-                                else return RequestIllegal;
-                                if (DataBaseOperation.UpdateData(ref stu) == DBQueryStatus.ONE_RESULT)
-                                {
-                                    Dictionary<string, string> dict = stu.ToDictionary();
-                                    dict.Add("ErrCode", "0");
-                                    dict.Add("ErrMessage", "null");
-                                    dict.Add("SignMode", SType);
-                                    dict.Add("SignResult", Value.ToString());
-                                    dict.Add("Updated", DateTime.Now.ToString());
-                                    return Json(dict);
-                                }
-                                else return InternalError;
-                        }
+                        case DBQueryStatus.INTERNAL_ERROR: return InternalError;
+                        case DBQueryStatus.NO_RESULTS: return DataBaseError;
+                        default:
+                            if (!bool.TryParse(DataCollection[1], out bool Value)) return RequestIllegal;
+                            string SType = DataCollection[0];
+                            if (SType.ToLower() == "leave") Student.LSChecked = Value;
+                            else if (SType.ToLower() == "pleave") Student.AHChecked = Value;
+                            else if (SType.ToLower() == "come") Student.CSChecked = Value;
+                            else return RequestIllegal;
+                            if (DataBaseOperation.UpdateData(ref Student) == DBQueryStatus.ONE_RESULT)
+                            {
+                                var result = new { Student, SignMode = SType, SignResult = Value };
+                                return Json(result);
+                            }
+                            else return DataBaseError;
                     }
-                    else return RequestIllegal;
             }
         }
     }

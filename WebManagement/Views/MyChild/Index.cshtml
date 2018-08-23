@@ -15,7 +15,7 @@
     <div class="container">
         <h6>坐校车总人数：<span id="totalNum">正在加载</span></h6>
         <small>提示：点击姓名可以查看详细信息</small>
-        
+
         <div id="StudentIDs" style="font-size:small">
             <div class="row">
                 <div class="col">孩子姓名</div>
@@ -32,27 +32,23 @@
     </div>
 </div>
 <script>
-        var CurrentUser = JSON.parse(decodeURI("@Uri.EscapeUriString(ViewData["cUser"].ToString())"));
-        //var ChildCount = decodeURI("Uri.EscapeUriString(ViewData["ChildCount"].ToString())");
-        document.getElementById("UserID").innerHTML = "你好，" + CurrentUser.RealName;;
-        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath);
+    document.getElementById("UserID").innerHTML = "你好，" + wbWeb.CurrentUser.RealName;
+    $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
 
-    function GetStudentsCallback(data) {
-        $("#totalNum").text(data.count + "人");
-        for (var i = 0; i < data.count; i++) {
-            var TMP = JSON.parse(eval("data.num_" + i));
-            var Came = TMP.ComingChecked.toLowerCase() === "true";
-            var Leaved = TMP.LeavingChecked.toLowerCase() === "true";
-            var CHome = TMP.ParentLeavingChecked.toLowerCase() === "true";
-            var fff =
-                "<div id='" + TMP.StuID + "' class=\"row\">" +
-                "<div class=\"col text-underline\">" + "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.StuID + "&ClassID=" + TMP.ClassID + "&from=MyChild&BusID=" + TMP.BusID + "\">" + TMP.Name + "</a></div>" +
-                "<div class=\"col\">" + (Leaved ? "&nbsp;✔" : "&nbsp;❌") + "</div>" +
-                "<div class=\"col\">" + (CHome ? "&nbsp;✔" : "&nbsp;❌") + "</div>" +
-                "<div class=\"col\">" + (Came ? "&nbsp;✔" : "&nbsp;❌") + "</div>";
-            $("#StudentIDs").append(fff);
-            $("#StudentIDs").append("<br />");
-        }
+    var data = wbWeb.GetMyChild();
+    $("#totalNum").text(data.Count + "人");
+    for (var i = 0; i < data.Count; i++) {
+        var TMP = data.StudentList[i];
+        var Came = TMP.CHChecked;
+        var Leaved = TMP.LSChecked;
+        var CHome = TMP.LHChecked;
+        var fff =
+            "<div id='" + TMP.ObjectId + "' class=\"row\">" +
+            "<div class=\"col text-underline\">" + "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=ClassManager&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "</a></div>" +
+            "<div class=\"col\"\">" + (Leaved ? "完成😊" : "&nbsp;❌") + "</div>" +
+            "<div class=\"col\">" + (CHome ? "完成😊" : "&nbsp;❌") + "</div>" +
+            "<div class=\"col\">" + (Came ? "完成😊" : "&nbsp;❌") + "</div>";
+        $("#StudentIDs").append(fff);
+        $("#StudentIDs").append("<br />");
     }
-    GetMyChild(CurrentUser.userID, GetStudentsCallback);
 </script>
