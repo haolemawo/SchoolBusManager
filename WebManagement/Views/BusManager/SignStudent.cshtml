@@ -1,21 +1,6 @@
 ﻿@{
     ViewData["Title"] = "学生签到";
     string SignMode = (string)ViewData["SignMode"];
-    string ButtonArrays = "";
-    string LSString = "\"<div class=\\\"col\\\"><button id=\\\"\" + TMP.ObjectId + \"_Leave\\\" style=\\\"width: 100%\\\" class=\\\"btn \" + (Leaved ? \"btn-success \" : \"btn-danger \") + \"btn-sm\\\" onClick=\\\"Sign('\" + TMP.ObjectId + \"', 'leave', '\" + !Leaved + \"')\\\">\" + (Leaved ? \"\u53D6\u6D88\" : \"\u79BB\u6821\") + \"</button></div>\"";
-    string CSString = "\"<div class=\\\"col\\\"><button id=\\\"\" + TMP.ObjectId + \"_Come\\\" style=\\\"width: 100%\\\" class=\\\"btn \" + (Came ? \"btn-success \" : \"btn-danger \") + \"btn-sm\\\" onClick=\\\"Sign('\" + TMP.ObjectId + \"', 'come', '\" + !Came + \"')\\\">\" + (Came ? \"\u53D6\u6D88\" : \"\u8FD4\u6821\") + \"</button></div>\"";
-    if (SignMode == "LS")
-    {
-        ButtonArrays = LSString;
-    }
-    else if (SignMode == "CS")
-    {
-        ButtonArrays = CSString;
-    }
-    else if (SignMode == "CD")
-    {
-        ButtonArrays = LSString + "+" + CSString;
-    }
 }
 <div class="container">
     <div class="container row">
@@ -47,6 +32,7 @@
 
 <script>
     {
+        var SignMode = "@ViewData["SignMode"]";
         var CurrentBus = wbWeb.GetMgmtBus();
         var totalStudents = wbWeb.GetStudents(CurrentBus.Bus.ObjectId, wbWeb.CurrentUser.ObjectId);
         var BustimeoutHandle = setInterval(MotherFunction, 1000);
@@ -60,12 +46,57 @@
         $("#CSChecked").text('@XConfig.Messages["CSSignCount"]' + CurrentBus.CSChecked + '@XConfig.Messages["Person"]');
         for (var i = 0; i < totalStudents.Count; i++) {
             var TMP = totalStudents.StudentList[i];
-            var Content =
-                "<div id='" + TMP.ObjectId + "' class=\"row\"><div class=\"col\"><p class='text-underline' >" + "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=BusManager&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "</a></p></div>";
-            var Came = TMP.CSChecked, Leaved = TMP.LSChecked;
-            Content = Content + @Html.Raw(ButtonArrays);
-            Content = Content + "</div>";
-            $("#Students").append(Content);
+
+            var node = document.createElement("div");
+            node.id = TMP.ObjectId;
+            node.classList.add("row");
+            var container = document.createElement("div");
+            container.classList.add("col");
+            var sub = document.createElement("span");
+            sub.classList.add("text-underline")
+            var _sub = document.createElement("a");
+            _sub.href = "/BusManager/ViewStudent?StudentID={0}&ClassID={1}&from=BusManager&BusID={2}".format(TMP.ObjectId, TMP.ClassID, TMP.BusID);
+            _sub.innerHTML = "<strong>" + TMP.StudentName + "</strong><br/><small><small>" + TMP.ObjectId + "</small></small>";
+            sub.appendChild(_sub);
+            container.appendChild(sub);
+            node.appendChild(container);
+            var sid = TMP.ObjectId;
+            if (SignMode == "LS" || SignMode == "CD") {
+                container = document.createElement("div");
+                container.classList.add("col");
+                sub = document.createElement("button");
+                sub.id = TMP.ObjectId + "_Leave";
+                sub.style.width = "100%";
+                if (TMP.LSChecked) {
+                    sub.classList.add("btn", "btn-success", "btn-sm");
+                    sub.innerText = "@XConfig.Messages["Cancel"]";
+                } else {
+                    sub.classList.add("btn", "btn-danger", "btn-sm");
+                    sub.innerText = "@XConfig.Messages["LeaveSchool"]";
+                }
+                sub.setAttribute("onclick", "Sign('" + sid + "', 'leave', '" + !TMP.LSChecked + "')");
+                container.appendChild(sub);
+                node.appendChild(container);
+            }
+            if (SignMode == "CS" || SignMode == "CD") {
+                container = document.createElement("div");
+                container.classList.add("col");
+                sub = document.createElement("button");
+                sub.id = TMP.ObjectId + "_Come";
+                sub.style.width = "100%";
+                if (TMP.CSChecked) {
+                    sub.classList.add("btn", "btn-success", "btn-sm");
+                    sub.innerText = "@XConfig.Messages["Cancel"]";
+                } else {
+                    sub.classList.add("btn", "btn-danger", "btn-sm");
+                    sub.innerText = "@XConfig.Messages["BackSchool"]";
+                }
+                sub.setAttribute("onclick", "Sign('" + sid + "', 'come', '" + !TMP.CSChecked + "')");
+                container.appendChild(sub);
+                node.appendChild(container);
+            }
+            $("#Students").append(node);
+            $("#Students").append("<hr/>")
         }
 
         var TOut = 0;

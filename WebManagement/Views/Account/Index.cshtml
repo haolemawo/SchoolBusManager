@@ -25,46 +25,46 @@
         {
             <button class="btn btn-default btn-sm" onclick="jump(@(string.IsNullOrEmpty(Model.Password).ToString().ToLower()))">@XConfig.Messages["SetMyPassword"]</button> <br /><br />
             <script>
-            function jump(isCreate) {
-                $.ajax({
-                    url: location.protocol + "//" + location.host + "/api/users/Register?userId=@Model.ObjectId&mode=" + isCreate,
-                    type: 'GET',
-                    success: function (data2) {
-                        if (data2.ErrCode == "0") {
-                            location.href = "/Account/Register?token=" + data2.ErrMessage + "&user=@Model.UserName&_action=" + (isCreate ? "AddPassword" : "changePassword");
-                        } else {
+                function jump(isCreate) {
+                    $.ajax({
+                        url: location.protocol + "//" + location.host + "/api/users/Register?userId=@Model.ObjectId&mode=" + isCreate,
+                        type: 'GET',
+                        success: function (data2) {
+                            if (data2.ErrCode == "0") {
+                                location.href = "/Account/Register?token=" + data2.ErrMessage + "&user=@Model.UserName&_action=" + (isCreate ? "AddPassword" : "changePassword");
+                            } else {
+                                alert("请求出错，请刷新页面后重试.");
+                            }
+                        },
+                        error: function (err) {
                             alert("请求出错，请刷新页面后重试.");
                         }
-                    },
-                    error: function (err) {
-                        alert("请求出错，请刷新页面后重试.");
-                    }
-                });
-            }
+                    });
+                }
             </script>
         }
 
-        <label>用户权限分配：</label>
+        <label>@XConfig.Messages["UserPermissionSettings"]</label>
         <div class="container">
-            <label>家长：</label>@(Model.UserGroup.IsParent ? "是✔" : "否❌")<br />
-            <label>校车老师：</label>@(Model.UserGroup.IsBusManager ? "是✔" : "否❌")<br />
-            <label>班主任：</label>@(Model.UserGroup.IsClassTeacher ? "是✔" : "否❌")<br />
-            <label>系统管理员：</label>@(Model.UserGroup.IsAdmin ? "是✔" : "否❌")<br />
+            <label>@XConfig.Messages["Parent"]</label>@(Model.UserGroup.IsParent ? XConfig.Messages["YesWithTick"] : XConfig.Messages["NoWithCross"])<br />
+            <label>@XConfig.Messages["BusManager"]</label>@(Model.UserGroup.IsBusManager ? XConfig.Messages["YesWithTick"] : XConfig.Messages["NoWithCross"])<br />
+            <label>@XConfig.Messages["ClassTeacher"]</label>@(Model.UserGroup.IsClassTeacher ? XConfig.Messages["YesWithTick"] : XConfig.Messages["NoWithCross"])<br />
+            <label>@XConfig.Messages["Administrator"]</label>@(Model.UserGroup.IsAdmin ? XConfig.Messages["YesWithTick"] : XConfig.Messages["NoWithCross"])<br />
         </div>
     </div>
     <hr />
     <div id="techInfo" class="container">
-        <label id="techBtnlabel">其他选项：</label>
+        <label id="techBtnlabel">@XConfig.Messages["OtherOptions"]</label>
         <br />
-        <button class="btn btn-warning btn-sm" onClick="location.href = '/Account/RequestChange'">申请修改用户数据</button>
-        <button class="btn btn-success btn-sm" onClick="location.href = '/Manage/ChangeRequest?arg=my'">我的工单</button>
+        <button class="btn btn-warning btn-sm" onClick="location.href = '/Account/RequestChange'">@XConfig.Messages["RequestUCR"]</button>
+        <button class="btn btn-success btn-sm" onClick="location.href = '/Manage/ChangeRequest?arg=my'">@XConfig.Messages["MyUCRList"]</button>
 
         <div hidden>
-            <button id="showTechinfoBtn" class="btn btn-info btn-sm" onclick="showTechinfo();">显示技术信息</button>
+            <button id="showTechinfoBtn" class="btn btn-info btn-sm" onclick="showTechinfo();">@XConfig.Messages["ShowTechnicalInfo"]</button>
             <button id="hideTechinfoBtn" class="btn btn-info btn-sm" hidden onclick="hideTechinfo();">隐藏技术信息</button>
             <div id="innerTechInfo" hidden>
                 <br />
-                <label>技术信息: </label><br />
+                <label>@XConfig.Messages["TechnicalInfo"] </label><br />
                 <label>UGIdentifier：</label>@Model.UserGroup.ToString()<br />
                 <label>ChildList：</label>@Model.GetChildIdString(";")<br />
                 <label>ClassList：</label>@Model.GetClassIdString(";")<br />
@@ -75,13 +75,13 @@
         @if (Model.UserGroup.IsAdmin)
         {
             <br /> <br />
-            <label>管理员选项: </label> <br />
-            <button id="enterManageZone" type="button" class="btn btn-danger btn-sm" onclick="location.href = '/Manage/'">进入管理后台</button>
+            <label>@XConfig.Messages["AdminOptions"]</label> <br />
+            <button id="enterManageZone" type="button" class="btn btn-danger btn-sm" onclick="location.href = '/Manage/'">@XConfig.Messages["EnterManagementConsole"]</button>
         }
         <hr />
         <label>
-            高级选项:&nbsp;&nbsp;
-            <button class="btn btn-outline-danger btn-sm" onclick="removeLoginData();">刷新用户数据</button>
+            @XConfig.Messages["AdvancedOption"]&nbsp;&nbsp;
+            <button class="btn btn-outline-danger btn-sm" onclick="removeLoginData();">@XConfig.Messages["RefreshUserData"]</button>
         </label>
     </div>
 </div>
@@ -91,10 +91,8 @@
             delCookie("Session");
             location.href = location.href;
         }
-        var CurrentUser = JSON.parse(decodeURI("@Uri.EscapeUriString((string)ViewData["cUser"])"));
-
-        $("#UserID").text("你好，" + CurrentUser.RealName);
-        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath);
+        $("#UserID").text('@XConfig.Messages["HelloWithComma"]' + wbWeb.CurrentUser.RealName);
+        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
         function showTechinfo() {
             $("#innerTechInfo").removeAttr("hidden");
             $("#showTechinfoBtn").attr("hidden", "");
