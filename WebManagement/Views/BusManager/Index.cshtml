@@ -52,18 +52,16 @@
 
 <script>
     {
-        var currentBus;
-        $("#UserID").text("你好，" + wbWeb.CurrentUser.RealName);
+        $("#UserID").text('@XConfig.Messages["HelloWithComma"]' + wbWeb.CurrentUser.RealName);
         $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
 
-        
-        currentBus = wbWeb.GetMgmtBus();
-        setCookie("CBusID", currentBus.Bus.ObjectId);
-        $("#BusDirection").text("我的校车: " + currentBus.Bus.BusName);
-        $("#ExpNumber").text("校车总人数: " + currentBus.Total + "人");
-        $("#LSChecked").text("离校上车人数: " + currentBus.LSChecked + "人");
-        $("#AHChecked").text("到家确认人数: " + currentBus.AHChecked + "人");
-        $("#CSChecked").text("返校上车人数: " + currentBus.CSChecked + "人");
+
+        var  CurrentBus = wbWeb.GetMgmtBus();
+        $("#BusDirection").text('@XConfig.Messages["MySchoolbus"]' + CurrentBus.Bus.BusName);
+        $("#ExpNumber").text('@XConfig.Messages["TotalStudents"]' + CurrentBus.Total +   '@XConfig.Messages["Person"]');
+        $("#LSChecked").text('@XConfig.Messages["LSSignCount"]' + CurrentBus.LSChecked + '@XConfig.Messages["Person"]');
+        $("#AHChecked").text('@XConfig.Messages["CHSignCount"]' + CurrentBus.AHChecked + '@XConfig.Messages["Person"]');
+        $("#CSChecked").text('@XConfig.Messages["CSSignCount"]' + CurrentBus.CSChecked + '@XConfig.Messages["Person"]');
 
 
         function SignStudents(Mode) {

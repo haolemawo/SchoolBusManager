@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "反馈Bug";
+    ViewBag.ShowOtherOptions = false;
 }
 <div class="container center-all">
     <h5>@XConfig.Messages["BugReport"]</h5>
@@ -37,5 +38,4 @@
             }
         });
     }
-    removeOtherOperations();
 </script>
