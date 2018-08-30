@@ -37,11 +37,19 @@ class ResultData<T>{
 
 class Networking {
     public constructor(XTag: string) {
-        $.ajaxSetup({ headers: { "X-WoodenBench-Protection": XTag } });
+        this.XTag = XTag;
     }
+    XTag: string = "";
     AjaxGet<T>(OutputDataType: { new(): T }, URL: string): T {
         var _result;
-        $.ajax({ async: false, url: localStorage.getItem("_") + URL, success: (data) => { _result = data; }, error: () => { _result = false; } });
+        $.ajax(
+            {
+                async: false,
+                headers: { "X-WoodenBench-Protection": this.XTag },
+                url: localStorage.getItem("_") + URL,
+                success: (data) => { _result = data; },
+                error: () => { _result = false; }
+            });
         if (_result === false) { console.error("Get Value from " + URL + "Failed!"); return null; }
         var result: ResultData<T> = new ResultData(OutputDataType);
         //deserialize(_result, result);
@@ -83,6 +91,8 @@ class WoodenBenchWeb {
     SignStudent(BusID: string, StudentID: string, Mode: string, Value: string): SignStudentData { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SignStudent").format(BusID, btoa("{0};{1};{2};{3}".format(Mode, Value, this.CurrentUser.ObjectId, StudentID)))); }
     GetClassStudents(ClassID: string): GetStudentsData { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetClassStudents").format(ClassID, this.CurrentUser.ObjectId)); }
     GetMyChild(): GetStudentsData { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetMyChildren").format(this.CurrentUser.ObjectId)); }
+    SetStudentState(StudentID: string, State: boolean): SignStudentData { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); }
+    //ProsessUCR()
 }
 
 function randomString(len: number) {

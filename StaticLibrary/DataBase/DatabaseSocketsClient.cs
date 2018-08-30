@@ -7,6 +7,7 @@ using System.Threading;
 using WBPlatform.StaticClasses;
 using WBPlatform.Config;
 using WBPlatform.Logging;
+using System.Collections.Concurrent;
 
 namespace WBPlatform.Database.Connection
 {
@@ -24,7 +25,7 @@ namespace WBPlatform.Database.Connection
 
         public static bool Connected { get { return socketclient.Connected; } }
 
-        private static Dictionary<string, string> _messages { get; set; } = new Dictionary<string, string>();
+        private static ConcurrentDictionary<string, string> _messages { get; set; } = new ConcurrentDictionary<string, string>();
         public static void KillConnection()
         {
             ReceiverThread.Abort();
@@ -70,8 +71,16 @@ namespace WBPlatform.Database.Connection
             {
                 while (Connected)
                 {
-                    string requestString = PublicTools.DecodeDatabasePacket(stream);
-                    _messages.Add(requestString.Substring(0, 5), requestString.Substring(5));
+                    try
+                    {
+                        string requestString = PublicTools.DecodeDatabasePacket(stream);
+                        _messages.TryAdd(requestString.Substring(0, 5), requestString.Substring(5));
+                    }
+                    catch (ThreadAbortException e)
+                    {
+                        return;
+                    }
+                    catch (Exception ex) { Thread.Sleep(1000); LW.E(ex.ToParsedString()); }
                 }
                 while (!Connected)
                 {
@@ -132,8 +141,7 @@ namespace WBPlatform.Database.Connection
             {
                 if (_messages.ContainsKey(MessageId))
                 {
-                    rcvdMessage = _messages[MessageId];
-                    _messages.Remove(MessageId);
+                    _messages.TryRemove(MessageId, out rcvdMessage);
                     return true;
                 }
                 Thread.Sleep(10);

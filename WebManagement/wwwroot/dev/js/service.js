@@ -112,6 +112,7 @@ var StudentObject = (function (_super) {
         _this.LSChecked = false;
         _this.CSChecked = false;
         _this.AHChecked = false;
+        _this.TakingBus = false;
         return _this;
     }
     return StudentObject;
@@ -210,11 +211,18 @@ var ResultData = (function () {
 }());
 var Networking = (function () {
     function Networking(XTag) {
-        $.ajaxSetup({ headers: { "X-WoodenBench-Protection": XTag } });
+        this.XTag = "";
+        this.XTag = XTag;
     }
     Networking.prototype.AjaxGet = function (OutputDataType, URL) {
         var _result;
-        $.ajax({ async: false, url: localStorage.getItem("_") + URL, success: function (data) { _result = data; }, error: function () { _result = false; } });
+        $.ajax({
+            async: false,
+            headers: { "X-WoodenBench-Protection": this.XTag },
+            url: localStorage.getItem("_") + URL,
+            success: function (data) { _result = data; },
+            error: function () { _result = false; }
+        });
         if (_result === false) {
             console.error("Get Value from " + URL + "Failed!");
             return null;
@@ -251,6 +259,7 @@ var WoodenBenchWeb = (function () {
     WoodenBenchWeb.prototype.SignStudent = function (BusID, StudentID, Mode, Value) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SignStudent").format(BusID, btoa("{0};{1};{2};{3}".format(Mode, Value, this.CurrentUser.ObjectId, StudentID)))); };
     WoodenBenchWeb.prototype.GetClassStudents = function (ClassID) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetClassStudents").format(ClassID, this.CurrentUser.ObjectId)); };
     WoodenBenchWeb.prototype.GetMyChild = function () { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetMyChildren").format(this.CurrentUser.ObjectId)); };
+    WoodenBenchWeb.prototype.SetStudentState = function (StudentID, State) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); };
     return WoodenBenchWeb;
 }());
 function randomString(len) {

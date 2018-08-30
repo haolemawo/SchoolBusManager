@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -16,7 +17,7 @@ namespace WBPlatform.Database.DBServer
         static Socket socketwatch = null;
         //定义一个集合，存储客户端信息
         //static Dictionary<string, Socket> clientConnectionItems { get; set; } = new Dictionary<string, Socket>();
-        public static AutoDictionary<string, string> QueryStrings { get; set; } = new AutoDictionary<string, string>();
+        public static ConcurrentDictionary<string, string> QueryStrings { get; set; } = new ConcurrentDictionary<string, string>();
         public static void InitialiseSockets()
         {
             socketwatch = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -60,6 +61,7 @@ namespace WBPlatform.Database.DBServer
 
         private static void Recv(object socketclientpara)
         {
+            string val;
             Socket baseSocket = socketclientpara as Socket;
             NetworkStream stream = new NetworkStream(baseSocket);
             string remoteEP = baseSocket.RemoteEndPoint.ToString();
@@ -115,7 +117,7 @@ namespace WBPlatform.Database.DBServer
                             //Invalid Connection......
                             LW.E("E: " + remoteEP + " :: JSON Parse Exception!");
                             baseSocket.CloseAndDispose();
-                            QueryStrings.Remove(remoteEP);
+                            QueryStrings.TryRemove(remoteEP, out val);
                             break;
                         }
                     }
@@ -124,20 +126,20 @@ namespace WBPlatform.Database.DBServer
                         LW.E("Connection to " + remoteEP + " is not marked as 'Opened'");
                         baseSocket.CloseAndDispose();
                         stream.CloseAndDispose();
-                        QueryStrings.Remove(remoteEP);
+                        QueryStrings.TryRemove(remoteEP, out val);
                         break;
                     }
                 }
                 catch (Exception ex)
                 {
                     LW.E("Client " + remoteEP + " drops the connection. " + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n");
-                    QueryStrings.Remove(remoteEP);
+                    QueryStrings.TryRemove(remoteEP, out val);
                     stream.CloseAndDispose();
                     baseSocket.CloseAndDispose();
                     break;
                 }
             }
-            QueryStrings.Remove(remoteEP);
+            QueryStrings.TryRemove(remoteEP, out val);
             LW.E("Client Connection Socket to " + remoteEP + " gonna Stop!");
             Thread.CurrentThread.Abort();
             return;

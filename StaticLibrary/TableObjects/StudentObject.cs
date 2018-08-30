@@ -19,6 +19,7 @@ namespace WBPlatform.TableObject
         public bool LSChecked { get; set; }
         public bool CSChecked { get; set; }
         public bool AHChecked { get; set; }
+        public bool TakingBus { get; set; }
 
         //public string ParentsID { get; set; }
         
@@ -35,6 +36,7 @@ namespace WBPlatform.TableObject
             //ParentsID = input.getString("ParentsIDs");
             CSChecked = input.GetBool("CSChecked");
             LSChecked = input.GetBool("LSChecked");
+            TakingBus = input.GetBool("TakingBus");
             AHChecked = input.GetBool("CHChecked");
         }
 
@@ -49,6 +51,7 @@ namespace WBPlatform.TableObject
             output.Put("CHChecked", AHChecked);
             output.Put("CSChecked", CSChecked);
             output.Put("LSChecked", LSChecked);
+            output.Put("TakingBus", TakingBus);
         }
     }
 }

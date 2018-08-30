@@ -19,7 +19,7 @@ namespace WBPlatform.Database.IO
         public void Put(string column, object _data)
         {
             if (_data == null) { LW.E("DBOutput: Put " + column + " as null, drop it..."); return; }
-            if (_data is ICollection) _data = string.Join(",", (IEnumerable<string>)_data);
+            if (_data is IList) _data = string.Join(",", (IEnumerable<string>)_data);
             if (Data.ContainsKey(column))
             {
                 //Don't know why to delete first...

@@ -15,40 +15,79 @@
         <hr />
         <p>我的班级：@ViewData["ClassName"].ToString()</p>
         <p id="totalNum">坐校车学生人数：正在加载</p>
-        <div id="StudentIDs" style="font-size:small">
-            <div class="row">
-                <div class="col">学生姓名</div>
-                <div class="col">离校签到</div>
-                <div class="col">到家签到</div>
-                <div class="col">返校签到</div>
-            </div>
-            <hr />
-        </div>
     </div>
+    <table id="StudentIDs" class="tftable">
+        <thead>
+            <tr>
+                <th>学生姓名</th>
+                <th>离校</th>
+                <th>到家</th>
+                <th>返校</th>
+                <th>坐校车</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 <script>
-    {
-        //var ChildCount = decodeURI("Uri.EscapeUriString(ViewData["ChildCount"].ToString())");
-        document.getElementById("UserID").innerHTML = "你好，" + wbWeb.CurrentUser.RealName;
-        $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
+    function ChangeState(StudentID, ChangeTo) {
+        console.log(StudentID);
+        console.log(ChangeTo);
+        var result = wbWeb.SetStudentState(StudentID, ChangeTo);
+        console.log(result);
+        $("#" + result.Student.ObjectId + "_onBusButton").checked = result.SignResult;
+        //$("#" + result.Student.ObjectId + "_label").text(result.SignResult ? "坐" : "不坐");
+        $("#" + result.Student.ObjectId + "_onBusButton").attr("onclick", "ChangeState('" + result.Student.ObjectId + "', " + (result.Student.TakingBus ? false : true) + ")")
+    }
 
-        var ClassID = "@Html.Raw(ViewData["ClassID"])"
+    document.getElementById("UserID").innerHTML = "你好，" + wbWeb.CurrentUser.RealName;
+    $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
 
-        var data = wbWeb.GetClassStudents(ClassID);
-        $("#totalNum").text("坐校车学生人数：" + data.Count + "人");
-        for (var i = 0; i < data.Count; i++) {
-            var TMP = data.StudentList[i];
-            var Came = TMP.CHChecked;
-            var Leaved = TMP.LSChecked;
-            var CHome = TMP.LHChecked;
-            var fff =
-                "<div id='" + TMP.ObjectId + "' class=\"row\">" +
-                "<div class=\"col text-underline\">" + "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=ClassManager&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "</a></div>" +
-                "<div class=\"col\"\">" + (Leaved ? "完成😊" : "&nbsp;❌") + "</div>" +
-                "<div class=\"col\">" + (CHome ? "完成😊" : "&nbsp;❌") + "</div>" +
-                "<div class=\"col\">" + (Came ? "完成😊" : "&nbsp;❌") + "</div>";
-            $("#StudentIDs").append(fff);
-            $("#StudentIDs").append("<br />");
-        }
+    var ClassID = "@Html.Raw(ViewData["ClassID"])"
+    var data = wbWeb.GetClassStudents(ClassID);
+
+    $("#totalNum").text("坐校车学生人数：" + data.Count + "人");
+    for (var i = 0; i < data.Count; i++) {
+        var TMP = data.StudentList[i];
+        var Came = TMP.CHChecked;
+        var Leaved = TMP.LSChecked;
+        var CHome = TMP.LHChecked;
+
+
+        var childContainer = document.createElement("tr");
+        childContainer.id = TMP.ObjectId;
+        childContainer.style.background = "none";
+        childContainer.style.border = "none";
+        var viewStudentNode = document.createElement("td");
+        viewStudentNode.classList.add("text-underline");
+        viewStudentNode.innerHTML = "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=ClassManager&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "<br/><small>" + TMP.ObjectId + "</small></a>";
+        childContainer.appendChild(viewStudentNode);
+
+        var child = document.createElement("td");
+        child.innerText = (Leaved ? "✔" : " ❌");
+        childContainer.appendChild(child);
+
+        child = document.createElement("td");
+        child.innerText = (CHome ? "✔" : " ❌");
+        childContainer.appendChild(child);
+
+        child = document.createElement("td");
+        child.innerText = (Came ? "✔" : " ❌");
+        childContainer.appendChild(child);
+
+        child = document.createElement("td");
+        var btn = document.createElement("div");
+        btn.classList.add("pretty", "success", "circle");
+        btn.innerHTML = '<input type="checkbox"><label><i class="mdi mdi-check"></i></label>';
+        var attr = document.createAttribute("onclick");
+        attr.value = "ChangeState('" + TMP.ObjectId + "', " + (TMP.TakingBus ? false : true) + ")";
+        btn.attributes.setNamedItem(attr)
+        //btn.innerText = TMP.TakingBus ? "坐" : "不坐";
+        btn.id = TMP.ObjectId + "_onBusButton";
+        child.appendChild(btn);
+        childContainer.appendChild(child);
+
+        $("#StudentIDs").append(childContainer);
+        $("#StudentIDs").append(document.createElement("tr"));
+        $("#" + TMP.ObjectId + "_onBusButton").children()[0].checked = TMP.TakingBus;
     }
 </script>

@@ -39,10 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="TScripts\Dictionary.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="jquery.TypeScript.DefinitelyTyped" Version="3.1.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.0-beta1" />
@@ -53,6 +49,12 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\dev\TScripts\DataObjects.ts" />
+    <None Include="wwwroot\dev\TScripts\lib\cryptojs.d.ts" />
+    <None Include="wwwroot\dev\TScripts\UserActivity.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -80,13 +82,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="TScripts\DataObjects.ts">
+    <TypeScriptCompile Include="wwwroot\dev\TScripts\DataObjects.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="TScripts\Dictionary.ts">
+    <TypeScriptCompile Include="wwwroot\dev\TScripts\Dictionary.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="TScripts\UserActivity.ts">
+    <TypeScriptCompile Include="wwwroot\dev\TScripts\UserActivity.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </TypeScriptCompile>
   </ItemGroup>
@@ -100,11 +102,11 @@
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TypeScriptOutFile>wwwroot\dev\js\service.js</TypeScriptOutFile>
     <TypeScriptOutDir></TypeScriptOutDir>
-    <TypeScriptGeneratesDeclarations>True</TypeScriptGeneratesDeclarations>
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
     <TypeScriptSourceMap>True</TypeScriptSourceMap>
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot>D:\Projects\SchoolBus_Manager\WebManagement\TScripts</TypeScriptSourceRoot>
+    <TypeScriptMapRoot></TypeScriptMapRoot>
+    <TypeScriptSourceRoot></TypeScriptSourceRoot>
   </PropertyGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1Development_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>

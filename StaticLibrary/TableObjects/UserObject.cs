@@ -15,6 +15,7 @@ namespace WBPlatform.TableObject
         public string RealName { get; set; }
         public string Sex { get; set; }
 
+        private const string passwordHolder = "#######################";
         public UserGroup UserGroup;
 
         public string HeadImagePath { get; set; }
@@ -33,7 +34,7 @@ namespace WBPlatform.TableObject
             Password = input.GetString("Password");
             if (string.IsNullOrWhiteSpace(Password))
             {
-                Password = "#######################";
+                Password = passwordHolder;
             }
             Sex = input.GetString("Sex");
 
@@ -63,7 +64,7 @@ namespace WBPlatform.TableObject
         {
             base.WriteObject(output, all);
             output.Put("Username", UserName);
-            output.Put("Password", Password);
+            output.Put("Password", Password == passwordHolder ? null : Password);
             output.Put("Sex", Sex);
 
             //output.Put("isAdmin", UserGroup.IsAdmin);  DISABLED DUE TO SECURTY ISSUE....

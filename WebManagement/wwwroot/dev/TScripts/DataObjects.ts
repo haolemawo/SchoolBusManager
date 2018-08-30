@@ -64,7 +64,6 @@ class SchoolBusObject extends DataObject {
 
 
 class StudentObject extends DataObject {
-
     StudentName: string = "";
     BusID: string = "";
     Sex: string = "";
@@ -72,6 +71,7 @@ class StudentObject extends DataObject {
     LSChecked: boolean = false;
     CSChecked: boolean = false;
     AHChecked: boolean = false;
+    TakingBus: boolean = false;
 }
 
 class BusReportObject {

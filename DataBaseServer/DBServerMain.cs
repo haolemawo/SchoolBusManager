@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WBPlatform.StaticClasses;
+using System.Collections.Concurrent;
 
 namespace WBPlatform.Database.DBServer
 {
@@ -50,7 +51,7 @@ namespace WBPlatform.Database.DBServer
         {
             try
             {
-                Dictionary<string, string> clientConncetionQueryStrings;
+                ConcurrentDictionary<string, string> clientConncetionQueryStrings;
                 lock (DatabaseSocketsServer.QueryStrings)
                 {
                     clientConncetionQueryStrings = DatabaseSocketsServer.QueryStrings;

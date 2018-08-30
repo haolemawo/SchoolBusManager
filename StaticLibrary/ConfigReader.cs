@@ -68,13 +68,14 @@ namespace WBPlatform.Config
     public static class XConfig
     {
         public static ConfigCollection Current { get; set; } = new ConfigCollection();
-        public static LocalisedMessages Messages { get; set; } = new LocalisedMessages();
+        public static LocalisedMessages Messages { get; private set; } = new LocalisedMessages();
 
         public static bool LoadMessages(string MessageFile)
         {
             LW.I("Loading Messages....");
             if (!File.Exists(MessageFile)) return false;
-            string ConfigString = File.ReadAllText(MessageFile);
+            string ConfigString = File.ReadAllText(MessageFile, System.Text.Encoding.UTF8);
+            var m = JsonConvert.SerializeObject(Messages);
             var msg = JsonConvert.DeserializeObject<LocalisedMessages>(ConfigString);
             if (msg == null)
             {

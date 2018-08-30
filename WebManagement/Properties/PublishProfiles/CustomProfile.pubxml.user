@@ -11,16 +11,16 @@
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>08/23/2018 15:55:07</publishTime>
+      <publishTime>08/24/2018 20:30:56</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>07/31/2018 00:21:24</publishTime>
+      <publishTime>08/24/2018 20:30:51</publishTime>
     </File>
     <File Include="Bmob-Windows.dll">
       <publishTime>04/02/2017 13:24:52</publishTime>
     </File>
     <File Include="bundleconfig.json">
-      <publishTime>08/23/2018 17:05:47</publishTime>
+      <publishTime>08/27/2018 13:02:28</publishTime>
     </File>
     <File Include="Connected Services/Application Insights/ConnectedService.json">
       <publishTime>07/31/2018 00:21:24</publishTime>
@@ -131,19 +131,19 @@
       <publishTime>04/22/2018 09:30:28</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>08/24/2018 00:40:04</publishTime>
+      <publishTime>08/30/2018 22:54:14</publishTime>
     </File>
     <File Include="WebManagement.deps.json">
-      <publishTime>08/24/2018 00:40:04</publishTime>
+      <publishTime>08/30/2018 18:26:28</publishTime>
     </File>
     <File Include="WebManagement.dll">
-      <publishTime>08/24/2018 00:14:41</publishTime>
+      <publishTime>08/30/2018 18:26:21</publishTime>
     </File>
     <File Include="WebManagement.dll.config">
-      <publishTime>08/23/2018 21:13:56</publishTime>
+      <publishTime>08/30/2018 18:26:17</publishTime>
     </File>
     <File Include="WebManagement.pdb">
-      <publishTime>08/24/2018 00:14:41</publishTime>
+      <publishTime>08/30/2018 18:26:21</publishTime>
     </File>
     <File Include="WebManagement.PrecompiledViews.dll">
       <publishTime>06/11/2018 14:34:26</publishTime>
@@ -152,19 +152,19 @@
       <publishTime>06/14/2018 23:13:12</publishTime>
     </File>
     <File Include="WebManagement.runtimeconfig.json">
-      <publishTime>08/24/2018 00:40:04</publishTime>
+      <publishTime>08/30/2018 18:26:28</publishTime>
     </File>
     <File Include="WebManagement.Views.dll">
-      <publishTime>08/24/2018 00:39:29</publishTime>
+      <publishTime>08/30/2018 18:26:22</publishTime>
     </File>
     <File Include="WebManagement.Views.pdb">
-      <publishTime>08/24/2018 00:39:29</publishTime>
+      <publishTime>08/30/2018 18:26:22</publishTime>
     </File>
     <File Include="WoodenBench_Helper.dll">
-      <publishTime>08/24/2018 00:11:20</publishTime>
+      <publishTime>08/30/2018 18:26:12</publishTime>
     </File>
     <File Include="WoodenBench_Helper.pdb">
-      <publishTime>08/24/2018 00:11:20</publishTime>
+      <publishTime>08/30/2018 18:26:12</publishTime>
     </File>
     <File Include="wwwroot/Backgrounds/404-1.jpg">
       <publishTime>06/26/2018 17:27:25</publishTime>
@@ -223,6 +223,12 @@
     <File Include="wwwroot/css/ImgCodingStyles.css">
       <publishTime>06/26/2018 17:27:26</publishTime>
     </File>
+    <File Include="wwwroot/css/materialdesign.css">
+      <publishTime>08/27/2018 12:59:10</publishTime>
+    </File>
+    <File Include="wwwroot/css/pretty.css">
+      <publishTime>08/27/2018 12:46:39</publishTime>
+    </File>
     <File Include="wwwroot/css/quill.core.css">
       <publishTime>06/26/2018 17:27:26</publishTime>
     </File>
@@ -236,7 +242,7 @@
       <publishTime>06/26/2018 17:27:26</publishTime>
     </File>
     <File Include="wwwroot/css/WBWeb.min.css">
-      <publishTime>08/23/2018 21:13:58</publishTime>
+      <publishTime>08/30/2018 18:26:20</publishTime>
     </File>
     <File Include="wwwroot/dev/css/bootstrap-grid.css">
       <publishTime>07/12/2018 09:22:44</publishTime>
@@ -275,7 +281,7 @@
       <publishTime>07/12/2018 09:22:46</publishTime>
     </File>
     <File Include="wwwroot/dev/css/WBWeb.css">
-      <publishTime>07/22/2018 20:40:56</publishTime>
+      <publishTime>08/24/2018 21:04:50</publishTime>
     </File>
     <File Include="wwwroot/dev/js/Base64.js">
       <publishTime>08/10/2018 22:19:10</publishTime>
@@ -716,7 +722,7 @@
       <publishTime>07/14/2018 17:21:30</publishTime>
     </File>
     <File Include="wwwroot/dev/js/lib/bmob.js">
-      <publishTime>06/26/2018 17:27:27</publishTime>
+      <publishTime>08/28/2018 13:13:57</publishTime>
     </File>
     <File Include="wwwroot/dev/js/lib/bootstrap.bundle.js">
       <publishTime>07/14/2018 15:23:14</publishTime>
@@ -770,10 +776,10 @@
       <publishTime>08/24/2018 00:23:05</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js">
-      <publishTime>08/24/2018 00:23:05</publishTime>
+      <publishTime>08/30/2018 18:26:20</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js.map">
-      <publishTime>08/24/2018 00:23:05</publishTime>
+      <publishTime>08/30/2018 18:26:20</publishTime>
     </File>
     <File Include="wwwroot/dev/js/UserActivity.js">
       <publishTime>08/10/2018 22:19:10</publishTime>
@@ -783,6 +789,18 @@
     </File>
     <File Include="wwwroot/dev/js/WCServicesProvider.js">
       <publishTime>07/14/2018 18:32:07</publishTime>
+    </File>
+    <File Include="wwwroot/dev/TScripts/DataObjects.ts">
+      <publishTime>08/27/2018 11:03:32</publishTime>
+    </File>
+    <File Include="wwwroot/dev/TScripts/Dictionary.ts">
+      <publishTime>08/23/2018 21:06:29</publishTime>
+    </File>
+    <File Include="wwwroot/dev/TScripts/lib/cryptojs.d.ts">
+      <publishTime>08/23/2018 15:29:10</publishTime>
+    </File>
+    <File Include="wwwroot/dev/TScripts/UserActivity.ts">
+      <publishTime>08/28/2018 10:26:32</publishTime>
     </File>
     <File Include="wwwroot/favicon.ico">
       <publishTime>06/26/2018 17:27:26</publishTime>
@@ -801,6 +819,27 @@
     </File>
     <File Include="wwwroot/fonts/glyphicons-halflings-regular.woff2">
       <publishTime>06/26/2018 17:27:26</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/icomoon.eot">
+      <publishTime>03/11/2015 18:55:42</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/icomoon.svg">
+      <publishTime>03/11/2015 18:55:42</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/icomoon.ttf">
+      <publishTime>03/11/2015 18:55:42</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/icomoon.woff">
+      <publishTime>03/11/2015 18:55:42</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/materialdesignicons-webfont.ttf">
+      <publishTime>08/27/2018 13:00:54</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/materialdesignicons-webfont.woff">
+      <publishTime>08/27/2018 13:01:05</publishTime>
+    </File>
+    <File Include="wwwroot/fonts/materialdesignicons-webfont.woff2">
+      <publishTime>08/27/2018 13:01:10</publishTime>
     </File>
     <File Include="wwwroot/images/banner1.svg">
       <publishTime>06/26/2018 17:27:26</publishTime>
@@ -851,7 +890,7 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/crpto-js.min.js">
-      <publishTime>08/23/2018 21:13:58</publishTime>
+      <publishTime>08/30/2018 18:26:21</publishTime>
     </File>
     <File Include="wwwroot/js/CryptoJS/aes.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
@@ -1034,13 +1073,13 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/library.min.js">
-      <publishTime>08/23/2018 21:13:58</publishTime>
+      <publishTime>08/30/2018 18:26:20</publishTime>
     </File>
     <File Include="wwwroot/js/npm.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/service.min.js">
-      <publishTime>08/24/2018 00:39:26</publishTime>
+      <publishTime>08/30/2018 18:26:20</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>06/26/2018 17:27:27</publishTime>

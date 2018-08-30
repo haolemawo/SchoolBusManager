@@ -50,12 +50,13 @@ namespace WBPlatform.WebManagement.Controllers
             }
             return RequestIllegal(ServerAction.MyAccount_UserRegister, XConfig.Messages["TokenTimeout"]);
         }
+
         public IActionResult RequestChange()
         {
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                if (Request.HasFormContentType)
+                if (Request.Method == "POST" || Request.HasFormContentType)
                 {
                     //POST DATA
                     Microsoft.AspNetCore.Http.IFormCollection form = Request.Form;
