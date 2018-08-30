@@ -15,6 +15,7 @@ namespace WBPlatform.WebManagement.Controllers
     [Route(getQRCode)]
     public class QRCodeController : APIController
     {
+        [HttpGet]
         public void Get(string Data)
         {
             if (ValidateSession())

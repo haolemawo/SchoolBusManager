@@ -190,6 +190,7 @@
                 if (!proc) {
                     proc = true;
                     $.ajax({
+                        headers: { "X-WoodenBench-Protection": wbWeb.Network.XTag },
                         url: location.protocol + "//" + location.host + "/api/admin/ProcessUserRequest?"+
                         "reqId=" + reqId + "&mode=" + request + "&detail=" + detail,
                         type: 'GET',
