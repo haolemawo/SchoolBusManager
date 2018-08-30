@@ -7,7 +7,7 @@
             <img id="UserHImg" src="#" width="64" height="64" alt="" />
         </div>
         <div class="col">
-            <h5 id="UserID">加载中...</h5>
+            <h5 id="UserID">@XConfig.Messages["LoadingData"]</h5>
             <h6 id="BusDirection"></h6>
         </div>
     </div>
@@ -26,8 +26,8 @@
     <hr>
 
     <div class="container">
-        <p>以下数据将每20秒刷新一次：</p>
-        <p id="TimeoutLabel">刷新时间：20</p>
+        <p>@XConfig.Messages["DataBelowRefreshedIn20Sec"]</p>
+        <p id="TimeoutLabel">@XConfig.Messages["RefreshTime"]20</p>
         <p id="ExpNumber">校车总人数: 加载中...</p>
         <p id="AHChecked">到家确认人数: 加载中...</p>
     </div>
@@ -36,7 +36,6 @@
     </div>
 </div>
 <script>
-    {
         var CurrentUser = JSON.parse(decodeURI("@Uri.EscapeUriString((string)ViewData["cUser"])"));
         var CurrentBus;
         var TOut = 0;
@@ -45,6 +44,7 @@
         MotherFunction();
 
         document.getElementById("UserID").innerHTML = "你好，" + CurrentUser.RealName;
+        document.getElementById("UserID").innerHTML = @XConfig.Messages["HelloWithComma"] + CurrentUser.RealName;
         $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + CurrentUser.HeadImagePath);
 
         function MotherFunction()
@@ -88,5 +88,4 @@
             $("#GenCode").remove();
             $("#hints").removeAttr("hidden");
         }
-    }
 </script>

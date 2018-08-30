@@ -7,43 +7,43 @@
             <img id="UserHImg" src="#" width="64" height="64" alt="" />
         </div>
         <div class="col">
-            <h5 id="UserID">加载中...</h5>
+            <h5 id="UserID">@XConfig.Messages["LoadingData"]</h5>
             <h6 id="BusDirection"></h6>
         </div>
     </div>
     <hr />
     <div class="container">
-        <p id="ExpNumber">校车总人数: 加载中...</p>
-        <p id="LSChecked">离校上车人数: 加载中...</p>
-        <p id="AHChecked">到家确认人数: 加载中...</p>
-        <p id="CSChecked">返校上车人数: 加载中...</p>
+        <p id="ExpNumber">@Html.Raw(XConfig.Messages["TotalStudents"] + XConfig.Messages["LoadingData"])</p>
+        <p id="LSChecked">@XConfig.Messages["LSSignCount"]  @XConfig.Messages["LoadingData"]</p>
+        <p id="AHChecked">@XConfig.Messages["CHSignCount"]  @XConfig.Messages["LoadingData"]</p>
+        <p id="CSChecked">@XConfig.Messages["CSSignCount"]  @XConfig.Messages["LoadingData"]</p>
         <hr />
     </div>
 
     <!--This is Function Choosing Part-->
-    <p class="container">请选择功能：</p>
+    <p class="container">@XConfig.Messages["PleaseChooseFunctions"]</p>
     <div class="container">
         <div class="row">
             <div class="col">
-                <button class="btn btn-sm btn-success full-width" onClick="SignStudents('LS');">离校签到</button>
+                <button class="btn btn-sm btn-success full-width" onClick="SignStudents('LS');">@XConfig.Messages["LSSigning"]</button>
             </div>
             <div class="col">
-                <button class="btn btn-sm btn-info full-width" onClick="location.href='/BusManager/ArriveHomeScan'">到家确认扫码</button>
+                <button class="btn btn-sm btn-info full-width" onClick="location.href='/BusManager/ArriveHomeScan'">@XConfig.Messages["AHScanCode"]</button>
             </div>
         </div>
         <br />
         <div class="row">
             <div class="col">
-                <button class="btn btn-sm btn-warning full-width" onClick="SignStudents('CS');">返校签到</button>
+                <button class="btn btn-sm btn-warning full-width" onClick="SignStudents('CS');">@XConfig.Messages["CHSigning"]</button>
             </div>
             <div class="col">
-                <button class="btn btn-sm btn-danger full-width" onClick="SignStudents('CD');">修改数据</button>
+                <button class="btn btn-sm btn-danger full-width" onClick="SignStudents('CD');">@XConfig.Messages["ChangeData"]</button>
             </div>
         </div><br />
         <hr />
         <div class="container">
-            <p>汇报情况</p>
-            <button class="btn btn-outline-danger full-width" onclick="location.href = '/BusManager/WeekIssue'">汇报突发情况</button>
+            <p>@XConfig.Messages["UrgentSituationReport"]</p>
+            <button class="btn btn-outline-danger full-width" onclick="location.href = '/BusManager/WeekIssue'">@XConfig.Messages["UrgentSituationReport"]</button>
         </div>
         <br />
     </div>

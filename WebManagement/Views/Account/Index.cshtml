@@ -9,21 +9,21 @@
             <img id="UserHImg" src="#" width="64" height="64" alt="" />
         </div>
         <div class="col">
-            <h5 id="UserID">加载中...</h5>
-            <h6>查看我的用户信息</h6>
+            <h5 id="UserID">@XConfig.Messages["LoadingData"]</h5>
+            <h6>@XConfig.Messages["ViewMyUserData"]</h6>
         </div>
     </div>
     <hr />
     <div class="container">
-        <label>用户名：</label>@Model.UserName<br />
-        <label>用户ID：</label>@Model.ObjectId<br />
-        <label>真实姓名：</label>@Model.RealName<br />
-        <label>性别：</label>@(Model.Sex == "M" ? "男" : "女")<br />
-        <label>手机号码：</label>@Model.PhoneNumber<br />
-        <label>已经设置密码：</label>@(string.IsNullOrEmpty(Model.Password) ? "否❌" : "是✔")<br />
+        <label>@XConfig.Messages["UserName"]</label>@Model.UserName<br />
+        <label>@XConfig.Messages["UserID"]</label>@Model.ObjectId<br />
+        <label>@XConfig.Messages["RealName"]</label>@Model.RealName<br />
+        <label>@XConfig.Messages["Sex"]</label>@(Model.Sex == "M" ? "男" : "女")<br />
+        <label>@XConfig.Messages["PhoneNumber"]</label>@Model.PhoneNumber<br />
+        <label>@XConfig.Messages["PasswordSet"]</label>@(string.IsNullOrEmpty(Model.Password) ? XConfig.Messages["NoWithCross"] : XConfig.Messages["YesWithTick"])<br />
         @if (string.IsNullOrEmpty(Model.Password))
         {
-            <button class="btn btn-default btn-sm" onclick="jump(@(string.IsNullOrEmpty(Model.Password).ToString().ToLower()))">设置密码</button> <br /><br />
+            <button class="btn btn-default btn-sm" onclick="jump(@(string.IsNullOrEmpty(Model.Password).ToString().ToLower()))">@XConfig.Messages["SetMyPassword"]</button> <br /><br />
             <script>
             function jump(isCreate) {
                 $.ajax({
