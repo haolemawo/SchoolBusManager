@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "小板凳校车管理平台 - 服务状态";
+    ViewData["Title"] = "小板凳班车管理平台 - 服务状态";
     Dictionary<string, object> status = (Dictionary<string, object>)ViewData["parsedMsg"];
     bool SessionThread = (bool)status["SessionThread"];
     bool WeChatRCVDThreadStatus = (bool)status["WeChatRCVDThreadStatus"];
@@ -9,7 +9,7 @@
     bool isWorking = SessionThread && WeChatRCVDThreadStatus && WeChatSENTThreadStatus && CoreMessageSystemThread && MessageBackupThread;
 }
 <br />
-<h4>小板凳校车管理平台 - 服务状态</h4>
+<h4>小板凳班车管理平台 - 服务状态</h4>
 <div class="container">
     <label>整体状态</label>
     <p style="font-size: 20px;font-weight: bold" class="text-center text-@(isWorking?"success":"danger")">@(isWorking ? "工作正常✔" : "出现问题❌")</p>

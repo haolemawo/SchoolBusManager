@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WBPlatform.StaticClasses;
@@ -37,7 +39,7 @@ namespace WBPlatform.Logging
 
         public static void InitLog()
         {
-            LogFilePath = Environment.CurrentDirectory + "\\Logs\\" + DateTime.Now.ToNormalString().Replace(':', '-') + ".log";
+            LogFilePath = Environment.CurrentDirectory + "\\Logs\\" + DateTime.Now.ToFileNameString() + ".log";
             Directory.CreateDirectory(Environment.CurrentDirectory + "\\Logs\\");
             Fs = File.CreateText(LogFilePath);
             Fs.AutoFlush = true;
@@ -75,10 +77,26 @@ namespace WBPlatform.Logging
             OnLog?.Invoke(LogEvent, null);
         }
 
-        public static void D(string Message) => WriteLog(LogLevel.D, Message);
-        public static void I(string Message) => WriteLog(LogLevel.I, Message);
-        public static void W(string Message) => WriteLog(LogLevel.W, Message);
-        public static void E(string Message) => WriteLog(LogLevel.E, Message);
+        private static string GetCallerClassName => new StackTrace().GetFrame(2).GetMethod().ReflectedType.Name;
+        public static void D(string Message, [CallerMemberName] string memberName = "")
+        {
+            WriteLog(LogLevel.D, GetCallerClassName + "::" + memberName + "\t" + Message);
+        }
+
+        public static void I(string Message, string Operation = "", [CallerMemberName] string memberName = "")
+        {
+            WriteLog(LogLevel.I, GetCallerClassName + "::" + memberName + "\t" + Message);
+        }
+
+        public static void W(string Message, string Operation = "", [CallerMemberName] string memberName = "")
+        {
+            WriteLog(LogLevel.W, GetCallerClassName + "::" + memberName + "\t" + Message);
+        }
+
+        public static void E(string Message, string Operation = "", [CallerMemberName] string memberName = "")
+        {
+            WriteLog(LogLevel.E, GetCallerClassName + "::" + memberName + "\t" + Message);
+        }
     }
     #region Log Level
     /// <summary>

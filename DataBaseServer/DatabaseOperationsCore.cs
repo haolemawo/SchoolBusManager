@@ -60,7 +60,7 @@ namespace WBPlatform.Database.DBServer
                         break;
 
                     case DBVerbs.QuerySingle:
-                    ///There shouldn't be QuerySingle... <see cref="DataBaseOperation.QueryMultipleData{T}(DBQuery, out List{T}, int, int)"/> 
+                    ///There shouldn't be QuerySingle... <see cref="DataBaseOperation.QueryMultiple{T}(DBQuery, out List{T}, int, int)"/> 
                     case DBVerbs.QueryMulti:
                         var results = SQLQueryCommand(BuildQueryString(request.TableName, request.Query));
                         rowModified = results.Length;

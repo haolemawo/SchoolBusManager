@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+
+using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using WBPlatform.Logging;
-using Microsoft.AspNetCore;
-using WBPlatform.Config;
-using Microsoft.AspNetCore.Hosting;
 
+using WBPlatform.Config;
 using WBPlatform.Database;
-using WBPlatform.StaticClasses;
+using WBPlatform.Logging;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement
@@ -50,7 +49,6 @@ namespace WBPlatform.WebManagement
 
             var webHost = BuildWebHost(XConfig.Current.ApplicationInsightInstrumentationKey, args);
             LW.I("Starting WebHost....");
-
             WebServerTask = webHost.RunAsync(ServerStopToken.Token);
             WebServerTask.Wait();
             LW.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);

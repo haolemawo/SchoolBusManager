@@ -49,6 +49,12 @@ var SignStudentData = (function () {
     }
     return SignStudentData;
 }());
+var PureMessageData = (function () {
+    function PureMessageData() {
+        this.Message = "";
+    }
+    return PureMessageData;
+}());
 var DataObject = (function () {
     function DataObject() {
         this.CreatedAt = "";
@@ -113,6 +119,7 @@ var StudentObject = (function (_super) {
         _this.CSChecked = false;
         _this.AHChecked = false;
         _this.TakingBus = false;
+        _this.DirectGoHome = false;
         return _this;
     }
     return StudentObject;
@@ -168,29 +175,24 @@ var TSDictionary = (function () {
     };
     return TSDictionary;
 }());
-String.prototype.format = function (args) {
-    var result = this;
-    if (arguments.length > 0) {
-        if (arguments.length == 1 && typeof (args) == "object") {
-            for (var key in args) {
-                if (args[key] != undefined) {
-                    var reg = new RegExp("({" + key + "})", "g");
-                    result = result.replace(reg, args[key]);
-                }
-            }
-        }
-        else {
-            for (var i = 0; i < arguments.length; i++) {
-                if (arguments[i] != undefined) {
-                    var reg = new RegExp("({)" + i + "(})", "g");
-                    result = result.replace(reg, arguments[i]);
-                }
+String.prototype.format = function (args) { var result = this; if (arguments.length > 0) {
+    if (arguments.length == 1 && typeof (args) == "object") {
+        for (var key in args) {
+            if (args[key] != undefined) {
+                var reg = new RegExp("({" + key + "})", "g");
+                result = result.replace(reg, args[key]);
             }
         }
     }
-    return result;
-};
-function CreateInstance(c) { return new c(); }
+    else {
+        for (var i = 0; i < arguments.length; i++) {
+            if (arguments[i] != undefined) {
+                var reg = new RegExp("({)" + i + "(})", "g");
+                result = result.replace(reg, arguments[i]);
+            }
+        }
+    }
+} return result; };
 function deserialize(json, instance) {
     for (var prop in json) {
         if (!json.hasOwnProperty(prop))
@@ -205,7 +207,7 @@ var ResultData = (function () {
     function ResultData(data) {
         this.ErrCode = 0;
         this.ErrMessage = "";
-        this.Data = CreateInstance(data);
+        this.Data = new data();
     }
     return ResultData;
 }());
@@ -231,7 +233,7 @@ var Networking = (function () {
         $.extend(result, _result);
         if (result.ErrCode == 0)
             return result.Data;
-        console.warn("API Call At " + URL + " has an ResultCode=" + result.ErrCode);
+        console.warn("API Call At " + URL + " ResultCode=" + result.ErrCode);
         console.warn(result);
     };
     return Networking;
@@ -239,12 +241,9 @@ var Networking = (function () {
 var WoodenBenchWeb = (function () {
     function WoodenBenchWeb() {
         this.CurrentUser = new UserObject();
-        this.ApiTicket = "";
-        this.Session = getCookie("Session");
-        this.Network = new Networking("");
-        this.Config = new TSDictionary([""], [""]);
     }
     WoodenBenchWeb.prototype.Initialise = function (UserConfig, APITicket, RouteKey, RouteValue) {
+        this.Session = getCookie("Session");
         this.ApiTicket = APITicket;
         this.Config = new TSDictionary(RouteKey, RouteValue);
         this.Network = new Networking(CryptoJS.SHA384("{0}:{1}:{2}".format(this.Session, this.ApiTicket, window.navigator.userAgent)).toString());
@@ -260,25 +259,17 @@ var WoodenBenchWeb = (function () {
     WoodenBenchWeb.prototype.GetClassStudents = function (ClassID) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetClassStudents").format(ClassID, this.CurrentUser.ObjectId)); };
     WoodenBenchWeb.prototype.GetMyChild = function () { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetMyChildren").format(this.CurrentUser.ObjectId)); };
     WoodenBenchWeb.prototype.SetStudentState = function (StudentID, State) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); };
+    WoodenBenchWeb.prototype.GenerateReport = function (scope) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_GenerateReport").format(scope)).Message; };
+    WoodenBenchWeb.prototype.NewWeekRecord = function () { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_NewWeek")).Message; };
     return WoodenBenchWeb;
 }());
-function randomString(len) {
-    len = len || 16;
-    var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
-    var maxPos = $chars.length;
-    var pwd = "";
-    for (var i = 0; i < len; i++) {
-        pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
-    }
-    return pwd;
-}
+var wbWeb = new WoodenBenchWeb();
 function setCookie(name, value) {
     var TimeMins = 40;
     var exp = new Date();
     exp.setTime(exp.getTime() + TimeMins * 60 * 1000);
     document.cookie = name + "=" + escape(value) + ";expires=" + exp.toUTCString() + ";path=/";
 }
-var wbWeb = new WoodenBenchWeb();
 function getCookie(name) {
     var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
     if (arr = document.cookie.match(reg))

@@ -15,7 +15,7 @@
     <div id="codeArea">
         <div id="hints" hidden>
             <p>提醒：</p>
-            <p>你可以打印出以下图片，并放到校车挡风玻璃或其他</p>
+            <p>你可以打印出以下图片，并放到班车挡风玻璃或其他</p>
             <p>醒目位置，并提醒家长及时扫码确认学生到家。</p>
             <br />
         </div>
@@ -28,7 +28,7 @@
     <div class="container">
         <p>以下数据将每20秒刷新一次：</p>
         <p id="TimeoutLabel">刷新时间：20</p>
-        <p id="ExpNumber">校车总人数: 加载中...</p>
+        <p id="ExpNumber">班车总人数: 加载中...</p>
         <p id="AHChecked">到家确认人数: 加载中...</p>
     </div>
     <div class="text-center container">
@@ -58,7 +58,7 @@
         $("#TimeoutLabel").text("刷新时间：" + TOut);
         if (TOut === 0) {
             $("#TimeoutLabel").text("刷新时间：正在刷新");
-            $("#ExpNumber").text("校车总人数: 加载中...");
+            $("#ExpNumber").text("班车总人数: 加载中...");
             $("#AHChecked").text("到家确认人数: 加载中...");
             CurrentBus = wbWeb.GetMgmtBus();
             showData();
@@ -68,9 +68,9 @@
     }
     function showData() {
         //setCookie("CBusID", CurrentBus.BusID);
-        $("#ExpNumber").text("校车总人数: " + CurrentBus.Total);
+        $("#ExpNumber").text("班车总人数: " + CurrentBus.Total);
         $("#AHChecked").text("到家确认人数: " + CurrentBus.AHChecked);
-        $("#BusDirection").text("我的校车: " + CurrentBus.Bus.BusName);
+        $("#BusDirection").text("我的班车: " + CurrentBus.Bus.BusName);
         $("#GenCode").removeAttr("hidden");
     }
 

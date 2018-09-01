@@ -9,7 +9,7 @@ namespace WBPlatform.TableObject
 {
     public class UserObject : DataTableObject<UserObject>
     {
-        public override string Table => WBConsts.TABLE_Gen_UserTable;
+        public override string Table => TABLE_Gen_UserTable;
         public string UserName { get; set; }
         public string Password { get; set; }
         public string RealName { get; set; }

@@ -14,7 +14,7 @@
     <div class="container">
         <hr />
         <p>我的班级：@ViewData["ClassName"].ToString()</p>
-        <p id="totalNum">坐校车学生人数：正在加载</p>
+        <p id="totalNum">坐班车学生人数：正在加载</p>
     </div>
     <table id="StudentIDs" class="tftable">
         <thead>
@@ -23,7 +23,7 @@
                 <th>离校</th>
                 <th>到家</th>
                 <th>返校</th>
-                <th>坐校车</th>
+                <th>坐班车</th>
             </tr>
         </thead>
     </table>
@@ -45,7 +45,7 @@
     var ClassID = "@Html.Raw(ViewData["ClassID"])"
     var data = wbWeb.GetClassStudents(ClassID);
 
-    $("#totalNum").text("坐校车学生人数：" + data.Count + "人");
+    $("#totalNum").text("坐班车学生人数：" + data.Count + "人");
     for (var i = 0; i < data.Count; i++) {
         var TMP = data.StudentList[i];
         var Came = TMP.CHChecked;

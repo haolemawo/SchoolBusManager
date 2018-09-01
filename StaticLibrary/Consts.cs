@@ -4,23 +4,9 @@ using System.Reflection;
 
 namespace WBPlatform.StaticClasses
 {
-
     public static partial class WBConsts
     {
-        public static string CurrentCoreVersion => new FileInfo(new string(Assembly.GetExecutingAssembly().CodeBase.Skip(8).ToArray())).LastWriteTime.ToString();
-
-        public const string TABLE_Mgr_StuData = "StudentsData";
-        public const string TABLE_Mgr_Classes = "Classes";
-        public const string TABLE_Mgr_BusData = "SchoolBuses";
-        public const string TABLE_Mgr_WeekIssue = "WeeklyIssues";
-
-        public const string TABLE_Gen_UserTable = "AllUsersTable";
-        public const string TABLE_Gen_General = "GeneralData";
-        public const string TABLE_Gen_Bugreport = "UserQuestions";
-
-        public const string TABLE_Gen_Notification = "Notifications";
-        public const string TABLE_Gen_UserRequest = "UserRequest";
-
+        public static string CoreVersion => new FileInfo(new string(Assembly.GetExecutingAssembly().CodeBase.Skip(8).ToArray())).LastWriteTime.ToString();
     }
 
     public enum UserChangeRequestTypes
@@ -29,9 +15,15 @@ namespace WBPlatform.StaticClasses
         手机号码 = 1,
         班级 = 2,
         孩子 = 3,
-        校车 = 4
+        班车 = 4
     }
-    
+
+    public enum DirectGoHomeMode
+    {
+        NotSet = 0,
+        DirectlyGoHome = 1,
+        NeedParentsSign = 2
+    }
 
     public enum NotificationType
     {

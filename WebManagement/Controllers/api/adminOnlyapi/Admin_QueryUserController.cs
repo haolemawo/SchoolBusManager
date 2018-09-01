@@ -35,7 +35,7 @@ namespace WBPlatform.WebManagement.Controllers
                     }
                     else return RequestIllegal;
 
-                    if (DataBaseOperation.QueryMultipleData(query, out List<UserObject> users) >= 0)
+                    if (DataBaseOperation.QueryMultiple(query, out List<UserObject> users) >= 0)
                     {
                         dict.Add("count", users.Count.ToString());
                         for (int i = 0; i < users.Count; i++)

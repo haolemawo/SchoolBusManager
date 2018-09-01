@@ -100,7 +100,7 @@ namespace WBPlatform.WebManagement.Controllers
                     return null;
                 }
                 string WeiXinID = JSON["UserId"];
-                switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("Username", WeiXinID), out UserObject User))
+                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("Username", WeiXinID), out UserObject User))
                 {
                     //Internal Error...
                     case DBQueryStatus.INTERNAL_ERROR:

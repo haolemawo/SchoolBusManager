@@ -10,7 +10,7 @@ namespace WBPlatform.TableObject
         public BusReportTypeE ReportType { get; set; }
         public string OtherData { get; set; }
         
-        public override string Table => WBConsts.TABLE_Mgr_WeekIssue;
+        public override string Table => TABLE_Mgr_WeekIssue;
         
         public override void ReadFields(DataBaseIO input)
         {

@@ -56,6 +56,9 @@ namespace WBPlatform.WebManagement.Tools
                 case WeChatSMsg.textcard:
                     Message = Message + $"{{\"title\":\"{Title}\",\"description\":\"{Content}\",\"url\":\"{URL}\"}}";
                     break;
+                case WeChatSMsg.file:
+                    Message = Message + $"{{\"media_id\":\"{Content}\"}}";
+                    break;
             }
             Message = Message + "}";
             LW.I("WeChat Message Sent: " + Message);

@@ -46,7 +46,7 @@ namespace Debug_Tool
 
             SchoolBusObject bo = new SchoolBusObject()
             {
-                BusName = "校车方向1",
+                BusName = "班车方向1",
                 TeacherID = me.ObjectId
             };
             LW.D(DataBaseOperation.CreateData(ref bo).ToString());

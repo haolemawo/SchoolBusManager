@@ -75,7 +75,7 @@ namespace WBPlatform.WebManagement.Tools
                                         "这是当前版本信息: \r\n" +
                                         "启动の时间: " + Program.StartUpTime.ToString() + "\r\n\r\n" +
                                         "服务端版本: " + Program.Version + "\r\n" +
-                                        "核心库版本: " + WBConsts.CurrentCoreVersion + "\r\n" +
+                                        "核心库版本: " + WBConsts.CoreVersion + "\r\n" +
                                         "运行时版本: " + Assembly.GetCallingAssembly().ImageRuntimeVersion + "\r\n\r\n=点击查看系统状态>>", XConfig.Current.StatusPageAddress);
                                 default:
                                     LW.E("Recieved Not Supported :::Wechat Event Click::: Key " + Message.EventKey);
@@ -88,7 +88,7 @@ namespace WBPlatform.WebManagement.Tools
                             var time = Message.RecievedTime;
                             var toUser = Message.FromUser;
                             LW.I($"WeChatMessageResp: Recieved Location: {Latitude}:{Longitude}%{Precision}@{time} form {toUser}");
-                            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("Username", toUser), out UserObject _user) == DBQueryStatus.ONE_RESULT)
+                            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("Username", toUser), out UserObject _user) == DBQueryStatus.ONE_RESULT)
                             {
                                 _user.CurrentPoint = Message.Location;
                                 _user.Precision = Precision;

@@ -17,7 +17,7 @@ namespace WBPlatform.TableObject
         public bool LSChecked { get; set; }
 
         public SchoolBusObject() { }
-        public override string Table => WBConsts.TABLE_Mgr_BusData;
+        public override string Table => TABLE_Mgr_BusData;
 
         public override void ReadFields(DataBaseIO input)
         {

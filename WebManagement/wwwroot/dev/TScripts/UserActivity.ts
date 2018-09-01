@@ -1,24 +1,13 @@
-
 /// <reference path="./lib/cryptojs.d.ts" />
 /// <reference path="C:\\Users\\lhy20\\AppData\\Local\\Microsoft\\TypeScript\\3.0\\node_modules\\@types\\jquery\\index.d.ts" />
 /// <reference path="./DataObjects.ts" />
 /// <reference path="./Dictionary.ts" />
 
 "use strict";
-
 interface String {
     format(...args: any[]): string;
 }
-String.prototype.format = function (args: any): string {
-    var result = this;
-    if (arguments.length > 0) {
-        if (arguments.length == 1 && typeof (args) == "object") { for (var key in args) { if (args[key] != undefined) { var reg = new RegExp("({" + key + "})", "g"); result = result.replace(reg, args[key]); } } }
-        else { for (var i = 0; i < arguments.length; i++) { if (arguments[i] != undefined) { var reg = new RegExp("({)" + i + "(})", "g"); result = result.replace(reg, arguments[i]); } } }
-    }
-    return result;
-}
-
-function CreateInstance<T>(c: { new(): T; }): T { return new c(); }
+String.prototype.format = function (args: any): string { var result = this; if (arguments.length > 0) { if (arguments.length == 1 && typeof (args) == "object") { for (var key in args) { if (args[key] != undefined) { var reg = new RegExp("({" + key + "})", "g"); result = result.replace(reg, args[key]); } } } else { for (var i = 0; i < arguments.length; i++) { if (arguments[i] != undefined) { var reg = new RegExp("({)" + i + "(})", "g"); result = result.replace(reg, arguments[i]); } } } } return result; }
 
 function deserialize(json: any, instance: any) {
     for (var prop in json) {
@@ -29,7 +18,7 @@ function deserialize(json: any, instance: any) {
 }
 
 class ResultData<T>{
-    constructor(data: { new(): T }) { this.Data = CreateInstance(data); }
+    constructor(data: { new(): T }) { this.Data = new data(); }
     ErrCode: number = 0;
     ErrMessage: string = "";
     Data: T;
@@ -55,7 +44,7 @@ class Networking {
         //deserialize(_result, result);
         $.extend(result, _result);
         if (result.ErrCode == 0) return result.Data;
-        console.warn("API Call At " + URL + " has an ResultCode=" + result.ErrCode);
+        console.warn("API Call At " + URL + " ResultCode=" + result.ErrCode);
         console.warn(result);
     }
     //AjaxPost(URL: string, POSTData: any, CallBack: Function): void {
@@ -71,12 +60,13 @@ class Networking {
 
 class WoodenBenchWeb {
     CurrentUser: UserObject = new UserObject();
-    private ApiTicket: string = "";
-    private Session: string = getCookie("Session");
-    private Network: Networking = new Networking("");
-    private Config: TSDictionary<string, string> = new TSDictionary([""], [""]);
+    private ApiTicket: string;
+    private Session: string;
+    private Network: Networking;
+    private Config: TSDictionary<string, string>;
 
     Initialise(UserConfig: any, APITicket: string, RouteKey: string[], RouteValue: string[]) {
+        this.Session = getCookie("Session");
         this.ApiTicket = APITicket;
         this.Config = new TSDictionary<string, string>(RouteKey, RouteValue);
         this.Network = new Networking(CryptoJS.SHA384("{0}:{1}:{2}".format(this.Session, this.ApiTicket, window.navigator.userAgent)).toString());
@@ -92,17 +82,20 @@ class WoodenBenchWeb {
     GetClassStudents(ClassID: string): GetStudentsData { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetClassStudents").format(ClassID, this.CurrentUser.ObjectId)); }
     GetMyChild(): GetStudentsData { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetMyChildren").format(this.CurrentUser.ObjectId)); }
     SetStudentState(StudentID: string, State: boolean): SignStudentData { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); }
+    GenerateReport(scope: string): string { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_GenerateReport").format(scope)).Message; }
+    NewWeekRecord(): string { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_NewWeek")).Message; }
     //ProsessUCR()
 }
+var wbWeb = new WoodenBenchWeb();
 
-function randomString(len: number) {
-    len = len || 16;
-    var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
-    var maxPos = $chars.length;
-    var pwd = "";
-    for (var i = 0; i < len; i++) { pwd += $chars.charAt(Math.floor(Math.random() * maxPos)); }
-    return pwd;
-}
+//function randomString(len: number) {
+//    len = len || 16;
+//    var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+//    var maxPos = $chars.length;
+//    var pwd = "";
+//    for (var i = 0; i < len; i++) { pwd += $chars.charAt(Math.floor(Math.random() * maxPos)); }
+//    return pwd;
+//}
 
 function setCookie(name: string, value: string): void {
     var TimeMins = 40;
@@ -111,7 +104,6 @@ function setCookie(name: string, value: string): void {
     document.cookie = name + "=" + escape(value) + ";expires=" + exp.toUTCString() + ";path=/";
 }
 
-var wbWeb = new WoodenBenchWeb();
 function getCookie(name: string): string {
     var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
     if (arr = document.cookie.match(reg)) return unescape(arr[2]);

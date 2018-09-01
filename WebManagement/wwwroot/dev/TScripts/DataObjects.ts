@@ -26,6 +26,10 @@ class SignStudentData {
     SignResult: boolean = false;
 }
 
+class PureMessageData {
+    Message: string = "";
+}
+
 abstract class DataObject {
     CreatedAt: string = "";
     UpdatedAt: string = "";
@@ -72,6 +76,7 @@ class StudentObject extends DataObject {
     CSChecked: boolean = false;
     AHChecked: boolean = false;
     TakingBus: boolean = false;
+    DirectGoHome: boolean = false;
 }
 
 class BusReportObject {

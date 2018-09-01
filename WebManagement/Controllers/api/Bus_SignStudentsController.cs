@@ -23,7 +23,7 @@ namespace WBPlatform.WebManagement.Controllers
             string[] DataCollection = str.Split(';');
             if (DataCollection.Length != 4) return RequestIllegal;
 
-            switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", BusID).WhereEqualTo("TeacherObjectID", DataCollection[2]), out SchoolBusObject Bus))
+            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", BusID).WhereEqualTo("TeacherObjectID", DataCollection[2]), out SchoolBusObject Bus))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 case DBQueryStatus.NO_RESULTS: return DataBaseError;
@@ -32,7 +32,7 @@ namespace WBPlatform.WebManagement.Controllers
                     DBQuery _stuQuery = new DBQuery();
                     _stuQuery.WhereEqualTo("objectId", StudentID);
                     _stuQuery.WhereEqualTo("BusID", BusID);
-                    switch (DataBaseOperation.QuerySingleData(_stuQuery, out StudentObject Student))
+                    switch (DataBaseOperation.QuerySingle(_stuQuery, out StudentObject Student))
                     {
                         case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                         case DBQueryStatus.NO_RESULTS: return DataBaseError;

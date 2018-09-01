@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "校车管理";
+    ViewData["Title"] = "班车管理";
 }
 <div class="container">
     <div class="container row">
@@ -13,10 +13,10 @@
     </div>
     <hr />
     <div class="container">
-        <p id="ExpNumber">校车总人数: 加载中...</p>
+        <p id="ExpNumber">班车总人数: 加载中...</p>
         <p id="LSChecked">离校上车人数: 加载中...</p>
         <p id="AHChecked">到家确认人数: 加载中...</p>
-        <p id="CSChecked">返校上车人数: 加载中...</p>
+        <p id="CSChecked">班车上车人数: 加载中...</p>
         <hr />
     </div>
 
@@ -59,8 +59,8 @@
         
         currentBus = wbWeb.GetMgmtBus();
         setCookie("CBusID", currentBus.Bus.ObjectId);
-        $("#BusDirection").text("我的校车: " + currentBus.Bus.BusName);
-        $("#ExpNumber").text("校车总人数: " + currentBus.Total + "人");
+        $("#BusDirection").text("班车班车: " + currentBus.Bus.BusName);
+        $("#ExpNumber").text("班车总人数: " + currentBus.Total + "人");
         $("#LSChecked").text("离校上车人数: " + currentBus.LSChecked + "人");
         $("#AHChecked").text("到家确认人数: " + currentBus.AHChecked + "人");
         $("#CSChecked").text("返校上车人数: " + currentBus.CSChecked + "人");

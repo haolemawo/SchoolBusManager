@@ -17,7 +17,7 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (CurrentUser.UserGroup.IsClassTeacher && CurrentUser.ClassList.Count > 0)
                 {
-                    switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", CurrentUser.ClassList[0]), out ClassObject myClass))
+                    switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", CurrentUser.ClassList[0]), out ClassObject myClass))
                     {
                         case DBQueryStatus.INTERNAL_ERROR: return DatabaseError(ServerAction.MyClass_Index, XConfig.Messages.InternalDataBaseError);
                         case DBQueryStatus.NO_RESULTS: return NotFoundError(ServerAction.MyClass_Index, XConfig.Messages["ClassNotFound"]);

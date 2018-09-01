@@ -18,16 +18,16 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (CurrentUser.ObjectId == UserID && CurrentUser.UserGroup.IsBusManager)//&& SessionUser.UserGroup.BusID == BusID
                 {
-                    switch (DataBaseOperation.QueryMultipleData(new DBQuery().WhereEqualTo("TeacherObjectID", UserID), out List<SchoolBusObject> BusList))
+                    switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("TeacherObjectID", UserID), out List<SchoolBusObject> BusList))
                     {
                         case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                         default:
                             if (BusList.Count == 0)
                             {
-                                BusList.Add(new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到校车", TeacherID = CurrentUser.ObjectId });
+                                BusList.Add(new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到班车", TeacherID = CurrentUser.ObjectId });
                             }
                             int _LSChecked = 0, _CSChecked = 0, _AHChecked = 0;
-                            switch (DataBaseOperation.QueryMultipleData(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId), out List<StudentObject> StudentList))
+                            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId), out List<StudentObject> StudentList))
                             {
                                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                                 default:

@@ -47,7 +47,7 @@
         <label>用户权限分配：</label>
         <div class="container">
             <label>家长：</label>@(Model.UserGroup.IsParent ? "是✔" : "否❌")<br />
-            <label>校车老师：</label>@(Model.UserGroup.IsBusManager ? "是✔" : "否❌")<br />
+                                                                       <label>班车老师：</label>@(Model.UserGroup.IsBusManager ? "是✔" : "否❌")<br />
             <label>班主任：</label>@(Model.UserGroup.IsClassTeacher ? "是✔" : "否❌")<br />
             <label>系统管理员：</label>@(Model.UserGroup.IsAdmin ? "是✔" : "否❌")<br />
         </div>

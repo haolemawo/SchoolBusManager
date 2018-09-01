@@ -21,9 +21,9 @@ namespace WBPlatform.WebManagement.Controllers
             DBQuery BusQuery = new DBQuery();
             BusQuery.WhereEqualTo("objectId", BusID);
             BusQuery.WhereEqualTo("TeacherObjectID", TeacherID);
-            if (DataBaseOperation.QueryMultipleData(BusQuery, out List<SchoolBusObject> BusList) != DBQueryStatus.ONE_RESULT) return InternalError;
+            if (DataBaseOperation.QueryMultiple(BusQuery, out List<SchoolBusObject> BusList) != DBQueryStatus.ONE_RESULT) return InternalError;
 
-            switch (DataBaseOperation.QueryMultipleData(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId), out List<StudentObject> StudentList))
+            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId), out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return DataBaseError;
                 case DBQueryStatus.INJECTION_DETECTED: return RequestIllegal;

@@ -98,5 +98,5 @@ namespace WBPlatform.StaticClasses
             mergedPackage.AddRange(arrClientSendMsg);
             return mergedPackage.ToArray();
         }
-   }
+    }
 }

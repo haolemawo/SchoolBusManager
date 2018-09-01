@@ -47,7 +47,7 @@ namespace WBPlatform.WebManagement.Tools
                 status.Add("MessageBackupCount", WeChatMessageBackupService.GetCount);
                 status.Add("StartupTime", Program.StartUpTime.ToString());
                 status.Add("ServerVer", Program.Version);
-                status.Add("CoreLibVer", WBConsts.CurrentCoreVersion);
+                status.Add("CoreLibVer", WBConsts.CoreVersion);
                 status.Add("NetCoreCLRVer", Assembly.GetCallingAssembly().ImageRuntimeVersion);
                 string data = JsonConvert.SerializeObject(status);
 

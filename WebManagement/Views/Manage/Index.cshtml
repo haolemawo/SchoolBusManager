@@ -17,52 +17,60 @@
         <label>用户管理</label>
         <div class="center-all row">
             @*<div class="col">
-                <button class="btn btn-success center-all" style="width: 100%" onclick="location.href = '/Manage/UserManage?mode=query' ">用户查询/编辑</button>
-            </div>*@
+                    <button class="btn btn-success center-all" style="width: 100%" onclick="location.href = '/Manage/UserManage?mode=query' ">用户查询/编辑</button>
+                </div>*@
             <div class="col">
                 <button class="btn btn-success btn-md center-all" style="width: 100%" onclick="location.href = '/Manage/ChangeRequest?arg=manage' ">工单处理</button>
             </div>
         </div>
     </div>
+    @*<br /><br />
+        <div class="container">
+            <label>班车数据管理</label>
+            <div class="center-all row">
+                <div class="col">
+                    <button class="btn btn-warning center-all" style="width: 100%" onclick="location.href = '/Manage/Query?targ=bus&allowedit=true' ">班车查询/编辑</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-warning btn-md center-all" style="width: 100%">重置签到数据</button>
+                </div>
+            </div>
+        </div>*@
     <br /><br />
     <div class="container">
-        <label>校车数据管理</label>
-        <div class="center-all row">
-            @*<div class="col">
-                <button class="btn btn-warning center-all" style="width: 100%" onclick="location.href = '/Manage/Query?targ=bus&allowedit=true' ">校车查询/编辑</button>
-            </div>*@
-            <div class="col">
-                <button class="btn btn-warning btn-md center-all" style="width: 100%">重置签到数据</button>
-            </div>
-        </div>
-    </div>
-    @*<br /><br />
-    <div class="container">
-        <label>学生数据管理</label>
+        <label>生成报表</label>
         <div class="center-all row">
             <div class="col">
-                <button class="btn btn-danger center-all" style="width: 100%" onclick="location.href = '/Manage/Query?targ=student&allowedit=true' ">学生查询/编辑</button>
+                <button class="btn btn-warning center-all" style="width: 100%" onclick="reportGen('class')">按班级生成</button>
             </div>
             <div class="col">
-                <button class="btn btn-danger btn-md center-all" style="width: 100%" onclick="location.href = '/Manage/Query?targ=class&allowedit=true' ">班级管理</button>
+                <button class="btn btn-warning btn-md center-all" style="width: 100%" onclick="reportGen('bus')">按班车生成</button>
             </div>
         </div>
         <br />
         <div class="center-all row">
             <div class="col">
-                <button class="btn btn-danger center-all" style="width: 100%" onclick="location.href = '/Manage/ParentsRelationship' ">家庭关系编辑</button>
-            </div>
-            <div class="col">
-                <button class="btn btn-danger btn-md center-all" style="width: 100%">重置签到数据</button>
+                <button class="btn btn-warning center-all" style="width: 100%" onclick="reportGen('all')">总表</button>
             </div>
         </div>
-    </div>*@
+        <br /><br />
+        <label>新纪录</label>
+        <div class="center-all row">
+            <div class="col">
+                <button class="btn btn-danger btn-md center-all" style="width: 100%" onclick="newWeek()">开始新一周记录</button>
+            </div>
+        </div>
+        <script>
+            function newWeek() { if (confirm("确定要开始新记录吗？ \r\n本周的记录将会被清除，请确认已经备份数据！")) alert(wbWeb.NewWeekRecord()); }
+            function reportGen(scope) { alert(wbWeb.GenerateReport(scope)); }
+        </script>
+    </div>
     <br /><br />
     <div class="container">
         <label>消息群发</label>
         <div class="center-all row">
             <div class="col">
-                <button class="btn btn-info center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=allusers' ">所有用户</button>
+                <button class="btn btn-info center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=bteachers' ">所有班车老师</button>
             </div>
             <div class="col">
                 <button class="btn btn-info btn-md center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=cteachers' ">所有班主任</button>
@@ -71,17 +79,17 @@
         <br />
         <div class="center-all row">
             <div class="col">
-                <button class="btn btn-info center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=bteachers' ">所有校车老师</button>
+                <button class="btn btn-info btn-md center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=parents' ">所有家长</button>
             </div>
             <div class="col">
-                <button class="btn btn-info btn-md center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=parents' ">所有家长</button>
+                <button class="btn btn-info center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=allusers' ">所有用户</button>
             </div>
         </div><br />
         @*<div class="center-all row">
-            <div class="col">
-                <button class="btn btn-info center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=list' ">其他条件筛选</button>
-            </div>
-        </div>*@
+                <div class="col">
+                    <button class="btn btn-info center-all" style="width: 100%" onclick="location.href = '/Manage/SendMessage?targ=list' ">其他条件筛选</button>
+                </div>
+            </div>*@
     </div>
 </div>
 

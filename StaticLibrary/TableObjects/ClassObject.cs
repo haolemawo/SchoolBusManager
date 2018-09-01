@@ -15,7 +15,7 @@ namespace WBPlatform.TableObject
         public string TeacherID { get; set; }
 
         public ClassObject() { }
-        public override string Table => WBConsts.TABLE_Mgr_Classes;
+        public override string Table => TABLE_Mgr_Classes;
         
         public override void ReadFields(DataBaseIO input)
         {

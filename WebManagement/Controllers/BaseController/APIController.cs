@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using System;
-using WBPlatform.StaticClasses;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using WBPlatform.Config;
-using System.ComponentModel;
+using Newtonsoft.Json.Serialization;
+
 using System.Collections.Generic;
+
+using WBPlatform.Config;
 
 namespace WBPlatform.WebManagement.Controllers
 {
@@ -30,8 +29,6 @@ namespace WBPlatform.WebManagement.Controllers
         protected const string WeChat_Interface_Route = "api/WeChatMessage";
         protected const string userChangeRoute = "api/users/Change";
         protected const string getQRCode = "/api/QRCode";
-        protected const string ADMIN_queryUserRoute = "/api/admin/QueryUsers";
-        protected const string ADMIN_procUserRequestRoute = "/api/admin/ProcessUserRequest";
 
         //JS Interactive
         protected const string getBusesRoute = "/api/bus/GetBuses";
@@ -45,23 +42,29 @@ namespace WBPlatform.WebManagement.Controllers
         protected const string getJSConfigRoute = "/api/CurrentUserConfig.js";
         protected const string setStudentState = "/api/student/SetState";
         protected const string refreshConfig = "/api/refreshConfig";
+        protected const string ADMIN_queryUserRoute = "/api/admin/QueryUsers";
+        protected const string ADMIN_procUserRequestRoute = "/api/admin/ProcessUserRequest";
+        protected const string ADMIN_weekReportGenerate = "/api/admin/generateWeekReport";
+        protected const string ADMIN_NewWeek = "/api/admin/newWeek";
 
-        protected static Dictionary<string, (string, string)> APIRoutes { get; private set; } = new Dictionary<string, (string, string)>
+        protected static Dictionary<string, string> APIRoutes { get; private set; } = new Dictionary<string, string>
         {
-            {"API_GetBuses", (getBusesRoute, "?UserID={0}&Session={1}") },
-            {"API_GetName", (getUNameRoute, "?UserID={0}") },
-            {"API_GetStudents", (getBusStudentsRoute, "?BusID={0}&TeacherID={1}&Session={2}") },
-            {"API_QueryStudents", (queryStudentsRoute, "?BusID={0}&Column={1}&Content={2}") },
-            {"API_BusIssueReport", (newBusReportRoute, "?BusID={0}&TeacherID={1}&ReportType={2}&Content={3}") },
-            {"API_SignStudent", (signStudentsRoute, "?BusID={0}&Data={1}") },
-            {"API_GetClassStudents", (getClassStudentsRoute, "?ClassID={0}&TeacherID={1}") },
-            {"API_GetMyChildren",(getMyChildRoute, "?parentId={0}")  },
-            {"API_SetStudentState",(setStudentState, "?studentId={0}&state={1}")  },
-            {"API_RefreshConfig",(setStudentState, "")  }
+            {"API_GetBuses",                getBusesRoute               +    "?UserID={0}&Session={1}" },
+            {"API_GetName",                 getUNameRoute               +    "?UserID={0}" },
+            {"API_GetStudents",             getBusStudentsRoute         +    "?BusID={0}&TeacherID={1}&Session={2}" },
+            {"API_QueryStudents",           queryStudentsRoute          +    "?BusID={0}&Column={1}&Content={2}" },
+            {"API_BusIssueReport",          newBusReportRoute           +    "?BusID={0}&TeacherID={1}&ReportType={2}&Content={3}" },
+            {"API_SignStudent",             signStudentsRoute           +    "?BusID={0}&Data={1}" },
+            {"API_GetClassStudents",        getClassStudentsRoute       +    "?ClassID={0}&TeacherID={1}" },
+            {"API_GetMyChildren",           getMyChildRoute             +    "?parentId={0}"  },
+            {"API_SetStudentState",         setStudentState             +    "?studentId={0}&state={1}" },
+            {"API_RefreshConfig",           refreshConfig               +    ""  },
+            {"API_GenerateReport",          ADMIN_weekReportGenerate    +    "?scope={0}"  },
+            {"API_NewWeek",                 ADMIN_NewWeek               +    ""  }
         };
         private static readonly JsonSerializerSettings settings = new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() };
 
-        public JsonResult SpecialisedInfo(string Message) => Json(0, null, Message);
+        public JsonResult SpecialisedInfo(string Message) => Json(0, new { Message }, "null");
 
         public JsonResult Json(int ErrorCode, object data, string Message = "null")
         {

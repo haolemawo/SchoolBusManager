@@ -20,11 +20,12 @@ namespace WBPlatform.TableObject
         public bool CSChecked { get; set; }
         public bool AHChecked { get; set; }
         public bool TakingBus { get; set; }
+        public DirectGoHomeMode DirectGoHome { get; set; }
 
         //public string ParentsID { get; set; }
         
 
-        public override string Table => WBConsts.TABLE_Mgr_StuData;
+        public override string Table => TABLE_Mgr_StuData;
 
         public override void ReadFields(DataBaseIO input)
         {
@@ -38,6 +39,7 @@ namespace WBPlatform.TableObject
             LSChecked = input.GetBool("LSChecked");
             TakingBus = input.GetBool("TakingBus");
             AHChecked = input.GetBool("CHChecked");
+            DirectGoHome = (DirectGoHomeMode)input.GetInt("DirectGoHome");
         }
 
         public override void WriteObject(DataBaseIO output, bool all)
@@ -52,6 +54,7 @@ namespace WBPlatform.TableObject
             output.Put("CSChecked", CSChecked);
             output.Put("LSChecked", LSChecked);
             output.Put("TakingBus", TakingBus);
+            output.Put("DirectGoHome", (int)DirectGoHome);
         }
     }
 }
