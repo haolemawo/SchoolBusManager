@@ -14,33 +14,33 @@ namespace WBPlatform.Database.Connection
     {
         private static Thread ReceiverThread = new Thread(Recv);
         private static Thread DataBaseConnectionMaintainer = new Thread(new ThreadStart(Maintain));
-        private static TcpClient socketclient = new TcpClient();
+        private static TcpClient socketClient = new TcpClient();
         private static NetworkStream stream;
         private static IPEndPoint remoteEndpoint;
 
         private static TimeSpan WaitTimeout = new TimeSpan(0, 0, XConfig.Current.Database.ClientTimeout);
         private static bool IsFirstTimeInit { get; set; } = true;
 
-        public static bool Connected => socketclient.Connected;
+        public static bool Connected => socketClient.Connected;
         private static ConcurrentDictionary<string, string> _messages { get; set; } = new ConcurrentDictionary<string, string>();
-        public static void KillConnection()
-        {
-            ReceiverThread.Abort();
-            DataBaseConnectionMaintainer.Abort();
-            socketclient.CloseAndDispose();
-            stream.CloseAndDispose();
-        }
+        //private static void KillConnection()
+        //{
+        //    ReceiverThread.Abort();
+        //    DataBaseConnectionMaintainer.Abort();
+        //    socketclient.CloseAndDispose();
+        //    stream.CloseAndDispose();
+        //}
         public static bool Initialise(IPAddress ServerIP, int Port)
         {
-            socketclient = new TcpClient();
+            socketClient = new TcpClient();
             remoteEndpoint = new IPEndPoint(ServerIP, Port);
             int FailedRetry = XConfig.Current.Database.FailedRetryTime;
             for (int i = 0; i < FailedRetry; i++)
             {
                 try
                 {
-                    socketclient.Connect(remoteEndpoint);
-                    stream = socketclient.GetStream();
+                    socketClient.Connect(remoteEndpoint);
+                    stream = socketClient.GetStream();
                     LW.I("Database Connection Estabilished!");
                     if (IsFirstTimeInit)
                     {
@@ -98,8 +98,8 @@ namespace WBPlatform.Database.Connection
                     string _mid = Cryptography.RandomString(5, false);
                     byte[] packet = PublicTools.MakeDatabasePacket(_mid, "HeartBeat");
 
-                    if (CoreSend(packet, _mid, out string reply)) LW.I("HeartBeat Succeed! ");
-                    else throw new Exception("CoreSend Error: Timeout");
+                    if (!CoreSend(packet, _mid, out string reply))
+                        throw new Exception("CoreSend Error: Timeout");
 
                     Thread.Sleep(5000);
                 }
@@ -108,7 +108,7 @@ namespace WBPlatform.Database.Connection
                     if (ex is ThreadAbortException) return;
                     ex.LogException();
 
-                    socketclient.CloseAndDispose();
+                    socketClient.CloseAndDispose();
                     stream.CloseAndDispose();
 
                     Thread.Sleep(5000);

@@ -18,7 +18,7 @@
     <pre id="show"></pre>
 </div>
 <script>
-        var jsObj = JSON.parse(decodeURI("@Uri.EscapeUriString(ViewData["msg"].ToString())"));
+        var jsObj = @Html.Raw(ViewData["msg"].ToString());
         document.getElementById("show").innerHTML = (JSON.stringify(jsObj, null, 1));
         document.onload = p;
         document.onclick = p;

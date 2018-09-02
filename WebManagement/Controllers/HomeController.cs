@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
-using WBPlatform.Logging;
 
 using WBPlatform.Config;
 using WBPlatform.Database;
+using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
+    [RequireHttps(Permanent = true)]
     public class HomeController : ViewController
     {
         public const string ControllerName = "Home";
         public override IActionResult Index()
-
         {
             ViewData["where"] = "Home";
             if (ValidateSession())
@@ -45,7 +45,7 @@ namespace WBPlatform.WebManagement.Controllers
                     "appid=", XConfig.Current.WeChat.CorpID,
                     "&redirect_uri=", Request.Scheme, "://" + Request.Host, "/Home/WeChatLogin",
                     "&response_type=code" +
-                    "&scope=snsapi_uerinfo" +
+                    "&scope=snsapi_userinfo" +
                     "&agentid=", XConfig.Current.WeChat.AgentId,
                     "&state=", Stamp, "#wechat_redirect");
                 Response.Cookies.Append("WB_WXLoginOption", Stamp, new CookieOptions() { Path = "/", Expires = DateTimeOffset.Now.AddMinutes(2) });
