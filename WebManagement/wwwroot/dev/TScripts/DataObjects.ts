@@ -3,6 +3,7 @@
     AHChecked = 0;
     LSChecked = 0;
     CSChecked = 0;
+    DirectGoHome = 0;
     Total = 0;
 }
 

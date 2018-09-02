@@ -97,6 +97,11 @@ namespace WBPlatform.Logging
         {
             WriteLog(LogLevel.E, GetCallerClassName + "::" + memberName + "\t" + Message);
         }
+
+        public static void LogException(this Exception ex, [CallerMemberName] string memberName = "")
+        {
+            WriteLog(LogLevel.E, GetCallerClassName + "::" + memberName + "\t" + ex);
+        }
     }
     #region Log Level
     /// <summary>

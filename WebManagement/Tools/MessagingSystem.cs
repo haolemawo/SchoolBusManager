@@ -51,6 +51,7 @@ namespace WBPlatform.WebManagement.Tools
                 case GlobalMessageTypes.User__Pending_Verify: return UserVerify(message);
                 case GlobalMessageTypes.Admin_WeekReport_Gen: return GenerateWeekReport(message);
                 case GlobalMessageTypes.Admin_ResetAllRecord: return ResetRecord(message);
+                case GlobalMessageTypes.Admin_WeChat_SendMsg: return SendMessage(message);
 
                 case GlobalMessageTypes.Bus_Status_Report_TC:
                 case GlobalMessageTypes.Bus_Status_Report_TP:
@@ -64,6 +65,33 @@ namespace WBPlatform.WebManagement.Tools
 
                 default: throw new NotSupportedException("不支持就是不支持……");
             }
+        }
+
+        private static bool SendMessage(InternalMessage message)
+        {
+            string MessageString = message.DataObject as string;
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { LW.E("No Users Found???"); return false; }
+            WeChatSentMessage wxMsg = new WeChatSentMessage(WeChatSMsg.text, null, "来自管理员 " + message.User.RealName + "的消息：\r\n" + MessageString, null, null);
+            switch (message.Identifier)
+            {
+                case "all":
+                    wxMsg.toUser = (from _ in _usr select _.UserName).ToArray();
+                    break;
+                case "bteachers":
+                    wxMsg.toUser = (from _ in _usr where _.UserGroup.IsBusManager select _.UserName).ToArray();
+                    break;
+                case "cteachers":
+                    wxMsg.toUser = (from _ in _usr where _.UserGroup.IsClassTeacher select _.UserName).ToArray();
+                    break;
+                case "parents":
+                    wxMsg.toUser = (from _ in _usr where _.UserGroup.IsParent select _.UserName).ToArray();
+                    break;
+                default:
+                    LW.E("Unknown SendMessage Identifier " + message.Identifier);
+                    return true;
+            }
+            WeChatMessageSystem.AddToSendList(wxMsg);
+            return true;
         }
 
         private static bool ResetRecord(InternalMessage message)
@@ -320,13 +348,5 @@ namespace WBPlatform.WebManagement.Tools
         }
 
         private static DBQueryStatus GetAdminUsers(out List<UserObject> adminUsers) => DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("isAdmin", true), out adminUsers);
-    }
-
-    public struct InternalMessage
-    {
-        public GlobalMessageTypes _Type { get; set; }
-        public UserObject User { get; set; }
-        public object DataObject { get; set; }
-        public string Identifier { get; set; }
     }
 }

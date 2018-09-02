@@ -186,7 +186,7 @@ namespace WBPlatform.Database
             catch (Exception ex)
             {
                 results = null;
-                LW.E(ex.ToParsedString());
+                ex.LogException();
                 return DBQueryStatus.INTERNAL_ERROR;
             }
         }

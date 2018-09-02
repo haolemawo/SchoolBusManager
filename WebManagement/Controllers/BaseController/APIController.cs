@@ -46,6 +46,7 @@ namespace WBPlatform.WebManagement.Controllers
         protected const string ADMIN_procUserRequestRoute = "/api/admin/ProcessUserRequest";
         protected const string ADMIN_weekReportGenerate = "/api/admin/generateWeekReport";
         protected const string ADMIN_NewWeek = "/api/admin/newWeek";
+        protected const string ADMIN_SendMessage = "/api/admin/sendMessage";
 
         protected static Dictionary<string, string> APIRoutes { get; private set; } = new Dictionary<string, string>
         {
@@ -58,8 +59,9 @@ namespace WBPlatform.WebManagement.Controllers
             {"API_GetClassStudents",        getClassStudentsRoute       +    "?ClassID={0}&TeacherID={1}" },
             {"API_GetMyChildren",           getMyChildRoute             +    "?parentId={0}"  },
             {"API_SetStudentState",         setStudentState             +    "?studentId={0}&state={1}" },
-            {"API_RefreshConfig",           refreshConfig               +    ""  },
+            {"API_SendMessage",             ADMIN_SendMessage           +    "?targ={0}&msg={1}"  },
             {"API_GenerateReport",          ADMIN_weekReportGenerate    +    "?scope={0}"  },
+            {"API_RefreshConfig",           refreshConfig               +    ""  },
             {"API_NewWeek",                 ADMIN_NewWeek               +    ""  }
         };
         private static readonly JsonSerializerSettings settings = new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() };

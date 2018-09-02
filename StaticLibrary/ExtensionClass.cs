@@ -67,7 +67,6 @@ namespace WBPlatform.StaticClasses
 
         public static Dictionary<string, T> ToDictionary<T>(this IEnumerable<T> dataObjects) where T : DataTableObject => dataObjects.ToDictionary(t => { return t.ObjectId; });
 
-        public static void LogException(this Exception ex) => LW.E("Exception Occur!");
         public static string Middle(this string str, string After, string Before)
         {
             if (string.IsNullOrWhiteSpace(str))

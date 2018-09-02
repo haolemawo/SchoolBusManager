@@ -73,6 +73,7 @@ class WoodenBenchWeb {
         localStorage.setItem("_", location.protocol + "//" + location.host);
         deserialize(UserConfig, this.CurrentUser);
     }
+
     GetMgmtBus(): GetBusResultData { return this.Network.AjaxGet(GetBusResultData, this.Config.GetValue("API_GetBuses").format(this.CurrentUser.ObjectId, this.Session)); }
     GetName(UserID: string): GetUserNameData { return this.Network.AjaxGet(GetUserNameData, this.Config.GetValue("API_GetName").format(UserID)); }
     GetStudents(BusID: string, TeacherID: string): GetStudentsData { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetStudents").format(BusID, TeacherID, this.Session)); }
@@ -84,6 +85,7 @@ class WoodenBenchWeb {
     SetStudentState(StudentID: string, State: boolean): SignStudentData { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); }
     GenerateReport(scope: string): string { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_GenerateReport").format(scope)).Message; }
     NewWeekRecord(): string { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_NewWeek")).Message; }
+    SendMessage(targ: string, msg: string): string { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_SendMessage").format(targ, msg)).Message; }
     //ProsessUCR()
 }
 var wbWeb = new WoodenBenchWeb();

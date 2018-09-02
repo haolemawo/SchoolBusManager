@@ -16,14 +16,7 @@ namespace WBPlatform.WebManagement.Controllers
     [Route(WeChat_Interface_Route)]
     public class WeChat_MessageController : APIController
     {
-
-        /// <summary>
-        /// USED TO SERIFY THE WECHAR MESSAGE <![CDATA[WECHAT_MESSAGE_VERIFY]]>
-        /// </summary>
-        /// <param name="msg_signature"></param>
-        /// <param name="timestamp"></param>
-        /// <param name="nonce"></param>
-        /// <param name="echostr"></param>
+        //USED TO SERIFY THE WECHAR MESSAGE
         [HttpGet]
         public void Get(string msg_signature, string timestamp, string nonce, string echostr)
         {
@@ -37,12 +30,7 @@ namespace WBPlatform.WebManagement.Controllers
             Response.WriteAsync(sEchoStr);
         }
 
-        /// <summary>
-        /// Whatever they are sending....
-        /// </summary>
-        /// <param name="msg_signature"></param>
-        /// <param name="timestamp"></param>
-        /// <param name="nonce"></param>
+        //Whatever they are sending....
         [HttpPost]
         public void POST(string msg_signature, string timestamp, string nonce)
         {

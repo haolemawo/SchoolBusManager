@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "信息群发";
+}
+<div class="container">
+    <h3>消息群发</h3>
+    <label>可以给别人发消息！</label>
+    <hr />
+    <div class=" container center-all">
+        <label>选择用户组</label>
+        <select id="selection" class="center-margin TxBox container">
+            <option selected="selected" id="bteachers">所有校车老师</option>
+            <option selected="selected" id="cteachers">所有班主任</option>
+            <option selected="selected" id="parents">所有家长</option>
+            <option selected="selected" id="all">所有人</option>
+        </select>
+        <hr />
+        <label>请输入要发送的消息</label>
+        <div class=" container center-margin">
+            <textarea id="content" class="center-all full-width"
+                      style="border-radius: 10px; border:4px solid darkgray; height: 120px; padding: 5px"></textarea>
+        </div>
+        <br />
+        <div class="container center-margin">
+            <button class="btn btn-success btn-sm full-width" onclick="sendMsg();">发送</button>
+        </div>
+        <script>
+            function sendMsg() {
+                var identifier = $("#selection")[0].options[$("#selection")[0].options.selectedIndex].id;
+                var msg = $("#content").val();
+                alert(wbWeb.SendMessage(identifier, msg));
+            }
+        </script>
+    </div>
+</div>

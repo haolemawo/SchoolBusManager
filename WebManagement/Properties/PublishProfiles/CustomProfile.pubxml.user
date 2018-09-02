@@ -152,19 +152,19 @@
       <publishTime>04/22/2018 09:30:28</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>09/02/2018 01:46:53</publishTime>
+      <publishTime>09/02/2018 14:00:28</publishTime>
     </File>
     <File Include="WebManagement.deps.json">
-      <publishTime>09/02/2018 01:46:53</publishTime>
+      <publishTime>09/02/2018 14:00:28</publishTime>
     </File>
     <File Include="WebManagement.dll">
-      <publishTime>09/02/2018 01:46:27</publishTime>
+      <publishTime>09/02/2018 14:00:20</publishTime>
     </File>
     <File Include="WebManagement.dll.config">
       <publishTime>09/02/2018 01:46:23</publishTime>
     </File>
     <File Include="WebManagement.pdb">
-      <publishTime>09/02/2018 01:46:27</publishTime>
+      <publishTime>09/02/2018 14:00:20</publishTime>
     </File>
     <File Include="WebManagement.PrecompiledViews.dll">
       <publishTime>06/11/2018 14:34:26</publishTime>
@@ -173,19 +173,19 @@
       <publishTime>06/14/2018 23:13:12</publishTime>
     </File>
     <File Include="WebManagement.runtimeconfig.json">
-      <publishTime>09/02/2018 01:46:53</publishTime>
+      <publishTime>09/02/2018 14:00:28</publishTime>
     </File>
     <File Include="WebManagement.Views.dll">
-      <publishTime>09/02/2018 01:46:29</publishTime>
+      <publishTime>09/02/2018 14:00:23</publishTime>
     </File>
     <File Include="WebManagement.Views.pdb">
-      <publishTime>09/02/2018 01:46:29</publishTime>
+      <publishTime>09/02/2018 14:00:23</publishTime>
     </File>
     <File Include="WoodenBench_Helper.dll">
-      <publishTime>09/02/2018 01:46:15</publishTime>
+      <publishTime>09/02/2018 13:29:09</publishTime>
     </File>
     <File Include="WoodenBench_Helper.pdb">
-      <publishTime>09/02/2018 01:46:15</publishTime>
+      <publishTime>09/02/2018 13:29:09</publishTime>
     </File>
     <File Include="wwwroot/Backgrounds/404-1.jpg">
       <publishTime>06/26/2018 17:27:25</publishTime>
@@ -797,10 +797,10 @@
       <publishTime>08/24/2018 00:23:05</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js">
-      <publishTime>09/02/2018 01:46:25</publishTime>
+      <publishTime>09/02/2018 14:00:13</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js.map">
-      <publishTime>09/02/2018 01:46:25</publishTime>
+      <publishTime>09/02/2018 14:00:13</publishTime>
     </File>
     <File Include="wwwroot/dev/js/UserActivity.js">
       <publishTime>08/10/2018 22:19:10</publishTime>
@@ -812,7 +812,7 @@
       <publishTime>07/14/2018 18:32:07</publishTime>
     </File>
     <File Include="wwwroot/dev/TScripts/DataObjects.ts">
-      <publishTime>09/01/2018 20:18:55</publishTime>
+      <publishTime>09/02/2018 13:42:14</publishTime>
     </File>
     <File Include="wwwroot/dev/TScripts/Dictionary.ts">
       <publishTime>08/23/2018 21:06:29</publishTime>
@@ -821,7 +821,7 @@
       <publishTime>08/23/2018 15:29:10</publishTime>
     </File>
     <File Include="wwwroot/dev/TScripts/UserActivity.ts">
-      <publishTime>09/01/2018 22:13:21</publishTime>
+      <publishTime>09/02/2018 12:51:54</publishTime>
     </File>
     <File Include="wwwroot/favicon.ico">
       <publishTime>06/26/2018 17:27:26</publishTime>
@@ -1100,7 +1100,7 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/service.min.js">
-      <publishTime>09/02/2018 01:46:26</publishTime>
+      <publishTime>09/02/2018 14:00:14</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>06/26/2018 17:27:27</publishTime>

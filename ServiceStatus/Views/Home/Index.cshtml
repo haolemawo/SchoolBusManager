@@ -19,22 +19,22 @@
 </div>
 <script>
         var jsObj = JSON.parse(decodeURI("@Uri.EscapeUriString(ViewData["msg"].ToString())"));
-    document.getElementById("show").innerHTML = (JSON.stringify(jsObj, null, 1));    // 缩进4个空格
-    document.onload = p;
-    document.onclick = p;
-    document.onscroll = p;
-    document.ondrag = p;
-    function p() {
-        if (false) {
-            var Url2 = "复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，";
-            var oInput = document.createElement('input');
-            oInput.value = Url2;
-            document.body.appendChild(oInput);
-            oInput.select(); // 选择对象
-            document.execCommand("Copy"); // 执行浏览器复制命令
-            oInput.className = 'oInput';
-            oInput.style.display = 'none';
-            console.log("Cpoied");
+        document.getElementById("show").innerHTML = (JSON.stringify(jsObj, null, 1));
+        document.onload = p;
+        document.onclick = p;
+        document.onscroll = p;
+        document.ondrag = p;
+        function p() {
+            if (false) {
+                var Url2 = "复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，复制了好多内容啊，";
+                var oInput = document.createElement('input');
+                oInput.value = Url2;
+                document.body.appendChild(oInput);
+                oInput.select(); // 选择对象
+                document.execCommand("Copy"); // 执行浏览器复制命令
+                oInput.className = 'oInput';
+                oInput.style.display = 'none';
+                console.log("Cpoied");
+            }
         }
-    }
 </script>

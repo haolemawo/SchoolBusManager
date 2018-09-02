@@ -9,6 +9,8 @@ using WBPlatform.StaticClasses;
 using WBPlatform.Logging;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
+using System.Linq;
+
 namespace WBPlatform.WebManagement.Controllers
 {
     public class ManageController : ViewController
@@ -25,6 +27,23 @@ namespace WBPlatform.WebManagement.Controllers
                     return RequestIllegal(ServerAction.Manage_Index, "试图访问管理页面", ResponceCode.PermisstionDenied);
                 }
                 return View(CurrentUser);
+            }
+            else return LoginFailed("/" + ControllerName);
+        }
+        public IActionResult SendMessage(string targ)
+        {
+            ViewData["where"] = ControllerName;
+            if (ValidateSession())
+            {
+                if (!CurrentUser.UserGroup.IsAdmin)
+                {
+                    LW.E("Someone trying access illegal page!, Page: messageSend, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
+                    return RequestIllegal(ServerAction.Manage_Index, "试图访问管理页面", ResponceCode.PermisstionDenied);
+                }
+                return View();
+                //return targ == "bteachers" || targ == "cteachers" || targ == "parents" || targ == "allusers" ?
+                //    View() :
+                //    RequestIllegal(ServerAction.Manage_Index, "请求所带参数无效：参数名 targ", ResponceCode.RequestIllegal);
             }
             else return LoginFailed("/" + ControllerName);
         }

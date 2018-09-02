@@ -18,6 +18,7 @@ var GetBusResultData = (function () {
         this.AHChecked = 0;
         this.LSChecked = 0;
         this.CSChecked = 0;
+        this.DirectGoHome = 0;
         this.Total = 0;
     }
     return GetBusResultData;
@@ -261,6 +262,7 @@ var WoodenBenchWeb = (function () {
     WoodenBenchWeb.prototype.SetStudentState = function (StudentID, State) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); };
     WoodenBenchWeb.prototype.GenerateReport = function (scope) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_GenerateReport").format(scope)).Message; };
     WoodenBenchWeb.prototype.NewWeekRecord = function () { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_NewWeek")).Message; };
+    WoodenBenchWeb.prototype.SendMessage = function (targ, msg) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_SendMessage").format(targ, msg)).Message; };
     return WoodenBenchWeb;
 }());
 var wbWeb = new WoodenBenchWeb();
