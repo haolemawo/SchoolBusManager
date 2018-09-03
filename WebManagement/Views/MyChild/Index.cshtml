@@ -13,8 +13,11 @@
     </div>
     <hr />
     <div class="container">
+        <label>免接送设置：</label>
+        <button class="btn btn-success btn-sm" onclick="location.href = '/MyChild/DirectGoHome'">设置免接送</button>
+        <hr />
         <h6>坐班车总人数：<span id="totalNum">正在加载</span></h6>
-        <small>提示：点击姓名可以查看详细信息</small>
+        <h6>提示：点击姓名可以查看详细信息</h6>
 
         <table id="StudentIDs" class="tftable">
             <thead>
@@ -50,9 +53,9 @@
     $("#totalNum").text(data.Count + "人");
     for (var i = 0; i < data.Count; i++) {
         var TMP = data.StudentList[i];
-        var Came = TMP.CHChecked;
+        var Came = TMP.CSChecked;
         var Leaved = TMP.LSChecked;
-        var CHome = TMP.LHChecked;
+        var CHome = TMP.AHChecked;
 
 
         var childContainer = document.createElement("tr");
@@ -61,7 +64,7 @@
         childContainer.style.border = "none";
         var viewStudentNode = document.createElement("td");
         viewStudentNode.classList.add("text-underline");
-        viewStudentNode.innerHTML = "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=ClassManager&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "<br/><small>" + TMP.ObjectId + "</small></a>";
+        viewStudentNode.innerHTML = "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=MyChild&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "<br/><small>" + TMP.ObjectId + "</small></a>";
         childContainer.appendChild(viewStudentNode);
 
         var child = document.createElement("td");

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Linq;
 
 namespace WBPlatform.TableObject
 {
-    public class UserGroup
+    public struct UserGroup
     {
-        public bool AnyThing { get => IsAdmin || IsBusManager || IsClassTeacher || IsParent; }
+        [JsonIgnore] public bool AnyThing => IsAdmin || IsBusManager || IsClassTeacher || IsParent;
 
         public bool IsAdmin { get; private set; }
         public bool IsBusManager { get; private set; }

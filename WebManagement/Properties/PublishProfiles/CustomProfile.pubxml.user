@@ -65,10 +65,10 @@
       <publishTime>08/20/2018 09:55:30</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.CSharp.Workspaces.dll">
-      <publishTime>07/13/2018 21:48:42</publishTime>
+      <publishTime>09/03/2018 20:10:32</publishTime>
     </File>
     <File Include="Microsoft.CodeAnalysis.Workspaces.dll">
-      <publishTime>07/13/2018 21:48:42</publishTime>
+      <publishTime>09/03/2018 20:10:32</publishTime>
     </File>
     <File Include="Microsoft.Extensions.DependencyInjection.Abstractions.dll">
       <publishTime>08/20/2018 09:57:52</publishTime>
@@ -77,7 +77,7 @@
       <publishTime>08/20/2018 09:58:04</publishTime>
     </File>
     <File Include="Microsoft.Extensions.PlatformAbstractions.dll">
-      <publishTime>08/22/2018 18:10:07</publishTime>
+      <publishTime>09/03/2018 20:10:16</publishTime>
     </File>
     <File Include="Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll">
       <publishTime>08/20/2018 09:55:18</publishTime>
@@ -107,7 +107,7 @@
       <publishTime>06/18/2017 13:57:10</publishTime>
     </File>
     <File Include="NuGet.Frameworks.dll">
-      <publishTime>07/13/2018 21:48:31</publishTime>
+      <publishTime>09/03/2018 20:10:14</publishTime>
     </File>
     <File Include="package-lock.json">
       <publishTime>08/23/2018 15:57:12</publishTime>
@@ -128,19 +128,19 @@
       <publishTime>05/15/2018 13:29:42</publishTime>
     </File>
     <File Include="System.Composition.AttributedModel.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>09/03/2018 20:10:12</publishTime>
     </File>
     <File Include="System.Composition.Convention.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>09/03/2018 20:10:12</publishTime>
     </File>
     <File Include="System.Composition.Hosting.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>09/03/2018 20:10:12</publishTime>
     </File>
     <File Include="System.Composition.Runtime.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>09/03/2018 20:10:12</publishTime>
     </File>
     <File Include="System.Composition.TypedParts.dll">
-      <publishTime>07/13/2018 21:48:28</publishTime>
+      <publishTime>09/03/2018 20:10:12</publishTime>
     </File>
     <File Include="System.Drawing.Common.dll">
       <publishTime>05/15/2018 13:29:42</publishTime>
@@ -152,19 +152,19 @@
       <publishTime>04/22/2018 09:30:28</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>09/02/2018 14:00:28</publishTime>
+      <publishTime>09/03/2018 22:12:58</publishTime>
     </File>
     <File Include="WebManagement.deps.json">
-      <publishTime>09/02/2018 14:00:28</publishTime>
+      <publishTime>09/03/2018 22:12:57</publishTime>
     </File>
     <File Include="WebManagement.dll">
-      <publishTime>09/02/2018 14:00:20</publishTime>
+      <publishTime>09/03/2018 22:12:24</publishTime>
     </File>
     <File Include="WebManagement.dll.config">
-      <publishTime>09/02/2018 01:46:23</publishTime>
+      <publishTime>09/03/2018 20:12:32</publishTime>
     </File>
     <File Include="WebManagement.pdb">
-      <publishTime>09/02/2018 14:00:20</publishTime>
+      <publishTime>09/03/2018 22:12:24</publishTime>
     </File>
     <File Include="WebManagement.PrecompiledViews.dll">
       <publishTime>06/11/2018 14:34:26</publishTime>
@@ -173,19 +173,19 @@
       <publishTime>06/14/2018 23:13:12</publishTime>
     </File>
     <File Include="WebManagement.runtimeconfig.json">
-      <publishTime>09/02/2018 14:00:28</publishTime>
+      <publishTime>09/03/2018 22:12:57</publishTime>
     </File>
     <File Include="WebManagement.Views.dll">
-      <publishTime>09/02/2018 14:00:23</publishTime>
+      <publishTime>09/03/2018 22:12:31</publishTime>
     </File>
     <File Include="WebManagement.Views.pdb">
-      <publishTime>09/02/2018 14:00:23</publishTime>
+      <publishTime>09/03/2018 22:12:31</publishTime>
     </File>
     <File Include="WoodenBench_Helper.dll">
-      <publishTime>09/02/2018 13:29:09</publishTime>
+      <publishTime>09/03/2018 20:12:24</publishTime>
     </File>
     <File Include="WoodenBench_Helper.pdb">
-      <publishTime>09/02/2018 13:29:09</publishTime>
+      <publishTime>09/03/2018 20:12:24</publishTime>
     </File>
     <File Include="wwwroot/Backgrounds/404-1.jpg">
       <publishTime>06/26/2018 17:27:25</publishTime>
@@ -263,7 +263,7 @@
       <publishTime>06/26/2018 17:27:26</publishTime>
     </File>
     <File Include="wwwroot/css/WBWeb.min.css">
-      <publishTime>09/02/2018 01:46:26</publishTime>
+      <publishTime>09/03/2018 20:12:35</publishTime>
     </File>
     <File Include="wwwroot/dev/css/bootstrap-grid.css">
       <publishTime>07/12/2018 09:22:44</publishTime>
@@ -797,10 +797,10 @@
       <publishTime>08/24/2018 00:23:05</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js">
-      <publishTime>09/02/2018 14:00:13</publishTime>
+      <publishTime>09/03/2018 20:12:35</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js.map">
-      <publishTime>09/02/2018 14:00:13</publishTime>
+      <publishTime>09/03/2018 20:12:35</publishTime>
     </File>
     <File Include="wwwroot/dev/js/UserActivity.js">
       <publishTime>08/10/2018 22:19:10</publishTime>
@@ -911,7 +911,7 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/crpto-js.min.js">
-      <publishTime>09/02/2018 01:46:26</publishTime>
+      <publishTime>09/03/2018 20:12:35</publishTime>
     </File>
     <File Include="wwwroot/js/CryptoJS/aes.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
@@ -1094,13 +1094,13 @@
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/library.min.js">
-      <publishTime>09/02/2018 01:46:26</publishTime>
+      <publishTime>09/03/2018 20:12:35</publishTime>
     </File>
     <File Include="wwwroot/js/npm.js">
       <publishTime>06/26/2018 17:27:27</publishTime>
     </File>
     <File Include="wwwroot/js/service.min.js">
-      <publishTime>09/02/2018 14:00:14</publishTime>
+      <publishTime>09/03/2018 20:12:35</publishTime>
     </File>
     <File Include="wwwroot/js/site.js">
       <publishTime>06/26/2018 17:27:27</publishTime>

@@ -48,9 +48,9 @@
     $("#totalNum").text("坐班车学生人数：" + data.Count + "人");
     for (var i = 0; i < data.Count; i++) {
         var TMP = data.StudentList[i];
-        var Came = TMP.CHChecked;
+        var Came = TMP.CSChecked;
         var Leaved = TMP.LSChecked;
-        var CHome = TMP.LHChecked;
+        var CHome = TMP.AHChecked;
 
 
         var childContainer = document.createElement("tr");

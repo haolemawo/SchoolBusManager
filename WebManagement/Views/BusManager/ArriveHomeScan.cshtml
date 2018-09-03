@@ -14,10 +14,10 @@
     <br>
     <div id="codeArea">
         <div id="hints" hidden>
-            <p>提醒：</p>
-            <p>你可以打印出以下图片，并放到班车挡风玻璃或其他</p>
-            <p>醒目位置，并提醒家长及时扫码确认学生到家。</p>
-            <br />
+            <span>
+                提醒：你可以打印出以下图片，并放到班车挡风玻璃或其他醒目位置，并提醒家长及时扫码确认学生到家。
+            </span>
+            <hr />
         </div>
         <div class="text-center">
             <img id="Code" class="text-center" alt="请点击生成二维码" style="border: dotted 2px black;" src="#" />
@@ -32,6 +32,7 @@
         <p id="AHChecked">到家确认人数: 加载中...</p>
         <p id="DirectGoHome">免接送人数: 加载中...</p>
     </div>
+    <hr />
     <div class="text-center container">
         <button id="GenCode" hidden class="btn btn-md btn-success" onclick="GenCode();">生成签到二维码</button>
     </div>
@@ -72,7 +73,7 @@
         //setCookie("CBusID", CurrentBus.BusID);
         $("#ExpNumber").text("班车总人数: " + CurrentBus.Total);
         $("#AHChecked").text("到家确认人数: " + CurrentBus.AHChecked);
-        $("#DirectGoHome").text("到家确认人数: " + CurrentBus.DirectGoHome);
+        $("#DirectGoHome").text("免接送人数: " + CurrentBus.DirectGoHome);
         $("#BusDirection").text("我的班车: " + CurrentBus.Bus.BusName);
         $("#GenCode").removeAttr("hidden");
     }

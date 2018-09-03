@@ -20,9 +20,7 @@ namespace WBPlatform.TableObject
         [JsonIgnore] public const string TABLE_Gen_UserRequest = "UserRequest";
         [JsonIgnore] public const string DefaultObjectID = "0000000000";
         [JsonIgnore] public readonly DateTime DefaultTime = DateTime.MinValue;
-
-        [JsonIgnore]
-        public abstract string Table { get; }
+        [JsonIgnore] public abstract string Table { get; }
 
         public virtual string ObjectId { get; set; }
         public virtual DateTime CreatedAt { get; internal set; }

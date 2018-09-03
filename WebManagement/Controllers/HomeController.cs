@@ -29,7 +29,11 @@ namespace WBPlatform.WebManagement.Controllers
                         Response.Cookies.Delete("LoginRedirect");
                         return Redirect(Request.Cookies["LoginRedirect"]);
                     }
-                    else return View();
+                    else
+                    {
+                        ViewData["_User"] = CurrentUser;
+                        return View();
+                    }
                 }
                 else
                 {

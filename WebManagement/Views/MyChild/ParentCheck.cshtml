@@ -13,11 +13,9 @@
     </div>
     <div class="container">
         <hr />
-        <h4>需要确认签到的学生(们)：</h4>
+        <p>需要确认签到的学生(们)：</p>
         <div class="container">
-            <div id="StudentIDs" style="font-size:small">
-
-            </div>
+            <div id="StudentIDs" style="font-size:small"></div>
         </div>
         <hr />
     </div>
@@ -56,20 +54,16 @@
         var StudentsSplit = ChildIDs.split(";");
         $.each(StudentsSplit, (index, value, value2) => {
             if (value !== "") {
-                var sresult = wbWeb.SignStudent("@ViewData["cBusID"]", value, "pleave", true);
-                SignCallBack(sresult);
+                var signResult = wbWeb.SignStudent("@ViewData["cBusID"]", value, "pleave", true);
+                if (signResult.Student != undefined) {
+                    $("#" + signResult.Student.ObjectId).addClass("text-success");
+                    $("#" + signResult.Student.ObjectId).text($("#" + signResult.Student.ObjectId).text() + " √");
+                }
+                else {
+                    $("#" + signResult.Student.ObjectId).addClass("text-danger");
+                    $("#" + signResult.Student.ObjectId).text($("#" + signResult.Student.ObjectId).text() + " ×\r\n" + signResult.ErrMessage);
+                }
             }
         });
-    }
-    function SignCallBack(signResult) {
-        if (signResult.ErrCode == "0") {
-            $("#" + signResult.Student.ObjectId).addClass("text-success");
-            $("#" + signResult.Student.ObjectId).text($("#" + signResult.Student.ObjectId).text() + " √");
-            alert("已经确认 " + signResult.Student.StudentName + "已经到家");
-        }
-        else {
-            $("#" + signResult.Student.ObjectId).addClass("text-danger");
-            $("#" + signResult.Student.ObjectId).text($("#" + signResult.Student.ObjectId).text() + " ×\r\n" + signResult.ErrMessage);
-        }
     }
 </script>

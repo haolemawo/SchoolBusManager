@@ -10,6 +10,7 @@ namespace WBPlatform.WebManagement.Controllers
     public class AvailabilityController : APIController
     {
         [RequireHttps]
+        [HttpGet]
         public void Get()
         {
             Response.StatusCode = 500;

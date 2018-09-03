@@ -22,7 +22,7 @@ namespace WBPlatform.WebManagement.Controllers
                     : View()
                 : LoginFailed("/" + ControllerName);
         }
-        
+
         public IActionResult ParentCheck(string ID)
         {
             string BusID, BusTeacherID;
@@ -38,12 +38,16 @@ namespace WBPlatform.WebManagement.Controllers
                 BusTeacherID = IDSplit[1];
 
                 List<StudentObject> ToBeSignedStudents = new List<StudentObject>();
-                switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusID).WhereEqualTo("CHChecked", false), out List<StudentObject> StudentListInBus))
+                switch (DataBaseOperation.QueryMultiple(new DBQuery()
+                    .WhereEqualTo("BusID", BusID)
+                    .WhereEqualTo("CHChecked", false)
+                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                    .WhereEqualTo("TakingBus", true), out List<StudentObject> StudentListInBus))
                 {
                     case DBQueryStatus.INTERNAL_ERROR: return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
                     case DBQueryStatus.NO_RESULTS:
                     default:
-                        ToBeSignedStudents.AddRange(from _stu in StudentListInBus where CurrentUser.ChildList.Contains(_stu.ObjectId) && _stu.TakingBus && _stu.DirectGoHome != DirectGoHomeMode.DirectlyGoHome select _stu);
+                        ToBeSignedStudents.AddRange(from _stu in StudentListInBus where _stu.DirectGoHome != DirectGoHomeMode.DirectlyGoHome select _stu);
                         break;
                 }
 
@@ -57,6 +61,25 @@ namespace WBPlatform.WebManagement.Controllers
                 return View();
             }
             else return LoginFailed("/" + ControllerName + "/ParentCheck?ID=" + ID);
+        }
+
+        public IActionResult DirectGoHome()
+        {
+            ViewData["where"] = ControllerName;
+            if (ValidateSession())
+            {
+                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+
+                if (DataBaseOperation.QueryMultiple(new DBQuery()
+                    .WhereEqualTo("DirectGoHome", 0)
+                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                    .WhereEqualTo("TakingBus", true), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
+                    return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
+
+                ViewData["ChildCount"] = ToBeSignedStudents.Count;
+                return View(ToBeSignedStudents);
+            }
+            else return LoginFailed("/" + ControllerName + "/DirectGoHomeSign");
         }
     }
 }
