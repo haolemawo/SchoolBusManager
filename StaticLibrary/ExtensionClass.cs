@@ -175,7 +175,7 @@ namespace WBPlatform.StaticClasses
             return n;
         }
 
-        public static T[] MoveToArray<T>(this T thing) => new T[] { thing };
+        public static TOut MoveToArray<TOut, T>(this T thing) where TOut : IEnumerable<T> => (TOut)(IEnumerable<T>)new T[] { thing };
         public static string ToParsedString<T>(this T value) => JsonConvert.SerializeObject(value, typeof(T), new JsonSerializerSettings());
 
         public static bool ToParsedObject<T>(this string JSON, out T data)
@@ -193,10 +193,11 @@ namespace WBPlatform.StaticClasses
 
         public static string GetString(this DataBaseIO io, string Key) => io.GetT<string>(Key);
 
-        public static List<string> GetList(this DataBaseIO io, string Key)
+        public static List<string> GetList(this DataBaseIO io, string Key) => io.GetList(Key, ',');
+        public static List<string> GetList(this DataBaseIO io, string Key, char splitter)
         {
             string _listString = GetString(io, Key);
-            return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(',').ToList();
+            return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(splitter).ToList();
         }
 
         public static bool GetBool(this DataBaseIO io, string Key) => io.GetT<bool>(Key);

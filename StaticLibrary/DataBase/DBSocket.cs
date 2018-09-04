@@ -41,7 +41,7 @@ namespace WBPlatform.Database.Connection
                 {
                     socketClient.Connect(remoteEndpoint);
                     stream = socketClient.GetStream();
-                    LW.I("Database Connection Estabilished!");
+                    L.I("Database Connection Estabilished!");
                     if (IsFirstTimeInit)
                     {
                         ReceiverThread.Start();
@@ -49,12 +49,12 @@ namespace WBPlatform.Database.Connection
                         IsFirstTimeInit = false;
                     }
                     SendCommand("openConnection", "00000", out string token);
-                    LW.I("Database Connected! Identity: " + token);
+                    L.I("Database Connected! Identity: " + token);
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    LW.E("Database connection to server: " + ServerIP + " failed. ");
+                    L.E("Database connection to server: " + ServerIP + " failed. ");
                     ex.LogException();
                     Thread.Sleep(1000);
                 }
@@ -83,7 +83,7 @@ namespace WBPlatform.Database.Connection
                 }
                 while (!Connected)
                 {
-                    LW.E("Message Recieve waiting for connection......");
+                    L.E("Message Recieve waiting for connection......");
                     Thread.Sleep(500);
                 }
             }
@@ -124,7 +124,7 @@ namespace WBPlatform.Database.Connection
             byte[] mergedPackage = PublicTools.MakeDatabasePacket(MessageId, sendMsg);
             while (!Connected)
             {
-                LW.E("Message Sent Waiting for connection....");
+                L.E("Message Sent Waiting for connection....");
                 Thread.Sleep(500);
             }
             return CoreSend(mergedPackage, MessageId, out rcvdMessage);

@@ -29,11 +29,12 @@ class Networking {
         this.XTag = XTag;
     }
     XTag: string = "";
+    ASync: boolean = false;
     AjaxGet<T>(OutputDataType: { new(): T }, URL: string): T {
         var _result;
         $.ajax(
             {
-                async: false,
+                async: this.ASync,
                 headers: { "X-WoodenBench-Protection": this.XTag },
                 url: localStorage.getItem("_") + URL,
                 success: (data) => { _result = data; },

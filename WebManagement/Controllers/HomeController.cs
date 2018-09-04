@@ -100,7 +100,7 @@ namespace WBPlatform.WebManagement.Controllers
                 Dictionary<string, string> JSON = PublicTools.HTTPGet("https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + WeChatHelper.AccessToken + "&code=" + code);
                 if (!JSON.ContainsKey("UserId"))
                 {
-                    LW.E("WeChat JSON doesnot Contain: UserID, " + JSON.ToParsedString());
+                    L.E("WeChat JSON doesnot Contain: UserID, " + JSON.ToParsedString());
                     return null;
                 }
                 string WeiXinID = JSON["UserId"];
@@ -108,7 +108,7 @@ namespace WBPlatform.WebManagement.Controllers
                 {
                     //Internal Error...
                     case DBQueryStatus.INTERNAL_ERROR:
-                        LW.E("SessionManager: Failed to get User by its UserName --> DataBase Inernal Error....");
+                        L.E("SessionManager: Failed to get User by its UserName --> DataBase Inernal Error....");
                         return DatabaseError(ServerAction.WeChatLogin_PostExecute, XConfig.Messages["InternalDataBaseError"]);
 
                     //No User Found, expencted to be redirected to User Register
@@ -126,7 +126,7 @@ namespace WBPlatform.WebManagement.Controllers
 
                     //?????
                     default:
-                        LW.E("HomeController: Unexpected Database Query Result for WeChatLogin...");
+                        L.E("HomeController: Unexpected Database Query Result for WeChatLogin...");
                         return DatabaseError(ServerAction.WeChatLogin_PostExecute, XConfig.Messages["WrongDataReturnedFromDatabase"]);
                 }
             }

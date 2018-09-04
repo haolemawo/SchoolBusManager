@@ -43,12 +43,12 @@ namespace WBPlatform.Database.DBServer
                 }
                 catch (Exception ex)
                 {
-                    LW.E(ex.Message);
+                    L.E(ex.Message);
                     continue;
                 }
 
                 string remoteEndPoint = connection.RemoteEndPoint.ToString();
-                LW.I("Estalished a connection with " + remoteEndPoint);
+                L.I("Estalished a connection with " + remoteEndPoint);
 
                 Thread thread = new Thread(new ParameterizedThreadStart(Recv))
                 {
@@ -71,7 +71,7 @@ namespace WBPlatform.Database.DBServer
                 try
                 {
                     string requestString = PublicTools.DecodeDatabasePacket(stream);
-                    LW.I("Recived Data: " + requestString);
+                    L.I("Recived Data: " + requestString);
                     if (requestString.Length <= 5)
                     {
                         baseSocket.CloseAndDispose();
@@ -83,39 +83,39 @@ namespace WBPlatform.Database.DBServer
 
                     if (requestString == "openConnection")
                     {
-                        LW.I("C: Recieve an OpenConnection Request, from " + remoteEP);
+                        L.I("C: Recieve an OpenConnection Request, from " + remoteEP);
                         byte[] arrSendMsg = PublicTools.MakeDatabasePacket(_MessageId, remoteEP);
                         stream.Write(arrSendMsg, 0, arrSendMsg.Length);
                         stream.Flush();
-                        LW.I("C: Replied an OpenConnection Request, to " + remoteEP);
+                        L.I("C: Replied an OpenConnection Request, to " + remoteEP);
                         _connectionOpened = true;
                     }
                     else if (_connectionOpened)
                     {
                         if (requestString == "HeartBeat")
                         {
-                            LW.I("B: Recieve a HearBeat, from " + remoteEP);
+                            L.I("B: Recieve a HearBeat, from " + remoteEP);
                             DateTime rtime = DateTime.Now;
                             byte[] arrSendMsg = PublicTools.MakeDatabasePacket(_MessageId, rtime.ToNormalString());
                             stream.Write(arrSendMsg, 0, arrSendMsg.Length);
                             stream.Flush();
-                            LW.I("C: Replied a HearBeat, to " + remoteEP);
+                            L.I("C: Replied a HearBeat, to " + remoteEP);
                         }
                         else if (requestString.ToParsedObject(out DataBaseSocketIO request))
                         {
                             QueryStrings[remoteEP] = requestString;
-                            LW.I("Q: " + remoteEP + " :: " + requestString);
+                            L.I("Q: " + remoteEP + " :: " + requestString);
                             //It takes Time.....
                             string returnStr = DatabaseCore.ProcessRequest(request);
                             byte[] arrSendMsg = PublicTools.MakeDatabasePacket(_MessageId, returnStr);
                             stream.Write(arrSendMsg, 0, arrSendMsg.Length);
                             stream.Flush();
-                            LW.I("P: " + remoteEP + " :: " + returnStr);
+                            L.I("P: " + remoteEP + " :: " + returnStr);
                         }
                         else
                         {
                             //Invalid Connection......
-                            LW.E("E: " + remoteEP + " :: JSON Parse Exception!");
+                            L.E("E: " + remoteEP + " :: JSON Parse Exception!");
                             baseSocket.CloseAndDispose();
                             QueryStrings.TryRemove(remoteEP, out val);
                             break;
@@ -123,7 +123,7 @@ namespace WBPlatform.Database.DBServer
                     }
                     else
                     {
-                        LW.E("Connection to " + remoteEP + " is not marked as 'Opened'");
+                        L.E("Connection to " + remoteEP + " is not marked as 'Opened'");
                         baseSocket.CloseAndDispose();
                         stream.CloseAndDispose();
                         QueryStrings.TryRemove(remoteEP, out val);
@@ -132,7 +132,7 @@ namespace WBPlatform.Database.DBServer
                 }
                 catch (Exception ex)
                 {
-                    LW.E("Client " + remoteEP + " drops the connection. " + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n");
+                    L.E("Client " + remoteEP + " drops the connection. " + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n");
                     QueryStrings.TryRemove(remoteEP, out val);
                     stream.CloseAndDispose();
                     baseSocket.CloseAndDispose();
@@ -140,7 +140,7 @@ namespace WBPlatform.Database.DBServer
                 }
             }
             QueryStrings.TryRemove(remoteEP, out val);
-            LW.E("Client Connection Socket to " + remoteEP + " gonna Stop!");
+            L.E("Client Connection Socket to " + remoteEP + " gonna Stop!");
             Thread.CurrentThread.Abort();
             return;
         }

@@ -15,8 +15,8 @@ namespace WBPlatform.ServiceStatus
     {
         public static void Main(string[] args)
         {
-            LW.SetLogLevel(LogLevel.D);
-            LW.InitLog();
+            L.SetLogLevel(LogLevel.DBG);
+            L.InitLog();
 
             var v = XConfig.LoadAll();
             if (!(v.Item1 && v.Item2)) return;
@@ -39,7 +39,7 @@ namespace WBPlatform.ServiceStatus
                         HomeController.ServerStatus = Encoding.UTF8.GetString(data, 0, count);
                     }
                 }
-                LW.E("GetStateString: DisConnected from the WBWebServer....");
+                L.E("GetStateString: DisConnected from the WBWebServer....");
                 Thread.Sleep(1000);
             }
         }

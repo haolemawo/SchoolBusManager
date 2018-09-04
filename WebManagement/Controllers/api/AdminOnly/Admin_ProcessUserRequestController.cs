@@ -58,7 +58,7 @@ namespace WBPlatform.WebManagement.Controllers
             }
             if (DataBaseOperation.UpdateData(ref user) != DBQueryStatus.ONE_RESULT)
             {
-                LW.E("Admin->UCRProcess: Failed to Save user data");
+                L.E("Admin->UCRProcess: Failed to Save user data");
                 return DataBaseError;
             }
 

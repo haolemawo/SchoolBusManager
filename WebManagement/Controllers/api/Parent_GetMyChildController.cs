@@ -22,7 +22,7 @@ namespace WBPlatform.WebManagement.Controllers
 
 
             Dictionary<string, string> dict = new Dictionary<string, string>();
-            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereValueContainedInArray("objectId", CurrentUser.ChildList.ToArray()), out List<StudentObject> StudentList))
+            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereValueContainedInArray("objectId", CurrentUser.ChildList), out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 default: return Json(new { StudentList.Count, StudentList });

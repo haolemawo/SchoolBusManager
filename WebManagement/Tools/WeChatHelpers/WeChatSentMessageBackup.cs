@@ -18,7 +18,7 @@ namespace WBPlatform.WebManagement.Tools
         public static void StartBackupThread()
         {
             NotificationBackupThread.Start();
-            LW.I("\tNotificationBackupThread Started!");
+            L.I("\tNotificationBackupThread Started!");
         }
 
         public static void AddToSendList(string users, string Title, string Content)

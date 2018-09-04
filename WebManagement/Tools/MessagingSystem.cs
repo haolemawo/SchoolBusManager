@@ -26,7 +26,7 @@ namespace WBPlatform.WebManagement.Tools
         public static void StartProcessThread()
         {
             ProcThread.Start();
-            LW.I("CoreMessaging System Started!");
+            L.I("CoreMessaging System Started!");
         }
 
         public static void AddMessageProcesses(params InternalMessage[] message) { foreach (var item in message) { MessageList.Enqueue(item); } }
@@ -70,7 +70,7 @@ namespace WBPlatform.WebManagement.Tools
         private static bool SendMessage(InternalMessage message)
         {
             string MessageString = message.DataObject as string;
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { LW.E("No Users Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { L.E("No Users Found???"); return false; }
             WeChatSentMessage wxMsg = new WeChatSentMessage(WeChatSMsg.text, null, "来自管理员 " + message.User.RealName + "的消息：\r\n" + MessageString, null, null);
             switch (message.Identifier)
             {
@@ -87,7 +87,7 @@ namespace WBPlatform.WebManagement.Tools
                     wxMsg.toUser = (from _ in _usr where _.UserGroup.IsParent select _.UserName).ToArray();
                     break;
                 default:
-                    LW.E("Unknown SendMessage Identifier " + message.Identifier);
+                    L.E("Unknown SendMessage Identifier " + message.Identifier);
                     return true;
             }
             WeChatMessageSystem.AddToSendList(wxMsg);
@@ -96,23 +96,23 @@ namespace WBPlatform.WebManagement.Tools
 
         private static bool ResetRecord(InternalMessage message)
         {
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { LW.E("No Bus Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { L.E("No Bus Found???"); return false; }
             foreach (var item in _s)
             {
                 item.AHChecked = false;
                 item.CSChecked = false;
                 item.LSChecked = false;
-                if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) LW.I("Succeed Reset Record: Bus->" + item.BusName + ":" + item.ObjectId);
-                else { LW.E("Failed To Reset Bus Record: " + item.ToParsedString()); return false; }
+                if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) L.I("Succeed Reset Record: Bus->" + item.BusName + ":" + item.ObjectId);
+                else { L.E("Failed To Reset Bus Record: " + item.ToParsedString()); return false; }
             }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { LW.E("No Students Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { L.E("No Students Found???"); return false; }
             foreach (var item in _st)
             {
                 item.AHChecked = false;
                 item.CSChecked = false;
                 item.LSChecked = false;
-                if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) LW.I("Succeed Reset Record: Stu->" + item.StudentName + ":" + item.ObjectId);
-                else { LW.E("Failed To Reset Student Record: " + item.ToParsedString()); return false; }
+                if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) L.I("Succeed Reset Record: Stu->" + item.StudentName + ":" + item.ObjectId);
+                else { L.E("Failed To Reset Student Record: " + item.ToParsedString()); return false; }
             }
             WeChatSentMessage msgReset = new WeChatSentMessage(WeChatSMsg.text, null, "操作：开始新一周记录 已经完成！", null, message.User.UserName);
             WeChatMessageSystem.AddToSendList(msgReset);
@@ -121,13 +121,13 @@ namespace WBPlatform.WebManagement.Tools
         private static bool GenerateWeekReport(InternalMessage message)
         {
             var dirInfo = Directory.CreateDirectory("reports");
-            string ReportVisibleName = "班车统计报告-";
+            string ReportVisibleName = "班车统计报告";
             string ReportFilePath = dirInfo.FullName + "//" + message.DataObject + "-GenBy-" + message.User.GetIdentifiableCode() + "-At-" + message.Identifier + ".xlsx";
 
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { LW.E("No Bus Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { LW.E("No Students Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<ClassObject> _c) <= 0) { LW.E("No Classes Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { LW.E("No Users Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { L.E("No Bus Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { L.E("No Students Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<ClassObject> _c) <= 0) { L.E("No Classes Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { L.E("No Users Found???"); return false; }
 
             Dictionary<string, SchoolBusObject> SchoolBusDictionary = _s.ToDictionary();
             Dictionary<string, ClassObject> ClassDictionary = _c.ToDictionary();
@@ -140,7 +140,15 @@ namespace WBPlatform.WebManagement.Tools
                 for (int i = 0; i < _stus.Length; i++)
                 {
                     var _student = _stus[i];
+                    if (_stus[i].ClassID == null)
+                    {
+                        continue;
+                    }
                     var _class = ClassDictionary[_stus[i].ClassID];
+                    if (_class.TeacherID == null)
+                    {
+                        continue;
+                    }
                     var _classTeacher = UsersDictionary[_class.TeacherID];
                     var _bus = SchoolBusDictionary[_student.BusID];
                     var _busTeacher = UsersDictionary[_bus.TeacherID];
@@ -185,7 +193,12 @@ namespace WBPlatform.WebManagement.Tools
                     ReportVisibleName += "(按班级分类).xlsx";
                     foreach (var _class in ClassDictionary.Values)
                     {
-                        var sheetClass = wb.Worksheets.Add(_class.CDepartment + "-" + _class.CGrade + "-" + _class.CNumber);
+                        string sheetName = _class.CDepartment + "-" + _class.CGrade + "-" + _class.CNumber;
+                        if (wb.Worksheets.Contains(sheetName))
+                        {
+                            sheetName += Cryptography.CurrentTimeStamp;
+                        }
+                        var sheetClass = wb.Worksheets.Add(sheetName);
                         FillStudentsDataIntoSheet(sheetClass, (from x in StudentsDictionary.Values where x.ClassID == _class.ObjectId select x).ToArray());
                     }
                     break;
@@ -193,6 +206,10 @@ namespace WBPlatform.WebManagement.Tools
                     ReportVisibleName += "(按班车分类).xlsx";
                     foreach (var _bus in SchoolBusDictionary.Values)
                     {
+                        if (wb.Worksheets.Contains(_bus.BusName))
+                        {
+                            _bus.BusName += Cryptography.CurrentTimeStamp;
+                        }
                         var sheetBus = wb.Worksheets.Add(_bus.BusName);
                         FillStudentsDataIntoSheet(sheetBus, (from x in StudentsDictionary.Values where x.BusID == _bus.ObjectId select x).ToArray());
                     }
@@ -202,7 +219,7 @@ namespace WBPlatform.WebManagement.Tools
                     var sheetAll = wb.Worksheets.Add("总学生表");
                     FillStudentsDataIntoSheet(sheetAll, StudentsDictionary.Values.ToArray());
                     break;
-                default: LW.E("WTF This Week Report Scope is????"); return true;
+                default: L.E("WTF This Week Report Scope is???? " + message.DataObject); return true;
             }
             wb.SaveAs(ReportFilePath);
             var mediaId = WC_FileUploader.Upload(ReportFilePath, ReportVisibleName);
@@ -220,7 +237,7 @@ namespace WBPlatform.WebManagement.Tools
         {
             if ((int)GetAdminUsers(out List<UserObject> adminUsers_UCR_Request) < 1)
             {
-                LW.W("No Administrator found!! thus no UserRequest can be solved!");
+                L.W("No Administrator found!! thus no UserRequest can be solved!");
                 return false;
             }
             WeChatSentMessage UCR_Created_TO_ADMIN_Msg = new WeChatSentMessage(
@@ -257,7 +274,7 @@ namespace WBPlatform.WebManagement.Tools
                 case DBQueryStatus.NO_RESULTS:
                 case DBQueryStatus.MORE_RESULTS:
                 default:
-                    LW.W("Failed to get user who requested to change something.... userId=" + message.Identifier);
+                    L.W("Failed to get user who requested to change something.... userId=" + message.Identifier);
                     return false;
             }
         }
@@ -265,7 +282,7 @@ namespace WBPlatform.WebManagement.Tools
         {
             if ((int)GetAdminUsers(out List<UserObject> adminUsers_createUser) < 1)
             {
-                LW.W("No Administrator found!! thus no Register Request can be solved!");
+                L.W("No Administrator found!! thus no Register Request can be solved!");
                 return false;
             }
             string escapedString = (string)PublicTools.EncodeString(message.DataObject.ToString());
@@ -285,7 +302,7 @@ namespace WBPlatform.WebManagement.Tools
 
             if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", busId), out List<StudentObject> students) < 1)
             {
-                LW.W("Failed to query Students List in specific bus ID: " + busId);
+                L.W("Failed to query Students List in specific bus ID: " + busId);
                 return false;
             }
             if (message._Type == GlobalMessageTypes.Bus_Status_Report_TC)
@@ -294,14 +311,14 @@ namespace WBPlatform.WebManagement.Tools
                 string[] ClassList = (from _stu in students select _stu.ClassID).Distinct().ToArray();
                 if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereValueContainedInArray("objectId", ClassList), out List<ClassObject> classes) < 1)
                 {
-                    LW.W("Failed to query Classes from ClassList..." + string.Join(';', ClassList));
+                    L.W("Failed to query Classes from ClassList..." + string.Join(';', ClassList));
                     return false;
                 }
                 foreach (ClassObject _class in classes)
                 {
                     if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", _class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
                     {
-                        LW.W("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
+                        L.W("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
                     }
                     string[] _StudentInClass = (from _stu in students where _stu.ClassID == _class.ObjectId select _stu.StudentName).ToArray();
                     WeChatSentMessage busReportMsg_Teacher = new WeChatSentMessage(WeChatSMsg.text, null,
@@ -322,7 +339,7 @@ namespace WBPlatform.WebManagement.Tools
                 {
                     if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereRecordContainsValue("ChildIDs", studentObject.ObjectId), out List<UserObject> _Parents) < 1)
                     {
-                        LW.W("Failed to get Child's parent.. ChildID: " + studentObject.ObjectId);
+                        L.W("Failed to get Child's parent.. ChildID: " + studentObject.ObjectId);
                         continue;
                     }
                     AllParents.AddRange(_Parents);
@@ -342,7 +359,7 @@ namespace WBPlatform.WebManagement.Tools
             }
             else
             {
-                LW.E("MessageSystem->BusStatusReport: This Error may never hit...");
+                L.E("MessageSystem->BusStatusReport: This Error may never hit...");
                 return false;
             }
         }

@@ -42,7 +42,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (ret !=  WeChatEncryptionErrorCode.OK)
             {
                 Response.StatusCode = 500;
-                LW.E("WeChat Message Decrypt Failed!! " + _message);
+                L.E("WeChat Message Decrypt Failed!! " + _message);
                 Response.WriteAsync("");
                 return;
             }

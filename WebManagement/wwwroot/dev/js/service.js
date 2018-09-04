@@ -215,12 +215,13 @@ var ResultData = (function () {
 var Networking = (function () {
     function Networking(XTag) {
         this.XTag = "";
+        this.ASync = false;
         this.XTag = XTag;
     }
     Networking.prototype.AjaxGet = function (OutputDataType, URL) {
         var _result;
         $.ajax({
-            async: false,
+            async: this.ASync,
             headers: { "X-WoodenBench-Protection": this.XTag },
             url: localStorage.getItem("_") + URL,
             success: function (data) { _result = data; },

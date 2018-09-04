@@ -19,15 +19,15 @@ namespace WBPlatform.Database.DBServer
         public static void InitialiseDBConnection()
         {
             SqlConnectionStringBuilder conn = new SqlConnectionStringBuilder();
-            LW.I("Start Initiallising Database Connections.....");
+            L.I("Start Initiallising Database Connections.....");
             conn.DataSource = XConfig.Current.Database.SQLServerIP + "," + XConfig.Current.Database.SQLServerPort;
             conn.UserID = XConfig.Current.Database.DatabaseUserName;
             conn.Password = XConfig.Current.Database.DatabasePassword;
             conn.TrustServerCertificate = true;
-            LW.I("DB Connection String Loaded!");
+            L.I("DB Connection String Loaded!");
             sqlConnection = new SqlConnection(conn.ConnectionString);
             sqlConnection.Open();
-            LW.I("DB Connection Opened!");
+            L.I("DB Connection Opened!");
         }
 
         public static string ProcessRequest(DataBaseSocketIO request)
@@ -95,7 +95,7 @@ namespace WBPlatform.Database.DBServer
                 reply.ResultCode = DBQueryStatus.INTERNAL_ERROR;
                 reply.Message = ex.Message;
                 reply.Exception = new DataBaseException("DBServer Process Exception", ex);
-                LW.E("Exception! => \r\n" + ex);
+                L.E("Exception! => \r\n" + ex);
             }
             return reply.ToParsedString();
         }

@@ -23,7 +23,7 @@ namespace WBPlatform.Database.DBServer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            LW.OnLog += LogWritter_onLog;
+            L.OnLog += LogWritter_onLog;
         }
 
         private void LogWritter_onLog(OnLogChangedEventArgs logchange, object sender)
@@ -67,7 +67,7 @@ namespace WBPlatform.Database.DBServer
             }
             catch (Exception ex)
             {
-                LW.E("TIMER ERROR: " + ex.Message);
+                L.E("TIMER ERROR: " + ex.Message);
             }
         }
 

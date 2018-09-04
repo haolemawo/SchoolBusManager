@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.Logging
 {
+    public delegate void OnLogWrited(OnLogChangedEventArgs logchange, object sender);
     public class OnLogChangedEventArgs : EventArgs
     {
+        public OnLogChangedEventArgs() { }
         public OnLogChangedEventArgs(string logString, LogLevel logLevel)
         {
             LogString = logString;
@@ -20,14 +20,10 @@ namespace WBPlatform.Logging
         public LogLevel LogLevel { get; set; }
     }
 
-    public static class LW
+    public static class L
     {
-
-        public delegate void OnLogWrited(OnLogChangedEventArgs logchange, object sender);
         public static event OnLogWrited OnLog;
-
-
-        private static LogLevel _LogLevel { get; set; } = LogLevel.W;
+        private static LogLevel _LogLevel { get; set; } = LogLevel.WRN;
         public static void SetLogLevel(LogLevel level) { _LogLevel = level; }
 
         private static StreamWriter Fs { get; set; }
@@ -35,7 +31,7 @@ namespace WBPlatform.Logging
 
         //Actually it should be a new instance when used, However, due to the "static" LW class, there's only one instance.
         //To prevent instances takes up your memory, a constant instance is used...
-        public static OnLogChangedEventArgs LogEvent = new OnLogChangedEventArgs("", LogLevel.D);
+        public static OnLogChangedEventArgs LogEvent = new OnLogChangedEventArgs();
 
         public static void InitLog()
         {
@@ -50,23 +46,27 @@ namespace WBPlatform.Logging
         {
             if (level < _LogLevel) return;
             string LogMsg = $"[{DateTime.Now.ToDetailedString()} - {level.ToString()}] {Message}\r\n";
-
+#if DEBUG
+            Debug.Write(LogMsg);
+#endif
+#if TRACE
+            Trace.WriteLine(LogMsg);
+#endif
             switch (level)
             {
-                case LogLevel.E:
+                case LogLevel.ERR:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogLevel.I:
+                case LogLevel.INF:
                     Console.ForegroundColor = ConsoleColor.Blue;
                     break;
-                case LogLevel.D:
+                case LogLevel.DBG:
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     break;
-                case LogLevel.W:
+                case LogLevel.WRN:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
             }
-            Debug.Write(LogMsg);
             Console.Write(LogMsg);
             Console.ResetColor();
 
@@ -78,53 +78,12 @@ namespace WBPlatform.Logging
         }
 
         private static string GetCallerClassName => new StackTrace().GetFrame(2).GetMethod().ReflectedType.Name;
-        public static void D(string Message, [CallerMemberName] string memberName = "")
-        {
-            WriteLog(LogLevel.D, GetCallerClassName + "::" + memberName + "\t" + Message);
-        }
 
-        public static void I(string Message, string Operation = "", [CallerMemberName] string memberName = "")
-        {
-            WriteLog(LogLevel.I, GetCallerClassName + "::" + memberName + "\t" + Message);
-        }
-
-        public static void W(string Message, string Operation = "", [CallerMemberName] string memberName = "")
-        {
-            WriteLog(LogLevel.W, GetCallerClassName + "::" + memberName + "\t" + Message);
-        }
-
-        public static void E(string Message, string Operation = "", [CallerMemberName] string memberName = "")
-        {
-            WriteLog(LogLevel.E, GetCallerClassName + "::" + memberName + "\t" + Message);
-        }
-
-        public static void LogException(this Exception ex, [CallerMemberName] string memberName = "")
-        {
-            WriteLog(LogLevel.E, GetCallerClassName + "::" + memberName + "\t" + ex);
-        }
+        public static void D(string Message, [CallerMemberName] string memberName = "") => WriteLog(LogLevel.DBG, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void I(string Message, string Operation = "", [CallerMemberName] string memberName = "") => WriteLog(LogLevel.INF, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void W(string Message, string Operation = "", [CallerMemberName] string memberName = "") => WriteLog(LogLevel.WRN, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void E(string Message, string Operation = "", [CallerMemberName] string memberName = "") => WriteLog(LogLevel.ERR, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void LogException(this Exception ex, [CallerMemberName] string memberName = "") => WriteLog(LogLevel.ERR, GetCallerClassName + "::" + memberName + "\r\n" + ex + "\r\n");
     }
-    #region Log Level
-    /// <summary>
-    /// LogLevel Enumerate used for <see cref="LW"/>
-    /// </summary>
-    public enum LogLevel
-    {
-        /// <summary>
-        /// Debug Log Level
-        /// </summary>
-        D = 0,
-        /// <summary>
-        /// Info Log Level
-        /// </summary>
-        I = 1,
-        /// <summary>
-        /// Warning Log Level
-        /// </summary>
-        W = 2,
-        /// <summary>
-        /// Error Log Level
-        /// </summary>
-        E = 3,
-    }
-    #endregion
+    public enum LogLevel { DBG = 0, INF = 1, WRN = 2, ERR = 3, }
 }

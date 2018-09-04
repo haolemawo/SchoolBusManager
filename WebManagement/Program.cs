@@ -23,13 +23,13 @@ namespace WBPlatform.WebManagement
         public static CancellationTokenSource ServerStopToken { get; private set; } = new CancellationTokenSource();
         public static void Main(string[] args)
         {
-            LW.SetLogLevel(LogLevel.D);
-            LW.InitLog();
+            L.SetLogLevel(LogLevel.DBG);
+            L.InitLog();
             StartUpTime = DateTime.Now;
-            LW.I("WoodenBench WebServer Starting....");
-            LW.I($"\t Startup Time {StartUpTime.ToString()}.");
+            L.I("WoodenBench WebServer Starting....");
+            L.I($"\t Startup Time {StartUpTime.ToString()}.");
             Version = new FileInfo(new string(Assembly.GetExecutingAssembly().CodeBase.Skip(8).ToArray())).LastWriteTime.ToString();
-            LW.I($"\t Version {Version}");
+            L.I($"\t Version {Version}");
 
             var v = XConfig.LoadAll();
             if (!(v.Item1 && v.Item2)) return;
@@ -42,21 +42,21 @@ namespace WBPlatform.WebManagement
 
             WeChatHelper.InitialiseEncryptor();
 
-            LW.I("Initialising Core Messaging Systems.....");
+            L.I("Initialising Core Messaging Systems.....");
             WeChatMessageSystem.StartProcessThreads();
             WeChatMessageBackupService.StartBackupThread();
             MessagingSystem.StartProcessThread();
 
             var webHost = BuildWebHost(XConfig.Current.ApplicationInsightInstrumentationKey, args);
-            LW.I("Starting WebHost....");
+            L.I("Starting WebHost....");
             WebServerTask = webHost.RunAsync(ServerStopToken.Token);
             WebServerTask.Wait();
-            LW.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);
+            L.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);
         }
 
         public static IWebHost BuildWebHost(string instrumentationKey, string[] args)
         {
-            LW.I("Building WebHost....");
+            L.I("Building WebHost....");
             var host = WebHost.CreateDefaultBuilder(args)
                  .UseIISIntegration()
                  .UseKestrel()

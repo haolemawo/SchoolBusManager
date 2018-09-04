@@ -23,7 +23,7 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (!CurrentUser.UserGroup.IsAdmin)
                 {
-                    LW.E("Someone trying access illegal page!, Page: index, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
+                    L.E("Someone trying access illegal page!, Page: index, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                     return RequestIllegal(ServerAction.Manage_Index, "试图访问管理页面", ResponceCode.PermisstionDenied);
                 }
                 return View(CurrentUser);
@@ -37,7 +37,7 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (!CurrentUser.UserGroup.IsAdmin)
                 {
-                    LW.E("Someone trying access illegal page!, Page: messageSend, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
+                    L.E("Someone trying access illegal page!, Page: messageSend, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                     return RequestIllegal(ServerAction.Manage_Index, "试图访问管理页面", ResponceCode.PermisstionDenied);
                 }
                 return View();
@@ -115,7 +115,7 @@ namespace WBPlatform.WebManagement.Controllers
                             ViewData["mode"] = "manage";
                             if (!CurrentUser.UserGroup.IsAdmin)
                             {
-                                LW.E("Someone trying access illegal page!, Page: changeRequest: arg=manage, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
+                                L.E("Someone trying access illegal page!, Page: changeRequest: arg=manage, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                                 return NotFound();
                             }
                             if (string.IsNullOrEmpty(reqId))

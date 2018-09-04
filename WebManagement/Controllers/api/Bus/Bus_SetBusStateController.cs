@@ -28,9 +28,12 @@ namespace WBPlatform.WebManagement.Controllers
 
             if (!flag && CurrentUser.UserGroup.IsClassTeacher)
             {
-                if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("TeacherID", CurrentUser.ObjectId), out ClassObject Class) != DBQueryStatus.ONE_RESULT)
+                if (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("TeacherID", CurrentUser.ObjectId), out System.Collections.Generic.List<ClassObject> Class) == DBQueryStatus.NO_RESULTS)
                     return RequestIllegal;
-                flag = Student.ClassID == Class.ObjectId;
+                foreach (var item in Class)
+                {
+                    flag = flag || Student.ClassID == item.ObjectId;
+                }
             }
 
             if (!flag) return RequestIllegal;

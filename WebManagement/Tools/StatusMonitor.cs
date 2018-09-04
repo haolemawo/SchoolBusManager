@@ -22,9 +22,9 @@ namespace WBPlatform.WebManagement.Tools
 
         public static void StartMonitorThread()
         {
-            LW.I("Starting Monitor Thread");
+            L.I("Starting Monitor Thread");
             _MonitorThread.Start();
-            LW.I("Monitor Thread: Active");
+            L.I("Monitor Thread: Active");
         }
         private static void ThreadWork()
         {

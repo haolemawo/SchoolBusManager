@@ -79,7 +79,7 @@ namespace WBPlatform.WebManagement.Controllers
 
             WeChatSentMessage _Message = new WeChatSentMessage(WeChatSMsg.text, null, content, null, "liuhaoyu");
 
-            LW.E(content.Replace("\r\n", " -- "));
+            L.E(content.Replace("\r\n", " -- "));
 
             if (respCode != ResponceCode.Default)
                 WeChatMessageSystem.AddToSendList(_Message);

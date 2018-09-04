@@ -75,7 +75,7 @@ namespace WBPlatform.WebManagement.Controllers
 
                     if (DataBaseOperation.CreateData(ref request) != DBQueryStatus.ONE_RESULT)
                     {
-                        LW.E("AccountController->ProcessNewUCR: Create UCR Failed!");
+                        L.E("AccountController->ProcessNewUCR: Create UCR Failed!");
                         return DatabaseError(ServerAction.MyAccount_CreateChangeRequest, XConfig.Messages["CreateUCR_Failed"]);
                     }
 

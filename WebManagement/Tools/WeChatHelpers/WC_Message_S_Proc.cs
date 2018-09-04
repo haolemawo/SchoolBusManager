@@ -1,36 +1,26 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
-using WBPlatform.StaticClasses;
 using WBPlatform.Config;
 using WBPlatform.Logging;
+using WBPlatform.StaticClasses;
 
 namespace WBPlatform.WebManagement.Tools
 {
     public static partial class WeChatMessageSystem
     {
-        private static List<WeChatSentMessage> SentMessageList { get; set; } = new List<WeChatSentMessage>();
+        private static ConcurrentQueue<WeChatSentMessage> SentMessageList { get; set; } = new ConcurrentQueue<WeChatSentMessage>();
         private static Thread ProcessorSENTThread = new Thread(new ThreadStart(_ProcessSENT));
 
-        public static void AddToSendList(WeChatSentMessage message) { lock (SentMessageList) SentMessageList.Add(message); }
+        public static void AddToSendList(WeChatSentMessage message) { SentMessageList.Enqueue(message); }
         private static void _ProcessSENT()
         {
-            WeChatSentMessage message;
             while (true)
             {
-                lock (SentMessageList)
-                {
-                    if (SentMessageList.Count != 0)
-                    {
-                        message = SentMessageList[SentMessageList.Count - 1];
-                        SentMessageList.Remove(SentMessageList.Last());
-                    }
-                    else message = null;
-                }
-                if (message != null) SendMessagePacket(message);
-                else Thread.Sleep(200);
+                if (SentMessageList.TryDequeue(out WeChatSentMessage message)) SendMessagePacket(message);
+                else Thread.Sleep(500);
             }
         }
         private static Dictionary<string, string> SendMessagePacket(WeChatSentMessage message)
@@ -51,7 +41,7 @@ namespace WBPlatform.WebManagement.Tools
             switch (MessageType)
             {
                 case WeChatSMsg.text:
-                    Message = Message + $"{{\"content\":\"{Content}\r\n\r\n MST: {DateTime.Now.ToNormalString()}\"}}";
+                    Message = Message + $"{{\"content\":\"{Content}\r\n\r\nMST: {DateTime.Now.ToNormalString()}\"}}";
                     break;
                 case WeChatSMsg.textcard:
                     Message = Message + $"{{\"title\":\"{Title}\",\"description\":\"{Content}\",\"url\":\"{URL}\"}}";
@@ -61,7 +51,7 @@ namespace WBPlatform.WebManagement.Tools
                     break;
             }
             Message = Message + "}";
-            LW.I("WeChat Message Sent: " + Message);
+            L.I("WeChat Message Sent: " + Message);
             return PublicTools.HTTPPost("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + WeChatHelper.AccessToken, Message);
         }
     }

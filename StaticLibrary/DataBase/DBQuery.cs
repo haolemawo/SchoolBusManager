@@ -16,15 +16,15 @@ namespace WBPlatform.Database
         }
 
         public bool _Ascending { get; set; }
-        public int _Limit { get; set; }
-        public int _Skip { get; set; }
+        public int _Limit { get; set; } = -1;
+        public int _Skip { get; set; } = -1;
         public string _SortedBy { get; set; }
 
         public Dictionary<string, object> EqualTo { get; private set; }
         public Dictionary<string, string> Contains { get; private set; }
         public Dictionary<string, string[]> ContainedInArray { get; private set; }
-
-        public DBQuery WhereValueContainedInArray<T>(string column, params T[] values) { ContainedInArray.Add(column, (from _ in values select _.ToString()).ToArray()); return this; }
+        
+        public DBQuery WhereValueContainedInArray(string column, IEnumerable<string> values) { ContainedInArray.Add(column, (from _ in values select _).ToArray()); return this; }
         public DBQuery SortedBy(string column) { _SortedBy = column; return this; }
         public DBQuery WhereEqualTo(string column, object value) { EqualTo.Add(column, value); return this; }
         public DBQuery WhereRecordContainsValue(string column, string value) { Contains.Add(column, value); return this; }

@@ -19,11 +19,11 @@ namespace WBPlatform.Database
         public static string MessageId => Cryptography.RandomString(5, false);
         public static void InitialiseClient()
         {
-            LW.I("Started Initialise Database Server Connection....");
+            L.I("Started Initialise Database Server Connection....");
             bool conn = DatabaseSocketsClient.Initialise(IPAddress.Parse(XConfig.Current.Database.DBServerIP), XConfig.Current.Database.DBServerPort);
             while (!conn)
             {
-                LW.E("DBServer Initial Connection Failed!");
+                L.E("DBServer Initial Connection Failed!");
                 conn = DatabaseSocketsClient.Initialise(IPAddress.Parse(XConfig.Current.Database.DBServerIP), XConfig.Current.Database.DBServerPort);
             }
         }
@@ -51,8 +51,8 @@ namespace WBPlatform.Database
 
         public static DBQueryStatus QueryMultiple<T>(DBQuery query, out List<T> Result, int queryLimit = 100, int skip = 0) where T : DataTableObject<T>, new()
         {
-            query.Limit(queryLimit);
-            query.Skip(skip);
+            query.Limit(query._Limit == -1 ? queryLimit : query._Limit);
+            query.Skip(query._Skip == -1 ? skip : query._Skip);
             DBQueryStatus databaseOperationResult = _DBRequestInternal(new T().Table, DBVerbs.QueryMulti, query, null, out DataBaseIO[] inputs);
             if (databaseOperationResult >= 0)
             {
@@ -87,7 +87,7 @@ namespace WBPlatform.Database
             var _result = _DBRequestInternal(item.Table, DBVerbs.Update, query, output, out DataBaseIO[] inputs);
             if (_result != DBQueryStatus.ONE_RESULT)
             {
-                LW.E("UpdateData Process Failed!");
+                L.E("UpdateData Process Failed!");
                 return DBQueryStatus.INTERNAL_ERROR;
             }
             item = new T();
@@ -96,7 +96,7 @@ namespace WBPlatform.Database
         }
 
         public static DBQueryStatus CreateData<T>(ref T data) where T : DataTableObject<T>, new() => CreateData(data, out data);
-        private static DBQueryStatus CreateData<T>(T data, out T dataOut) where T : DataTableObject<T>, new()
+        public static DBQueryStatus CreateData<T>(T data, out T dataOut) where T : DataTableObject<T>, new()
         {
             DataBaseIO output = new DataBaseIO();
             data.ObjectId = Cryptography.RandomString(10, false);
@@ -128,14 +128,14 @@ namespace WBPlatform.Database
                 switch (operation)
                 {
                     case DBVerbs.Create:
-                        internalQuery.DBObjects = output.MoveToArray();
+                        internalQuery.DBObjects = output.MoveToArray<DataBaseIO[], DataBaseIO>();
                         break;
                     case DBVerbs.QuerySingle:
                     case DBVerbs.QueryMulti:
                         internalQuery.Query = query;
                         break;
                     case DBVerbs.Update:
-                        internalQuery.DBObjects = output.MoveToArray();
+                        internalQuery.DBObjects = output.MoveToArray<DataBaseIO[], DataBaseIO>();
                         internalQuery.Query = query;
                         break;
                     case DBVerbs.Delete:
