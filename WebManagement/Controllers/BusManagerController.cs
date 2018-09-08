@@ -16,34 +16,19 @@ namespace WBPlatform.WebManagement.Controllers
         public override IActionResult Index()
         {
             ViewData["where"] = HomeController.ControllerName;
-            if (ValidateSession())
-            {
-                if (CurrentUser.UserGroup.IsBusManager)
-                {
-                    return View();
-                }
-                else
-                {
-                    return PermissionDenied(ServerAction.BusManage_Index, XConfig.Messages["NotBusTeacher"], ResponceCode.Default);
-                }
-            }
-            else
-            {
-                return LoginFailed("/" + ControllerName + "/");
-            }
+            return ValidateSession()
+                ? CurrentUser.UserGroup.IsBusManager
+                    ? View()
+                    : PermissionDenied(ServerAction.BusManage_Index, XConfig.Messages["NotBusTeacher"], ResponceCode.Default)
+                : LoginFailed("/" + ControllerName + "/");
         }
 
         public IActionResult WeekIssue()
         {
             ViewData["where"] = ControllerName;
-            if (ValidateSession())
-            {
-                return View();
-            }
-            else
-            {
-                return LoginFailed("/" + ControllerName + "/WeekIssue");
-            }
+            return ValidateSession()
+                ? View() 
+                : LoginFailed("/" + ControllerName + "/WeekIssue");
         }
 
         public IActionResult SignStudent(string signmode)
@@ -227,11 +212,9 @@ namespace WBPlatform.WebManagement.Controllers
                         }
 
                         //        Is in user's class?                           Is in user's Bus??                      Is user's child??                Or the god...
-                        if (CurrentUser.ClassList.Contains(Student.ClassID) || CurrentUser.ObjectId == Bus.TeacherID || CurrentUser.ChildList.Contains(Student.ObjectId) || CurrentUser.UserGroup.IsAdmin)
-                        {
-                            return View(info);
-                        }
-                        else return PermissionDenied(ServerAction.General_ViewStudent, XConfig.Messages.UserPermissionDenied);
+                        return CurrentUser.ClassList.Contains(Student.ClassID) || CurrentUser.ObjectId == Bus.TeacherID || CurrentUser.ChildList.Contains(Student.ObjectId) || CurrentUser.UserGroup.IsAdmin
+                            ? View(info)
+                            : PermissionDenied(ServerAction.General_ViewStudent, XConfig.Messages.UserPermissionDenied);
                     }
                     else return DatabaseError(ServerAction.General_ViewStudent, XConfig.Messages["WrongDataReturnedFromDatabase"]);
                 }

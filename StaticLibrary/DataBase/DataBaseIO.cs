@@ -15,12 +15,12 @@ namespace WBPlatform.Database.IO
 
         public ConcurrentDictionary<string, object> Data { get; private set; } = new ConcurrentDictionary<string, object>();
 
-        public T GetT<T>(string Key) => (T)Convert.ChangeType(Data[Key], typeof(T));
+        public T Get<T>(string column) => (T)Convert.ChangeType(Data[column], typeof(T));
 
         public void Put(string column, object _data)
         {
             if (_data == null) { L.W("Put " + column + " as null, drop it..."); return; }
-            if (_data is IList) _data = string.Join(",", (IEnumerable<string>)_data);
+            if (_data is IList) _data = string.Join(",", (IList<string>)_data);
             Data.AddOrUpdate(column, _data, (s, o) => o);
         }
     }

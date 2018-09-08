@@ -9,6 +9,7 @@ namespace WBPlatform.Config
 {
     public class ConfigCollection
     {
+        public int LogLevel { get; set; }
         private readonly string https = "https://";
         public string ApplicationInsightInstrumentationKey { get; set; }
         public string StatusReportNamedPipe { get; set; }
@@ -100,6 +101,7 @@ namespace WBPlatform.Config
             }
             Current = config;
             L.I("Finished Loading Config....");
+            L._LogLevel = (LogLevel)Current.LogLevel;
             return true;
         }
 

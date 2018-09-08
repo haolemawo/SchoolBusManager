@@ -15,7 +15,6 @@ namespace WBPlatform.ServiceStatus
     {
         public static void Main(string[] args)
         {
-            L.SetLogLevel(LogLevel.DBG);
             L.InitLog();
 
             var v = XConfig.LoadAll();

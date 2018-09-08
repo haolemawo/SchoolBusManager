@@ -3,18 +3,18 @@ using System.Linq;
 using System.Threading;
 
 using WBPlatform.Database;
+using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.Logging;
 
 namespace WBPlatform.WebManagement.Tools
 {
     public class WeChatMessageBackupService
     {
-        public static int GetCount { get => list.Count; }
+        public static int GetCount { get => NotificationList.Count; }
         public static bool GetStatus { get => NotificationBackupThread.IsAlive; }
         private static Thread NotificationBackupThread = new Thread(new ThreadStart(_Process));
-        private static List<NotificationObject> list { get; set; } = new List<NotificationObject>();
+        private static List<NotificationObject> NotificationList { get; set; } = new List<NotificationObject>();
         public static void StartBackupThread()
         {
             NotificationBackupThread.Start();
@@ -40,7 +40,7 @@ namespace WBPlatform.WebManagement.Tools
                 Title = Title ?? "",
                 Type = _type
             };
-            lock (list) { list.Add(notification); }
+            lock (NotificationList) { NotificationList.Add(notification); }
         }
 
         private static void _Process()
@@ -48,12 +48,12 @@ namespace WBPlatform.WebManagement.Tools
             NotificationObject message;
             while (true)
             {
-                lock (list)
+                lock (NotificationList)
                 {
-                    if (list.Count != 0)
+                    if (NotificationList.Count != 0)
                     {
-                        message = list[list.Count - 1];
-                        list.Remove(list.Last());
+                        message = NotificationList[NotificationList.Count - 1];
+                        NotificationList.Remove(NotificationList.Last());
                     }
                     else message = null;
                 }

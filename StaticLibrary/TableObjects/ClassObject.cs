@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using WBPlatform.Database;
-using WBPlatform.Database.IO;
+﻿using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.TableObject
 {
-    public class ClassObject : DataTableObject<ClassObject> 
+    public class ClassObject : DataTableObject<ClassObject>
     {
         public string CDepartment { get; set; }
         public string CGrade { get; set; }
@@ -14,9 +11,8 @@ namespace WBPlatform.TableObject
 
         public string TeacherID { get; set; }
 
-        public ClassObject() { }
         public override string Table => TABLE_Mgr_Classes;
-        
+
         public override void ReadFields(DataBaseIO input)
         {
             base.ReadFields(input);
@@ -34,20 +30,5 @@ namespace WBPlatform.TableObject
             output.Put("ClassNumber", CNumber);
             output.Put("TeacherID", TeacherID);
         }
-
-        public Dictionary<string, string> ToDictionary()
-        {
-            return new Dictionary<string, string>
-            {
-                { "ClassID", ObjectId },
-                { "ClassDepartment", CDepartment },
-                { "ClassGrade", CGrade },
-                { "ClassNumber", CNumber },
-                { "TeacherID", TeacherID },
-                { "CreatedAt", CreatedAt.ToString("yyyy-MM-dd HH:mm:ss") },
-                { "UpdatedAt", UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss") },
-            };
-        }
-        public override string ToString() => JsonConvert.SerializeObject(ToDictionary());
     }
 }

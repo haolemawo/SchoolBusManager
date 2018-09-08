@@ -16,15 +16,7 @@ namespace WBPlatform.WebManagement.Controllers
         public override IActionResult Index()
         {
             ViewData["where"] = HomeController.ControllerName;
-            if (ValidateSession())
-            {
-                return View(CurrentUser);
-            }
-            else
-            {
-
-                return LoginFailed("/" + ControllerName);
-            }
+            return ValidateSession() ? View(CurrentUser) : LoginFailed("/" + ControllerName);
         }
         public IActionResult Register(string token, string user, string _action)
         {

@@ -23,7 +23,7 @@ namespace WBPlatform.TableObject
         public DirectGoHomeMode DirectGoHome { get; set; }
 
         //public string ParentsID { get; set; }
-        
+
 
         public override string Table => TABLE_Mgr_StuData;
 

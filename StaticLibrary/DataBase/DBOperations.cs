@@ -128,14 +128,14 @@ namespace WBPlatform.Database
                 switch (operation)
                 {
                     case DBVerbs.Create:
-                        internalQuery.DBObjects = output.MoveToArray<DataBaseIO[], DataBaseIO>();
+                        internalQuery.DBObjects = output.MoveToArray();
                         break;
                     case DBVerbs.QuerySingle:
                     case DBVerbs.QueryMulti:
                         internalQuery.Query = query;
                         break;
                     case DBVerbs.Update:
-                        internalQuery.DBObjects = output.MoveToArray<DataBaseIO[], DataBaseIO>();
+                        internalQuery.DBObjects = output.MoveToArray();
                         internalQuery.Query = query;
                         break;
                     case DBVerbs.Delete:

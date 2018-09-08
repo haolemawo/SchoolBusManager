@@ -56,8 +56,8 @@ namespace WBPlatform.TableObject
             {
                 HeadImagePath = "default.png";
             }
-            CurrentPoint = new PointF(input.GetT<float>("longitude"), input.GetT<float>("latitude"));
-            Precision = input.GetT<decimal>("precision");
+            CurrentPoint = new PointF(input.Get<float>("longitude"), input.Get<float>("latitude"));
+            Precision = input.Get<decimal>("precision");
         }
 
         public override void WriteObject(DataBaseIO output, bool all)

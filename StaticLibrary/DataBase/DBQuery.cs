@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WBPlatform.Database
@@ -19,6 +20,9 @@ namespace WBPlatform.Database
         public int _Limit { get; set; } = -1;
         public int _Skip { get; set; } = -1;
         public string _SortedBy { get; set; }
+
+        [JsonIgnore]
+        public bool AnyThing => EqualTo.Count > 0 || Contains.Count > 0 || ContainedInArray.Count > 0;
 
         public Dictionary<string, object> EqualTo { get; private set; }
         public Dictionary<string, string> Contains { get; private set; }

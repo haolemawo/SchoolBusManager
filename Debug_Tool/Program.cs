@@ -13,7 +13,6 @@ namespace Debug_Tool
     {
         static void Main(string[] args)
         {
-            L.SetLogLevel(LogLevel.DBG);
             L.InitLog();
             XConfig.LoadConfig("XConfig.conf");
             DataBaseOperation.InitialiseClient();
@@ -37,13 +36,13 @@ namespace Debug_Tool
 
             List<ClassObject> classList = new List<ClassObject>();
             List<SchoolBusObject> busList = new List<SchoolBusObject>();
-            for (int i = 1; i < (8 * 200) + 1; i++)
+            for (int i = 1; i < 16; i++)
             {
                 ClassObject @class = new ClassObject()
                 {
                     CDepartment = dePartMent[RandomInt(0, 3)],
                     CGrade = RandomInt(1, 14) + "年级",
-                    CNumber = RandomInt(1, 8) + "班-" + DateTime.Now.AsUnixTimeStamp()
+                    CNumber = RandomInt(1, 8) + "班"
                 };
                 L.D(DataBaseOperation.CreateData(ref @class).ToString());
                 L.D(@class.ToParsedString());
@@ -51,7 +50,7 @@ namespace Debug_Tool
             }
 
 
-            for (int i = 1; i < 161; i++)
+            for (int i = 1; i < 20; i++)
             {
                 SchoolBusObject bo = new SchoolBusObject()
                 {
@@ -65,7 +64,7 @@ namespace Debug_Tool
 
 
 
-            for (int cn = 1; cn < 3000; cn++)
+            for (int cn = 1; cn < 1500; cn++)
             {
                 StudentObject stu = new StudentObject()
                 {
@@ -75,7 +74,9 @@ namespace Debug_Tool
                     StudentName = "Stu-" + cn.ToString("000"),
                     AHChecked = false,
                     CSChecked = false,
-                    LSChecked = false
+                    LSChecked = false,
+                    TakingBus = true,
+                    DirectGoHome = (DirectGoHomeMode)RandomInt(0, 3)
                 };
                 L.D(DataBaseOperation.CreateData(ref stu).ToString());
 
@@ -87,7 +88,6 @@ namespace Debug_Tool
                         me.ChildList.Add(stu.ObjectId);
                     }
                 }
-                L.I(cn.ToParsedString());
             }
 
             me.HeadImagePath = "liuhaoyu.gif";

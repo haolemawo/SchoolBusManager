@@ -62,7 +62,6 @@ namespace WBPlatform.WebManagement.Tools
                     //throw new NotSupportedException("鬼知道你干嘛要调这个函数");
                     return true;
 
-
                 default: throw new NotSupportedException("不支持就是不支持……");
             }
         }
@@ -122,36 +121,52 @@ namespace WBPlatform.WebManagement.Tools
         {
             var dirInfo = Directory.CreateDirectory("reports");
             string ReportVisibleName = "班车统计报告";
-            string ReportFilePath = dirInfo.FullName + "//" + message.DataObject + "-GenBy-" + message.User.GetIdentifiableCode() + "-At-" + message.Identifier + ".xlsx";
+            string ReportFilePath = dirInfo.FullName + "//" + message.DataObject + "-GenBy-" + message.User.GetIdentifiableCode() + "-" + message.Identifier + ".xlsx";
 
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { L.E("No Bus Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { L.E("No Students Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<ClassObject> _c) <= 0) { L.E("No Classes Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { L.E("No Users Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> busList) <= 0) { L.E("No Bus Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> studentsList) <= 0) { L.E("No Students Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<ClassObject> classList) <= 0) { L.E("No Classes Found???"); return false; }
+            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> userList) <= 0) { L.E("No Users Found???"); return false; }
 
-            Dictionary<string, SchoolBusObject> SchoolBusDictionary = _s.ToDictionary();
-            Dictionary<string, ClassObject> ClassDictionary = _c.ToDictionary();
-            Dictionary<string, StudentObject> StudentsDictionary = _st.ToDictionary();
-            Dictionary<string, UserObject> UsersDictionary = _usr.ToDictionary();
+            Dictionary<string, SchoolBusObject> SchoolBusDictionary = busList.ToDictionary();
+            Dictionary<string, ClassObject> ClassDictionary = classList.ToDictionary();
+            Dictionary<string, StudentObject> StudentsDictionary = studentsList.ToDictionary();
+            Dictionary<string, UserObject> UsersDictionary = userList.ToDictionary();
 
-            void FillStudentsDataIntoSheet(IXLWorksheet sheet, StudentObject[] _stus)
+            ClassObject emptyClassObject = new ClassObject() { CDepartment = "-未知-", CGrade = "-未知-", CNumber = "-未知-", TeacherID = DataTableObject.DefaultObjectID, ObjectId = DataTableObject.DefaultObjectID };
+            UserObject emptyUserObject = new UserObject() { RealName = "-未知-", ObjectId = DataTableObject.DefaultObjectID };
+            SchoolBusObject emptySchoolBusObject = new SchoolBusObject() { BusName = "-未知-", TeacherID = DataTableObject.DefaultObjectID, ObjectId = DataTableObject.DefaultObjectID };
+
+            void FillStudentsDataIntoSheet(IXLWorksheet sheet, StudentObject[] students)
             {
                 sheet.Row(1).SetValues("学部", "年级", "班级", "班主任", "学生姓名", "性别", "班车方向", "本周是否坐班车", "带车老师", "离校签到", "返校签到", "免接送状态", "到家签到", "家长信息");
-                for (int i = 0; i < _stus.Length; i++)
+                for (int i = 0; i < students.Length; i++)
                 {
-                    var _student = _stus[i];
-                    if (_stus[i].ClassID == null)
-                    {
-                        continue;
-                    }
-                    var _class = ClassDictionary[_stus[i].ClassID];
-                    if (_class.TeacherID == null)
-                    {
-                        continue;
-                    }
-                    var _classTeacher = UsersDictionary[_class.TeacherID];
-                    var _bus = SchoolBusDictionary[_student.BusID];
-                    var _busTeacher = UsersDictionary[_bus.TeacherID];
+                    // HERE NEEDS SOME DATA PROCESS ABOUT 'NULL'
+                    var _student = students[i];
+                    _student.ClassID = _student.ClassID ?? DataTableObject.DefaultObjectID;
+                    _student.BusID = _student.BusID ?? DataTableObject.DefaultObjectID;
+
+                    var _class = ClassDictionary.ContainsKey(_student.ClassID)
+                        ? ClassDictionary[_student.ClassID]
+                        : emptyClassObject;
+
+                    _class.TeacherID = _class.TeacherID ?? DataTableObject.DefaultObjectID;
+
+                    var _classTeacher = UsersDictionary.ContainsKey(_class.TeacherID)
+                        ? UsersDictionary[_class.TeacherID]
+                        : emptyUserObject;
+
+                    var _bus = SchoolBusDictionary.ContainsKey(_student.BusID)
+                        ? SchoolBusDictionary[_student.BusID]
+                        : emptySchoolBusObject;
+
+                    _bus.TeacherID = _bus.TeacherID ?? DataTableObject.DefaultObjectID;
+
+                    var _busTeacher = UsersDictionary.ContainsKey(_bus.TeacherID)
+                        ? UsersDictionary[_bus.TeacherID]
+                        : emptyUserObject;
+
                     var _parents = from k in UsersDictionary where k.Value.ChildList.Contains(_student.ObjectId) select k.Value;
 
                     List<string> values = new List<string>
@@ -191,14 +206,19 @@ namespace WBPlatform.WebManagement.Tools
             {
                 case "class":
                     ReportVisibleName += "(按班级分类).xlsx";
-                    foreach (var _class in ClassDictionary.Values)
+                    var classes = classList.OrderBy(k => k.CDepartment).ThenBy(k => k.CGrade).ThenBy(k => k.CNumber);
+                    //var classes = from _ in ClassDictionary.Values orderby new { _.CDepartment, _.CGrade } select _;
+                    foreach (var _class in classes)
                     {
+                        int count = 1;
                         string sheetName = _class.CDepartment + "-" + _class.CGrade + "-" + _class.CNumber;
-                        if (wb.Worksheets.Contains(sheetName))
+                        string sheetBName = sheetName;
+                        while (wb.Worksheets.Contains(sheetBName))
                         {
-                            sheetName += Cryptography.CurrentTimeStamp;
+                            sheetBName = sheetName + $"({count})";
+                            count++;
                         }
-                        var sheetClass = wb.Worksheets.Add(sheetName);
+                        var sheetClass = wb.Worksheets.Add(sheetBName);
                         FillStudentsDataIntoSheet(sheetClass, (from x in StudentsDictionary.Values where x.ClassID == _class.ObjectId select x).ToArray());
                     }
                     break;
@@ -206,9 +226,13 @@ namespace WBPlatform.WebManagement.Tools
                     ReportVisibleName += "(按班车分类).xlsx";
                     foreach (var _bus in SchoolBusDictionary.Values)
                     {
-                        if (wb.Worksheets.Contains(_bus.BusName))
+                        int count = 1;
+                        string sheetName = _bus.BusName;
+                        string sheetBName = sheetName;
+                        while (wb.Worksheets.Contains(sheetBName))
                         {
-                            _bus.BusName += Cryptography.CurrentTimeStamp;
+                            sheetBName = sheetName + $"({count})";
+                            count++;
                         }
                         var sheetBus = wb.Worksheets.Add(_bus.BusName);
                         FillStudentsDataIntoSheet(sheetBus, (from x in StudentsDictionary.Values where x.BusID == _bus.ObjectId select x).ToArray());
@@ -285,7 +309,7 @@ namespace WBPlatform.WebManagement.Tools
                 L.W("No Administrator found!! thus no Register Request can be solved!");
                 return false;
             }
-            string escapedString = (string)PublicTools.EncodeString(message.DataObject.ToString());
+            string escapedString = (string)message.DataObject.ToString().EncodeAsString();
             string URL = Convert.ToBase64String(Encoding.UTF8.GetBytes(escapedString), Base64FormattingOptions.None);
             WeChatSentMessage userVerifyMsg = new WeChatSentMessage(WeChatSMsg.textcard, "新用户注册审核通知",
                 $"有一位新用户在{message.User.CreatedAt.ToString()}申请了注册用户，请审核！\r\n提供的姓名：{message.User.RealName}\r\n手机号码：{message.User.PhoneNumber}",

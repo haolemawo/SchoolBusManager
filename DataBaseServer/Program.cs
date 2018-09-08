@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
-using WBPlatform.StaticClasses;
+
 using WBPlatform.Config;
 using WBPlatform.Logging;
 namespace WBPlatform.Database.DBServer

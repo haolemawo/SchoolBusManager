@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-
+using WBPlatform.Config;
 using WBPlatform.StaticClasses;
 
 namespace WBPlatform.Logging
@@ -23,8 +23,7 @@ namespace WBPlatform.Logging
     public static class L
     {
         public static event OnLogWrited OnLog;
-        private static LogLevel _LogLevel { get; set; } = LogLevel.WRN;
-        public static void SetLogLevel(LogLevel level) { _LogLevel = level; }
+        public static LogLevel _LogLevel { private get; set; }
 
         private static StreamWriter Fs { get; set; }
         private static string LogFilePath { get; set; }
@@ -44,6 +43,7 @@ namespace WBPlatform.Logging
 
         private static void WriteLog(LogLevel level, string Message)
         {
+            //Message = Message.Replace("\r\n", @" -\r\n ");
             if (level < _LogLevel) return;
             string LogMsg = $"[{DateTime.Now.ToDetailedString()} - {level.ToString()}] {Message}\r\n";
 #if DEBUG
@@ -54,17 +54,17 @@ namespace WBPlatform.Logging
 #endif
             switch (level)
             {
-                case LogLevel.ERR:
-                    Console.ForegroundColor = ConsoleColor.Red;
+                case LogLevel.DBG:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     break;
                 case LogLevel.INF:
                     Console.ForegroundColor = ConsoleColor.Blue;
                     break;
-                case LogLevel.DBG:
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    break;
                 case LogLevel.WRN:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case LogLevel.ERR:
+                    Console.ForegroundColor = ConsoleColor.Red;
                     break;
             }
             Console.Write(LogMsg);

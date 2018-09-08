@@ -23,7 +23,6 @@ namespace WBPlatform.WebManagement
         public static CancellationTokenSource ServerStopToken { get; private set; } = new CancellationTokenSource();
         public static void Main(string[] args)
         {
-            L.SetLogLevel(LogLevel.DBG);
             L.InitLog();
             StartUpTime = DateTime.Now;
             L.I("WoodenBench WebServer Starting....");

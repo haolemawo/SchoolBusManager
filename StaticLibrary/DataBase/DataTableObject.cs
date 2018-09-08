@@ -18,8 +18,7 @@ namespace WBPlatform.TableObject
         [JsonIgnore] public const string TABLE_Gen_Bugreport = "UserQuestions";
         [JsonIgnore] public const string TABLE_Gen_Notification = "Notifications";
         [JsonIgnore] public const string TABLE_Gen_UserRequest = "UserRequest";
-        [JsonIgnore] public const string DefaultObjectID = "0000000000";
-        [JsonIgnore] public readonly DateTime DefaultTime = DateTime.MinValue;
+        [JsonIgnore] public const string DefaultObjectID = "_null_";
         [JsonIgnore] public abstract string Table { get; }
 
         public virtual string ObjectId { get; set; }

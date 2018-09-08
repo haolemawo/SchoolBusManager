@@ -25,9 +25,9 @@ namespace WBPlatform.WebManagement.Tools
         public static void StartProcessThreads()
         {
             ProcessorSENTThread.Start();
-            L.I("\tWeChatSendThread Started!");
+            L.I("WeChatSendThread Started!");
             ProcessorRCVDThread.Start();
-            L.I("\tWeChatRcvdThread Started!");
+            L.I("WeChatRcvdThread Started!");
         }
 
         public static void AddToRecvList(WeChatRcvdMessage _Message)

@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+
 using Newtonsoft.Json;
 
 using System;
@@ -10,8 +11,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
+
 using WBPlatform.Database.IO;
-using WBPlatform.Logging;
 using WBPlatform.TableObject;
 
 namespace WBPlatform.StaticClasses
@@ -20,7 +21,7 @@ namespace WBPlatform.StaticClasses
     {
         public static string ToNormalString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         public static string ToFileNameString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd-HH-mm-ss");
-        public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + DateTime.Now.Millisecond.ToString("000");
+        public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + ":" + DateTime.Now.Millisecond.ToString("000");
         public static void SetHeaderColor(this IXLWorksheet sheet)
         {
             sheet.FirstRow().Style.Font.Bold = true;
@@ -175,7 +176,10 @@ namespace WBPlatform.StaticClasses
             return n;
         }
 
-        public static TOut MoveToArray<TOut, T>(this T thing) where TOut : IEnumerable<T> => (TOut)(IEnumerable<T>)new T[] { thing };
+
+        public static T[] MoveToArray<T>(this T thing) => (T[])thing.ToIEnumerable();
+        public static IEnumerable<T> ToIEnumerable<T>(this T thing) => new T[] { thing };
+
         public static string ToParsedString<T>(this T value) => JsonConvert.SerializeObject(value, typeof(T), new JsonSerializerSettings());
 
         public static bool ToParsedObject<T>(this string JSON, out T data)
@@ -191,7 +195,7 @@ namespace WBPlatform.StaticClasses
             return Convert.ToBase64String(plainTextBytes);
         }
 
-        public static string GetString(this DataBaseIO io, string Key) => io.GetT<string>(Key);
+        public static string GetString(this DataBaseIO io, string Key) => io.Get<string>(Key) ?? string.Empty;
 
         public static List<string> GetList(this DataBaseIO io, string Key) => io.GetList(Key, ',');
         public static List<string> GetList(this DataBaseIO io, string Key, char splitter)
@@ -200,9 +204,9 @@ namespace WBPlatform.StaticClasses
             return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(splitter).ToList();
         }
 
-        public static bool GetBool(this DataBaseIO io, string Key) => io.GetT<bool>(Key);
-        public static int GetInt(this DataBaseIO io, string Key) => io.GetT<int>(Key);
-        public static DateTime GetDateTime(this DataBaseIO io, string Key) => io.GetT<DateTime>(Key);
+        public static bool GetBool(this DataBaseIO io, string Key) => io.Get<bool>(Key);
+        public static int GetInt(this DataBaseIO io, string Key) => io.Get<int>(Key);
+        public static DateTime GetDateTime(this DataBaseIO io, string Key) => io.Get<DateTime>(Key);
 
         public static string SHAHashEncrypt<TProvider>(this string strIN) where TProvider : HashAlgorithm, new()
         {

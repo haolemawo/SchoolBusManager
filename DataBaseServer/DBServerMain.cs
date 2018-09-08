@@ -16,6 +16,7 @@ namespace WBPlatform.Database.DBServer
 {
     public partial class MainForm : Form
     {
+        public static ConcurrentQueue<OnLogChangedEventArgs> eventArgs = new ConcurrentQueue<OnLogChangedEventArgs>();
         public MainForm()
         {
             InitializeComponent();
@@ -28,12 +29,7 @@ namespace WBPlatform.Database.DBServer
 
         private void LogWritter_onLog(OnLogChangedEventArgs logchange, object sender)
         {
-            logsTextbox.Invoke(new Action(delegate
-            {
-                logsTextbox.Text += logchange.LogString;
-                logsTextbox.SelectionStart = logsTextbox.Text.Length;
-                logsTextbox.ScrollToCaret();
-            }));
+            eventArgs.Enqueue(logchange);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -75,6 +71,48 @@ namespace WBPlatform.Database.DBServer
         {
             notifyIcon1.Visible = false;
             Environment.Exit(0);
+        }
+
+        private void logTimer_Tick(object sender, EventArgs e)
+        {
+            if (eventArgs.TryDequeue(out OnLogChangedEventArgs logchange))
+            {
+                int lenth = logTextBox.Text.Length;
+                switch (logchange.LogLevel)
+                {
+                    case LogLevel.DBG:
+                        for (int j = 0; logchange.LogString[j] != '\n'; j++)
+                        {
+                            logTextBox.Select(lenth + j, 1);
+                            logTextBox.SelectionColor = Color.Cyan;
+                        }
+                        break;
+                    case LogLevel.INF:
+                        for (int j = 0; logchange.LogString[j] != '\n'; j++)
+                        {
+                            logTextBox.Select(lenth + j, 1);
+                            logTextBox.SelectionColor = Color.Blue;
+                        }
+                        break;
+                    case LogLevel.WRN:
+                        for (int j = 0; logchange.LogString[j] != '\n'; j++)
+                        {
+                            logTextBox.Select(lenth + j, 1);
+                            logTextBox.SelectionColor = Color.Yellow;
+                        }
+                        break;
+                    case LogLevel.ERR:
+                        for (int j = 0; logchange.LogString[j] != '\n'; j++)
+                        {
+                            logTextBox.Select(lenth + j, 1);
+                            logTextBox.SelectionColor = Color.Red;
+                        }
+                        break;
+                }
+                logTextBox.AppendText(logchange.LogString);
+                logTextBox.SelectionStart = logTextBox.Text.Length;
+                logTextBox.ScrollToCaret();
+            }
         }
     }
 }

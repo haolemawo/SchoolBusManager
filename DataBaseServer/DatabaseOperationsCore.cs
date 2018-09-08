@@ -1,15 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
-using WBPlatform.Database;
-using WBPlatform.Database.IO;
-using WBPlatform.StaticClasses;
 using WBPlatform.Config;
+using WBPlatform.Database.IO;
 using WBPlatform.Logging;
+using WBPlatform.StaticClasses;
 
 namespace WBPlatform.Database.DBServer
 {
@@ -72,7 +70,7 @@ namespace WBPlatform.Database.DBServer
                         var dict = SQLQueryCommand(BuildQueryString(request.TableName, request.Query));
                         if (dict.Length != 1)
                         {
-                            throw new KeyNotFoundException("DBServerCore-->ProcessRequest->Update: Cannot find Specific Record by Query, so Failed to update....");
+                            throw new KeyNotFoundException("Update: Cannot find Specific Record by Query, so Failed to update....");
                         }
                         rowModified = CommandUpdate(request.TableName, dict[0]["objectId"].ToString(), request.DBObjects[0]);
                         reply.ResultCode = (DBQueryStatus)rowModified;
@@ -102,11 +100,11 @@ namespace WBPlatform.Database.DBServer
 
         private static string BuildQueryString(string TableName, DBQuery dbQuery)
         {
-            string sqlCommand_Query = $"SELECT TOP({dbQuery._Limit}) * FROM {TableName}{((dbQuery.EqualTo.Count > 0 || dbQuery.Contains.Count > 0 || dbQuery.ContainedInArray.Count > 0) ? " WHERE " : "")}";
+            string sqlCommand_Query = $"SELECT TOP({dbQuery._Limit}) * FROM {TableName} {(dbQuery.AnyThing ? "WHERE " : string.Empty)}";
 
             if (dbQuery.EqualTo.Count > 0)
             {
-                string[] queriesStringCollection = (from q in dbQuery.EqualTo select $"{q.Key} = '{PublicTools.EncodeString(q.Value.ToString())}'").ToArray();
+                var queriesStringCollection = from q in dbQuery.EqualTo select $"{q.Key} = '{q.Value.ToString().EncodeAsString()}'";
                 sqlCommand_Query += "(" + string.Join(" AND ", queriesStringCollection) + ")";
                 sqlCommand_Query += (dbQuery.ContainedInArray.Count > 0 || dbQuery.Contains.Count > 0) ? " AND " : string.Empty;
             }
@@ -118,7 +116,7 @@ namespace WBPlatform.Database.DBServer
                 {
                     containsSQLList.Add($"( {item.Key} IN ('{string.Join("', '", item.Value)}'))");
                 }
-                string finalQueryString = string.Join(" OR ", containsSQLList.ToArray());
+                string finalQueryString = string.Join(" OR ", containsSQLList);
 
                 sqlCommand_Query += "(" + finalQueryString + ")";
                 sqlCommand_Query += (dbQuery.Contains.Count > 0) ? " AND " : string.Empty;
@@ -126,10 +124,11 @@ namespace WBPlatform.Database.DBServer
 
             if (dbQuery.Contains.Count > 0)
             {
-                string[] queriesStringCollection = (from q in dbQuery.Contains select $"{q.Key} LIKE '%{PublicTools.EncodeString(q.Value)}%'").ToArray();
+                var queriesStringCollection = from q in dbQuery.Contains select $"{q.Key} LIKE '%{q.Value.EncodeAsString()}%'";
                 sqlCommand_Query += string.Join(" AND ", queriesStringCollection);
             }
-            string.Join(" ", sqlCommand_Query, " order by", dbQuery._SortedBy, dbQuery._Ascending ? "" : "desc");
+
+            sqlCommand_Query += $" order by {dbQuery._SortedBy} {(dbQuery._Ascending ? "" : "desc")}";
             return sqlCommand_Query;
         }
 
@@ -139,7 +138,7 @@ namespace WBPlatform.Database.DBServer
                 $"INSERT INTO {TableName} " +
                 $"({string.Join(",", output.Data.Keys)}, createdAt, updatedAt)" +
                 $" VALUES " +
-                $"('{string.Join("','", (from val in output.Data.Values select (PublicTools.EncodeString(val))).ToArray())}', '{DateTime.Now}', '{DateTime.Now}')";
+                $"('{string.Join("','", from _ in output.Data.Values select _.EncodeAsString().ToString())}', '{DateTime.Now}', '{DateTime.Now}')";
             SqlCommand command_Create = new SqlCommand(sqlCommand_Create, sqlConnection);
             return command_Create.ExecuteNonQuery();
         }
@@ -148,7 +147,7 @@ namespace WBPlatform.Database.DBServer
         {
             string sqlCommand_Update =
                 $"UPDATE {TableName} " +
-                $"SET {string.Join(",", (from q in output.Data select $"{q.Key} = '{PublicTools.EncodeString(q.Value)}' ").ToArray())}, updatedAt = '{DateTime.Now}' " +
+                $"SET {string.Join(",", (from q in output.Data select $"{q.Key} = '{q.Value.EncodeAsString()}' ").ToArray())}, updatedAt = '{DateTime.Now}' " +
                 $"WHERE objectId = '{ObjectID}'";
 
             SqlCommand command_Update = new SqlCommand(sqlCommand_Update, sqlConnection);
@@ -156,7 +155,7 @@ namespace WBPlatform.Database.DBServer
         }
 
         private static DataBaseIO[] GetFirstRecord(string tableName, string Column, object Value)
-            => SQLQueryCommand($"SELECT TOP(1) * FROM {tableName} WHERE {Column} = '{PublicTools.EncodeString(Value)}' ");
+            => SQLQueryCommand($"SELECT TOP(1) * FROM {tableName} WHERE {Column} = '{Value.EncodeAsString()}' ");
 
         private static int CommandDelete(string TableName, string ObjectID)
         {
@@ -171,17 +170,22 @@ namespace WBPlatform.Database.DBServer
             DataSet ds = new DataSet();
             sda.Fill(ds);
             sda.Dispose();
-            List<DataBaseIO> results = new List<DataBaseIO>();
-            foreach (DataRow item in ds.Tables[0].Rows)
+            return (from Dictionary<string, object> _ in DataTableToDictionary(ds.Tables[0]) select new DataBaseIO(_)).ToArray();
+        }
+
+        public static IEnumerable<IDictionary<string, object>> DataTableToDictionary(DataTable dt)
+        {
+            ICollection<IDictionary<string, object>> list = new List<IDictionary<string, object>>();
+            foreach (DataRow dr in dt.Rows)
             {
-                Dictionary<string, object> tmp = new Dictionary<string, object>();
-                for (int i = 0; i < item.ItemArray.Length; i++)
+                IDictionary<string, object> dct = new Dictionary<string, object>();
+                foreach (DataColumn column in dt.Columns)
                 {
-                    tmp.Add(ds.Tables[0].Columns[i].ColumnName, PublicTools.DecodeObject(item.ItemArray[i]));
+                    dct.Add(column.ColumnName, dr[column.ColumnName].DecodeAsObject());
                 }
-                results.Add(new DataBaseIO(tmp));
+                list.Add(dct);
             }
-            return results.ToArray();
+            return list;
         }
     }
 }
