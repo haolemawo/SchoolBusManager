@@ -1,5 +1,5 @@
 /// <reference path="./lib/cryptojs.d.ts" />
-/// <reference path="C:\\Users\\lhy20\\AppData\\Local\\Microsoft\\TypeScript\\3.0\\node_modules\\@types\\jquery\\index.d.ts" />
+/// <reference path="./index.d.ts" />
 /// <reference path="./DataObjects.ts" />
 /// <reference path="./Dictionary.ts" />
 
