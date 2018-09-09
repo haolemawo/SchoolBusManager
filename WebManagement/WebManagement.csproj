@@ -16,6 +16,7 @@
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
     <LangVersion>7.2</LangVersion>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

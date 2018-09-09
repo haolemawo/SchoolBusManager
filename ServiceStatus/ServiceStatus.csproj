@@ -12,6 +12,7 @@
     <AssemblyName>WBPlatformServ_Status</AssemblyName>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
     <LangVersion>7.2</LangVersion>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
