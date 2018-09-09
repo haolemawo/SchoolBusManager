@@ -18,7 +18,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (!ValidateSession()) return SessionError;
             if (!CurrentUser.UserGroup.IsParent && !CurrentUser.UserGroup.IsClassTeacher) return UserGroupError;
 
-            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", studentId), out StudentObject Student) != DBQueryStatus.ONE_RESULT)
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", studentId), out StudentObject Student) != DBQueryStatus.ONE_RESULT)
                 return RequestIllegal;
 
             //Check if this student is onder user's control;
@@ -28,9 +28,12 @@ namespace WBPlatform.WebManagement.Controllers
 
             if (!flag && CurrentUser.UserGroup.IsClassTeacher)
             {
-                if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("TeacherID", CurrentUser.ObjectId), out ClassObject Class) != DBQueryStatus.ONE_RESULT)
+                if (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("TeacherID", CurrentUser.ObjectId), out System.Collections.Generic.List<ClassObject> Class) == DBQueryStatus.NO_RESULTS)
                     return RequestIllegal;
-                flag = Student.ClassID == Class.ObjectId;
+                foreach (var item in Class)
+                {
+                    flag = flag || Student.ClassID == item.ObjectId;
+                }
             }
 
             if (!flag) return RequestIllegal;

@@ -23,7 +23,7 @@ namespace WBPlatform.WebManagement.Controllers
             DBQuery StudentQuery = new DBQuery();
             StudentQuery.WhereEqualTo("ClassID", ClassID);
             Dictionary<string, string> dict = new Dictionary<string, string>();
-            switch (DataBaseOperation.QueryMultipleData(StudentQuery, out List<StudentObject> StudentList))
+            switch (DataBaseOperation.QueryMultiple(StudentQuery, out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 default: return Json(new { StudentList.Count, StudentList });

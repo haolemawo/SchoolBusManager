@@ -9,9 +9,9 @@ namespace WBPlatform.TableObject
         public string BusID { get; set; }
         public BusReportTypeE ReportType { get; set; }
         public string OtherData { get; set; }
-        
-        public override string Table => WBConsts.TABLE_Mgr_WeekIssue;
-        
+
+        public override string Table => TABLE_Mgr_WeekIssue;
+
         public override void ReadFields(DataBaseIO input)
         {
             base.ReadFields(input);
@@ -20,7 +20,7 @@ namespace WBPlatform.TableObject
             ReportType = (BusReportTypeE)input.GetInt("ReportType");
             OtherData = input.GetString("DetailedInformation");
         }
-        
+
         public override void WriteObject(DataBaseIO output, bool all)
         {
             base.WriteObject(output, all);

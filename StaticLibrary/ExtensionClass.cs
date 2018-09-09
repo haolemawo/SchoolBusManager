@@ -1,24 +1,42 @@
-﻿using Newtonsoft.Json;
+﻿using ClosedXML.Excel;
+
+using Newtonsoft.Json;
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using WBPlatform.Logging;
-using System.Text;
-using WBPlatform.Database;
-using WBPlatform.Database.IO;
-using System.Security.Cryptography;
-using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
+using System.Text;
+
+using WBPlatform.Database.IO;
+using WBPlatform.TableObject;
 
 namespace WBPlatform.StaticClasses
 {
     public static class ExtensionClass
     {
         public static string ToNormalString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
-        public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + DateTime.Now.Millisecond.ToString("000");
-
+        public static string ToFileNameString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd-HH-mm-ss");
+        public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + ":" + DateTime.Now.Millisecond.ToString("000");
+        public static void SetHeaderColor(this IXLWorksheet sheet)
+        {
+            sheet.FirstRow().Style.Font.Bold = true;
+            sheet.FirstRow().Style.Font.FontColor = XLColor.White;
+            sheet.FirstRow().Style.Fill.BackgroundColor = XLColor.FromArgb(83, 141, 213);
+        }
+        public static void SetContentColor(this IXLWorksheet sheet)
+        {
+            sheet.RowsUsed(r => sheet.FirstRow() != r).Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
+        }
+        public static void SetGrid(this IXLWorksheet sheet)
+        {
+            sheet.RangeUsed().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            sheet.RangeUsed().Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+        }
         public static void CloseAndDispose(this Socket socket)
         {
             socket?.Disconnect(true);
@@ -27,7 +45,18 @@ namespace WBPlatform.StaticClasses
             socket = null;
         }
 
-        public static T DeepCloneObject<T>(this object _object)
+        public static void SetValues(this IXLRow row, int startAt, params string[] values)
+        {
+            int current = startAt;
+            foreach (var item in values)
+            {
+                row.Cell(current).SetValue(item);
+                current++;
+            }
+        }
+        public static void SetValues(this IXLRow row, params string[] values) => row.SetValues(1, values);
+
+        public static T DeepCloneObject<T>(this object _object) where T : ISerializable
         {
             MemoryStream stream = new MemoryStream();
             BinaryFormatter formatter = new BinaryFormatter();
@@ -36,6 +65,7 @@ namespace WBPlatform.StaticClasses
             return (T)formatter.Deserialize(stream);
         }
 
+        public static Dictionary<string, T> ToDictionary<T>(this IEnumerable<T> dataObjects) where T : DataTableObject => dataObjects.ToDictionary(t => { return t.ObjectId; });
 
         public static string Middle(this string str, string After, string Before)
         {
@@ -125,14 +155,12 @@ namespace WBPlatform.StaticClasses
             stream = null;
         }
 
-
         public static byte[] ToBytesArray(this int n)
         {
             byte[] b = new byte[4];
             for (int i = 0; i < 4; i++) { b[i] = (byte)(n >> (24 - (i * 8))); }
             return b;
         }
-
 
         public static int ToInt32(this byte[] b)
         {
@@ -148,7 +176,10 @@ namespace WBPlatform.StaticClasses
             return n;
         }
 
-        public static T[] MoveToArray<T>(this T thing) => new T[] { thing };
+
+        public static T[] MoveToArray<T>(this T thing) => (T[])thing.ToIEnumerable();
+        public static IEnumerable<T> ToIEnumerable<T>(this T thing) => new T[] { thing };
+
         public static string ToParsedString<T>(this T value) => JsonConvert.SerializeObject(value, typeof(T), new JsonSerializerSettings());
 
         public static bool ToParsedObject<T>(this string JSON, out T data)
@@ -156,23 +187,26 @@ namespace WBPlatform.StaticClasses
             data = JsonConvert.DeserializeObject<T>(JSON);
             return data != null;
         }
-        public static string ToBase64(this string plainText)
+
+        public static string ToBase64(this string plainText) => plainText.ToBase64(Encoding.UTF8);
+        public static string ToBase64(this string plainText, Encoding encoding)
         {
-            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            var plainTextBytes = encoding.GetBytes(plainText);
             return Convert.ToBase64String(plainTextBytes);
         }
 
-        public static string GetString(this DataBaseIO io, string Key) => io.GetT<string>(Key);
+        public static string GetString(this DataBaseIO io, string Key) => io.Get<string>(Key) ?? string.Empty;
 
-        public static List<string> GetList(this DataBaseIO io, string Key)
+        public static List<string> GetList(this DataBaseIO io, string Key) => io.GetList(Key, ',');
+        public static List<string> GetList(this DataBaseIO io, string Key, char splitter)
         {
             string _listString = GetString(io, Key);
-            return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(',').ToList();
+            return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(splitter).ToList();
         }
 
-        public static bool GetBool(this DataBaseIO io, string Key) => io.GetT<bool>(Key);
-        public static int GetInt(this DataBaseIO io, string Key) => io.GetT<int>(Key);
-        public static DateTime GetDateTime(this DataBaseIO io, string Key) => io.GetT<DateTime>(Key);
+        public static bool GetBool(this DataBaseIO io, string Key) => io.Get<bool>(Key);
+        public static int GetInt(this DataBaseIO io, string Key) => io.Get<int>(Key);
+        public static DateTime GetDateTime(this DataBaseIO io, string Key) => io.Get<DateTime>(Key);
 
         public static string SHAHashEncrypt<TProvider>(this string strIN) where TProvider : HashAlgorithm, new()
         {
@@ -190,7 +224,7 @@ namespace WBPlatform.StaticClasses
             }
             catch (Exception ex)
             {
-                throw new Exception("GetSHA256HashFromString() fail, error: " + ex.Message);
+                throw new Exception("GetSHAxxxHashFromString() fail, error: " + ex.Message);
             }
         }
 

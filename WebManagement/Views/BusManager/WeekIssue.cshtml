@@ -31,7 +31,7 @@
     var CurrentBus = wbWeb.GetMgmtBus();
     $("#UserID").text("你好，" + wbWeb.CurrentUser.RealName);
     $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
-    $("#BusDirection").text("我的校车: " + CurrentBus.Bus.BusName);
+    $("#BusDirection").text("我的班车: " + CurrentBus.Bus.BusName);
     
     function NewReport() {
         $("#NewRptBtn").attr("disabled", "");

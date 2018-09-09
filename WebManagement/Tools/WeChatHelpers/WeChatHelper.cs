@@ -20,33 +20,33 @@ namespace WBPlatform.WebManagement.Tools
 
         public static bool InitialiseEncryptor()
         {
-            LW.I("Initialising WeChat Data Packet Encryptor.....");
+            L.I("Initialising WeChat Data Packet Encryptor.....");
             WeChatEncryptor = new WeChatXMLHelper(XConfig.Current.WeChat.SToken, XConfig.Current.WeChat.AESKey, XConfig.Current.WeChat.CorpID);
-            LW.I("WeChat Data Packet Encryptor Initialisation Finished!");
+            L.I("WeChat Data Packet Encryptor Initialisation Finished!");
             return true;
         }
 
         private static bool InitialiseWeChatCodes()
         {
-            LW.I("Query New WeChat Keys....");
+            L.I("Query New WeChat Keys....");
             Dictionary<string, string> JSON;
-            LW.I("\tGetting Access Token....");
+            L.I("\tGetting Access Token....");
             JSON = PublicTools.HTTPGet(GetAccessToken_Url);
             AccessToken = JSON["access_token"];
             AvailableTime_Token = DateTime.Now.AddSeconds(int.Parse(JSON["expires_in"]));
-            LW.I("\tGetting Ticket....");
+            L.I("\tGetting Ticket....");
             JSON = PublicTools.HTTPGet("https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=" + AccessToken);
             AccessTicket = JSON["ticket"];
             AvailableTime_Ticket = DateTime.Now.AddSeconds(int.Parse(JSON["expires_in"]));
-            LW.I("WeChat Keys Initialised Successfully!");
+            L.I("WeChat Keys Initialised Successfully!");
             return true;
         }
         public static bool ReNewWCCodes()
         {
-            LW.I("Started Renew WeChat Operation Codes.....");
-            LW.I("\tChecking Access Tickets...");
+            L.I("Started Renew WeChat Operation Codes.....");
+            L.I("\tChecking Access Tickets...");
             if (AvailableTime_Ticket.Subtract(DateTime.Now).TotalMilliseconds <= 0) { InitialiseWeChatCodes(); return false; }
-            LW.I("\tChecking Tokens...");
+            L.I("\tChecking Tokens...");
             if (AvailableTime_Token.Subtract(DateTime.Now).TotalMilliseconds <= 0) { InitialiseWeChatCodes(); return false; }
             return true;
         }

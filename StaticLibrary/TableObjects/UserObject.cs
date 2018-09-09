@@ -9,7 +9,7 @@ namespace WBPlatform.TableObject
 {
     public class UserObject : DataTableObject<UserObject>
     {
-        public override string Table => WBConsts.TABLE_Gen_UserTable;
+        public override string Table => TABLE_Gen_UserTable;
         public string UserName { get; set; }
         public string Password { get; set; }
         public string RealName { get; set; }
@@ -56,8 +56,8 @@ namespace WBPlatform.TableObject
             {
                 HeadImagePath = "default.png";
             }
-            CurrentPoint = new PointF(input.GetT<float>("longitude"), input.GetT<float>("latitude"));
-            Precision = input.GetT<decimal>("precision");
+            CurrentPoint = new PointF(input.Get<float>("longitude"), input.Get<float>("latitude"));
+            Precision = input.Get<decimal>("precision");
         }
 
         public override void WriteObject(DataBaseIO output, bool all)

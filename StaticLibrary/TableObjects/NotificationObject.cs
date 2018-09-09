@@ -18,7 +18,7 @@ namespace WBPlatform.TableObject
 
         public NotificationObject() { }
 
-        public override string Table => WBConsts.TABLE_Gen_Notification;
+        public override string Table => TABLE_Gen_Notification;
 
 
         public override void ReadFields(DataBaseIO input)

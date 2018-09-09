@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
-using WBPlatform.Logging;
 
 using WBPlatform.Config;
 using WBPlatform.Database;
+using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
+    [RequireHttps(Permanent = true)]
     public class HomeController : ViewController
     {
         public const string ControllerName = "Home";
         public override IActionResult Index()
-
         {
             ViewData["where"] = "Home";
             if (ValidateSession())
@@ -29,7 +29,11 @@ namespace WBPlatform.WebManagement.Controllers
                         Response.Cookies.Delete("LoginRedirect");
                         return Redirect(Request.Cookies["LoginRedirect"]);
                     }
-                    else return View();
+                    else
+                    {
+                        ViewData["_User"] = CurrentUser;
+                        return View();
+                    }
                 }
                 else
                 {
@@ -45,7 +49,7 @@ namespace WBPlatform.WebManagement.Controllers
                     "appid=", XConfig.Current.WeChat.CorpID,
                     "&redirect_uri=", Request.Scheme, "://" + Request.Host, "/Home/WeChatLogin",
                     "&response_type=code" +
-                    "&scope=snsapi_uerinfo" +
+                    "&scope=snsapi_userinfo" +
                     "&agentid=", XConfig.Current.WeChat.AgentId,
                     "&state=", Stamp, "#wechat_redirect");
                 Response.Cookies.Append("WB_WXLoginOption", Stamp, new CookieOptions() { Path = "/", Expires = DateTimeOffset.Now.AddMinutes(2) });
@@ -96,15 +100,15 @@ namespace WBPlatform.WebManagement.Controllers
                 Dictionary<string, string> JSON = PublicTools.HTTPGet("https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + WeChatHelper.AccessToken + "&code=" + code);
                 if (!JSON.ContainsKey("UserId"))
                 {
-                    LW.E("WeChat JSON doesnot Contain: UserID, " + JSON.ToParsedString());
+                    L.E("WeChat JSON doesnot Contain: UserID, " + JSON.ToParsedString());
                     return null;
                 }
                 string WeiXinID = JSON["UserId"];
-                switch (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("Username", WeiXinID), out UserObject User))
+                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("Username", WeiXinID), out UserObject User))
                 {
                     //Internal Error...
                     case DBQueryStatus.INTERNAL_ERROR:
-                        LW.E("SessionManager: Failed to get User by its UserName --> DataBase Inernal Error....");
+                        L.E("SessionManager: Failed to get User by its UserName --> DataBase Inernal Error....");
                         return DatabaseError(ServerAction.WeChatLogin_PostExecute, XConfig.Messages["InternalDataBaseError"]);
 
                     //No User Found, expencted to be redirected to User Register
@@ -122,7 +126,7 @@ namespace WBPlatform.WebManagement.Controllers
 
                     //?????
                     default:
-                        LW.E("HomeController: Unexpected Database Query Result for WeChatLogin...");
+                        L.E("HomeController: Unexpected Database Query Result for WeChatLogin...");
                         return DatabaseError(ServerAction.WeChatLogin_PostExecute, XConfig.Messages["WrongDataReturnedFromDatabase"]);
                 }
             }

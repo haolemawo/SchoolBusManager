@@ -29,6 +29,7 @@ _notes/
 *.suo
 
 packages/
+reports/
 bower_components/
 node_modules/
 *.log

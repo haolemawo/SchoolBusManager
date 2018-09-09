@@ -16,26 +16,27 @@ namespace WBPlatform.StaticClasses
         /// <summary>
         /// Anti-Injection for Database...
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public static object EncodeString(object item) => item is string ? HttpUtility.UrlPathEncode(item as string) : item;
-        public static object DecodeObject(object item) => item is string ? HttpUtility.UrlDecode(item as string) : item;
+        public static object EncodeAsString(this object item) => item is string ? HttpUtility.UrlPathEncode(item as string) : item;
+        public static object DecodeAsObject(this object item) => item is string ? HttpUtility.UrlDecode(item as string) : item;
+
+        //public static object[] EncodeStringArray(this IEnumerable<object> items) => items.EncodeStringArray<object[]>();
+        //public static TOut EncodeStringArray<TOut>(this IEnumerable<object> items) where TOut : IEnumerable<object> => (TOut)(IEnumerable<object>)(from _ in items select _.EncodeAsString()).ToArray();
 
         public static Dictionary<string, string> HTTPGet(string URL)
         {
-            LW.I("HTTP - GET-rqst: " + URL);
+            L.I("HTTP - GET-rqst: " + URL);
             HttpWebRequest request = WebRequest.Create(URL) as HttpWebRequest;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
             string resp = reader.ReadToEnd();
-            LW.I("HTTP - GET-rply: " + resp);
+            L.I("HTTP - GET-rply: " + resp);
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(resp);
         }
 
         public static Dictionary<string, string> HTTPPost(string postUrl, string paramData)
         {
-            LW.I("HTTP - POST-rqst: " + postUrl + " WITH DATA : " + paramData);
+            L.I("HTTP - POST-rqst: " + postUrl + " WITH DATA : " + paramData);
             byte[] byteArray = Encoding.UTF8.GetBytes(paramData);
             HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create(new Uri(postUrl));
             webReq.Method = "POST";
@@ -53,7 +54,7 @@ namespace WBPlatform.StaticClasses
             sr.Close();
             response.Close();
 
-            LW.I("HTTP - POST-rply: " + ret);
+            L.I("HTTP - POST-rply: " + ret);
             Dictionary<string, string> dict = new Dictionary<string, string>();
             foreach (KeyValuePair<string, object> item in JsonConvert.DeserializeObject<Dictionary<string, object>>(ret))
             {
@@ -98,5 +99,5 @@ namespace WBPlatform.StaticClasses
             mergedPackage.AddRange(arrClientSendMsg);
             return mergedPackage.ToArray();
         }
-   }
+    }
 }

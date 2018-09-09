@@ -19,22 +19,25 @@
         <h4>内部错误</h4>
         <h5>应用程序出现异常，已停止响应</h5>
     }
-    <hr />
+    <hr />  
     <div class="container">
         <p id="msg" class="text-danger"></p>
+        <p>请求的页面（或资源）暂时不可用</p>
+        <p>很有可能是拼写错误</p>
         <script>$("#msg").html(decodeURIComponent("@Uri.EscapeDataString(ViewData["ErrorMessage"]?.ToString().Replace("\r\n", "<br /><br />"))"))</script>
-        @if (ViewData["RespCode"].ToString() == "404")
-        {
-            <strong> 请求URL:</strong>
-            <br />
-            <textarea class="TxBox" readonly inputmode="url" rows="5" style="overflow: scroll; scrollbar-base-color:black; width:100%">@ViewData["RAWResp"]</textarea>
-        }
+        @*@if (ViewData["RespCode"].ToString() == "404")
+            {
+                <strong> 请求URL:</strong>
+                <br />
+                <input type="text" class="TxBox" readonly inputmode="url" rows="5" style="overflow: scroll; scrollbar-base-color:black; width:100%" value="@ViewData["RAWResp"].ToString()" />
+            }*@
+
         <br />
-        <label>详细信息</label>
-        <button id="expBtn" class="btn btn-light btn-sm" onclick="expand();">展开</button>
-        <button id="colBtn" class="btn btn-light btn-sm" hidden onclick="collapse();">收起</button>
         @if (ViewData["RespCode"].ToString() != "404")
         {
+            <label>详细信息</label>
+            <button id="expBtn" class="btn btn-light btn-sm" onclick="expand();">展开</button>
+            <button id="colBtn" class="btn btn-light btn-sm" hidden onclick="collapse();">收起</button>
             <div id="detail" class="container" hidden>
                 <label>出现异常的位置</label>
                 <br />
@@ -61,9 +64,9 @@
                     $("#colBtn").removeAttr("hidden");
                 }
             </script>
+            <br />
+            <br />
         }
-        <br />
-        <br />
         <div class="container center-margin">
             <div class="row">
                 <div class="col">

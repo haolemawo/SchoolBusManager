@@ -1,4 +1,4 @@
-﻿@model WBPlatform.TableObject.UserChangeRequest
+﻿@model UserChangeRequest
 
 @{
     ViewData["Title"] = "修改工单提交";
@@ -14,7 +14,7 @@
                 <label>要更改的数据</label>
                 <select id="selection" asp-for="RequestTypes" class="form-control">
                     @{
-                        string[] p = Enum.GetNames(typeof(WBPlatform.StaticClasses.UserChangeRequestTypes));
+                        string[] p = Enum.GetNames(typeof(UserChangeRequestTypes));
                         foreach (string item in p)
                         {
                             <option>@item</option>

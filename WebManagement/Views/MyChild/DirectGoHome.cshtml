@@ -1,0 +1,68 @@
+﻿@model List<StudentObject>
+@{
+    ViewData["Title"] = "免接送协议设置";
+}
+<div class="container">
+    <div class="container row">
+        <div class="col col-auto">
+            <img id="UserHImg" src="#" width="64" height="64" alt="" />
+        </div>
+        <div class="col">
+            <h5 id="UserID">加载中...</h5>
+            <h6>设置学生的免接送</h6>
+        </div>
+    </div>
+    <div class="container">
+        <hr />
+        <label>需要设置免接送的学生：</label>
+        <br />
+        <div class="container">
+            @if (Model.Count > 0)
+            {
+                <table class="tftable center-all center-margin" style="text-align: center">
+                    <thead style="text-align: center">
+                        <tr>
+                            <th style="text-align: center">学生姓名</th>
+                            <th style="text-align: center">不设置</th>
+                            <th style="text-align: center">设置免接送</th>
+                        </tr>
+                    </thead>
+                    @foreach (var stu in Model)
+                    {
+                        <tr id="@stu.ObjectId" style="background: none" class="center-all">
+                            <td><a href="/BusManager/ViewStudent?StudentID=@(stu.ObjectId)&ClassID=@(stu.ClassID)&from=MyChild&BusID=@stu.BusID">@stu.StudentName</a></td>
+                            <td>
+                                <button id="@(stu.ObjectId)_trueBtn" class="btn btn-success btn-sm" onclick="SetDirectGoHome('@stu.BusID', '@stu.ObjectId', false, '@stu.StudentName')">家长接送</button>
+                            </td>
+                            <td>
+                                <button id="@(stu.ObjectId)_falseBtn" class="btn btn-info btn-sm" onclick="SetDirectGoHome('@stu.BusID', '@stu.ObjectId', true, '@stu.StudentName')">免接送</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <br />
+                <h4>没有需要设置免接送的学生</h4>
+                <br />
+                <button class="btn btn-success btn-sm" onclick="location.href = '/MyChild'">返回上一页</button>
+            }
+        </div>
+        <hr />
+    </div>
+</div>
+
+<script>
+    document.getElementById("UserID").innerHTML = "你好，" + wbWeb.CurrentUser.RealName;
+    $("#UserHImg").prop("src", "https://res.lhy0403.top/WBUserHeadImg/" + wbWeb.CurrentUser.HeadImagePath);
+    var signResult;
+    var newId;
+    function SetDirectGoHome(busid, studentId, state, name) {
+        if (confirm("确定设置免接送吗？")) {
+            signResult = wbWeb.SignStudent(busid, studentId, "gohome", state);
+            newId = signResult.Student.ObjectId;
+            $("#" + newId).text(name + " 设置完成");
+        }
+    }
+</script>

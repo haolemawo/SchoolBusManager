@@ -172,7 +172,6 @@ namespace WBPlatform.WebManagement.Tools
                     else index++;
                 }
                 return iLeftLength - iRightLength;
-
             }
         }
 
@@ -220,7 +219,7 @@ namespace WBPlatform.WebManagement.Tools
                 return WeChatEncryptionErrorCode.ComputeSignature_Error;
             }
             sMsgSignature = hash;
-            return  WeChatEncryptionErrorCode.OK;
+            return WeChatEncryptionErrorCode.OK;
         }
     }
 }

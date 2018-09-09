@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Net;
 
-
+using WBPlatform.Config;
 using WBPlatform.Database.Connection;
 using WBPlatform.Database.IO;
-using WBPlatform.StaticClasses;
-using WBPlatform.Config;
-using WBPlatform.TableObject;
 using WBPlatform.Logging;
+using WBPlatform.StaticClasses;
+using WBPlatform.TableObject;
 
 namespace WBPlatform.Database
 {
@@ -20,15 +19,15 @@ namespace WBPlatform.Database
         public static string MessageId => Cryptography.RandomString(5, false);
         public static void InitialiseClient()
         {
-            LW.I("Started Initialise Database Server Connection....");
+            L.I("Started Initialise Database Server Connection....");
             bool conn = DatabaseSocketsClient.Initialise(IPAddress.Parse(XConfig.Current.Database.DBServerIP), XConfig.Current.Database.DBServerPort);
             while (!conn)
             {
-                LW.E("DBServer Initial Connection Failed!");
+                L.E("DBServer Initial Connection Failed!");
                 conn = DatabaseSocketsClient.Initialise(IPAddress.Parse(XConfig.Current.Database.DBServerIP), XConfig.Current.Database.DBServerPort);
             }
         }
-        public static DBQueryStatus QuerySingleData<T>(DBQuery query, out T Result) where T : DataTableObject<T>, new()
+        public static DBQueryStatus QuerySingle<T>(DBQuery query, out T Result) where T : DataTableObject<T>, new()
         {
             //query.Limit(1);
             //DBQueryStatus databaseOperationResult = _DBRequestInternal(new T().Table, DBVerbs.QuerySingle, query, null, out DBInput[] input);
@@ -44,16 +43,16 @@ namespace WBPlatform.Database
             //    Result = null;
             //    return databaseOperationResult;
             //}
-            var _Status = QueryMultipleData(query, out List<T> results, 1);
+            var _Status = QueryMultiple(query, out List<T> results, 1);
             Result = _Status > 0 ? results[0] : null;
             return _Status;
         }
 
 
-        public static DBQueryStatus QueryMultipleData<T>(DBQuery query, out List<T> Result, int queryLimit = 100, int skip = 0) where T : DataTableObject<T>, new()
+        public static DBQueryStatus QueryMultiple<T>(DBQuery query, out List<T> Result, int queryLimit = 100, int skip = 0) where T : DataTableObject<T>, new()
         {
-            query.Limit(queryLimit);
-            query.Skip(skip);
+            query.Limit(query._Limit == -1 ? queryLimit : query._Limit);
+            query.Skip(query._Skip == -1 ? skip : query._Skip);
             DBQueryStatus databaseOperationResult = _DBRequestInternal(new T().Table, DBVerbs.QueryMulti, query, null, out DataBaseIO[] inputs);
             if (databaseOperationResult >= 0)
             {
@@ -68,12 +67,13 @@ namespace WBPlatform.Database
             else Result = null;
             return databaseOperationResult;
         }
-        public static DBQueryStatus DeleteData(string Table, string ObjectID)
-        {
-            DBQueryStatus result = _DBRequestInternal(Table, DBVerbs.Delete, new DBQuery().WhereEqualTo("objectId", ObjectID), null, out DataBaseIO[] inputs);
-            return result;
-        }
+        //public static DBQueryStatus DeleteData(string Table, string ObjectID)
+        //{
+        //    DBQueryStatus result = _DBRequestInternal(Table, DBVerbs.Delete, new DBQuery().WhereEqualTo("objectId", ObjectID), null, out DataBaseIO[] inputs);
+        //    return result;
+        //}
 
+        public static DBQueryStatus UpdateData<T>(T item) where T : DataTableObject<T>, new() => UpdateData(ref item);
         public static DBQueryStatus UpdateData<T>(ref T item) where T : DataTableObject<T>, new() => UpdateData(ref item, null);
         public static DBQueryStatus UpdateData<T>(ref T item, DBQuery query) where T : DataTableObject<T>, new()
         {
@@ -87,7 +87,7 @@ namespace WBPlatform.Database
             var _result = _DBRequestInternal(item.Table, DBVerbs.Update, query, output, out DataBaseIO[] inputs);
             if (_result != DBQueryStatus.ONE_RESULT)
             {
-                LW.E("DBInternalLog: UpdateData Process Failed!");
+                L.E("UpdateData Process Failed!");
                 return DBQueryStatus.INTERNAL_ERROR;
             }
             item = new T();
@@ -96,7 +96,7 @@ namespace WBPlatform.Database
         }
 
         public static DBQueryStatus CreateData<T>(ref T data) where T : DataTableObject<T>, new() => CreateData(data, out data);
-        private static DBQueryStatus CreateData<T>(T data, out T dataOut) where T : DataTableObject<T>, new()
+        public static DBQueryStatus CreateData<T>(T data, out T dataOut) where T : DataTableObject<T>, new()
         {
             DataBaseIO output = new DataBaseIO();
             data.ObjectId = Cryptography.RandomString(10, false);
@@ -186,7 +186,7 @@ namespace WBPlatform.Database
             catch (Exception ex)
             {
                 results = null;
-                LW.E(ex.ToParsedString());
+                ex.LogException();
                 return DBQueryStatus.INTERNAL_ERROR;
             }
         }

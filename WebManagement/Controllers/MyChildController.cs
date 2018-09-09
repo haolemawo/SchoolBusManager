@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
+using System.Collections.Generic;
+using System.Linq;
+
+using WBPlatform.Config;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.Config;
-using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
@@ -16,24 +16,16 @@ namespace WBPlatform.WebManagement.Controllers
         public override IActionResult Index()
         {
             ViewData["where"] = HomeController.ControllerName;
-            if (ValidateSession())
-            {
-                return (CurrentUser.ChildList.Count <= 0 && !CurrentUser.UserGroup.IsParent)
+            return ValidateSession()
+                ? (CurrentUser.ChildList.Count <= 0 && !CurrentUser.UserGroup.IsParent)
                     ? PermissionDenied(ServerAction.MyChild_Index, XConfig.Messages["NotParent"], ResponceCode.Default)
-                    : View();
-            }
-            else
-            {
-                return LoginFailed("/" + ControllerName);
-            }
-
-            //throw new NotImplementedException("This method is not ready.......", new InvalidOperationException("This Method IS Still Under Developing"));
+                    : View()
+                : LoginFailed("/" + ControllerName);
         }
 
-        public IActionResult ParentCheck(string ID) //ID = BusID;UserID
+        public IActionResult ParentCheck(string ID)
         {
             string BusID, BusTeacherID;
-            //CHECK => Student Bus is TeacherID
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
@@ -41,33 +33,53 @@ namespace WBPlatform.WebManagement.Controllers
                 string[] IDSplit = ID.Split(";");
                 if (IDSplit.Length != 2) return RequestIllegal(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.RequestIllegal);
                 if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+
                 BusID = IDSplit[0];
                 BusTeacherID = IDSplit[1];
+
                 List<StudentObject> ToBeSignedStudents = new List<StudentObject>();
-                switch (DataBaseOperation.QueryMultipleData(new DBQuery().WhereEqualTo("BusID", BusID).WhereEqualTo("CHChecked", false), out List<StudentObject> StudentListInBus))
+                switch (DataBaseOperation.QueryMultiple(new DBQuery()
+                    .WhereEqualTo("BusID", BusID)
+                    .WhereEqualTo("CHChecked", false)
+                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                    .WhereEqualTo("TakingBus", true), out List<StudentObject> StudentListInBus))
                 {
                     case DBQueryStatus.INTERNAL_ERROR: return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
-                    case DBQueryStatus.NO_RESULTS: //return Redirect(Sessions.ErrorRedirectURL(MyError.N03_ItemsNotFoundError, "MyChild::ParentsCheck ==> NoChildInBus???"));
+                    case DBQueryStatus.NO_RESULTS:
                     default:
-                        ToBeSignedStudents.AddRange(from _stu in StudentListInBus where CurrentUser.ChildList.Contains(_stu.ObjectId) select _stu);
+                        ToBeSignedStudents.AddRange(from _stu in StudentListInBus where _stu.DirectGoHome != DirectGoHomeMode.DirectlyGoHome select _stu);
                         break;
                 }
-                //if (ToBeSignedStudents.Count == 0)
-                //return Redirect(Sessions.ErrorRedirectURL(WBConst.MyError.N03_ItemsNotFoundError, "MyChild::ParentsCheck ==> NoChildFoundInSpec.Bus"));
+
                 ViewData["ChildCount"] = ToBeSignedStudents.Count;
                 for (int i = 0; i < ToBeSignedStudents.Count; i++)
                 {
-                    ViewData["ChildNum_" + i.ToString()] = ToBeSignedStudents[i].ToString();
+                    ViewData["ChildNum_" + i.ToString()] = ToBeSignedStudents[i].ToParsedString();
                 }
                 ViewData["cBusID"] = BusID;
                 ViewData["cTeacherID"] = BusTeacherID;
                 return View();
             }
-            else
-            {
+            else return LoginFailed("/" + ControllerName + "/ParentCheck?ID=" + ID);
+        }
 
-                return LoginFailed("/" + ControllerName + "/ParentCheck?ID=" + ID);
+        public IActionResult DirectGoHome()
+        {
+            ViewData["where"] = ControllerName;
+            if (ValidateSession())
+            {
+                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+
+                if (DataBaseOperation.QueryMultiple(new DBQuery()
+                    .WhereEqualTo("DirectGoHome", 0)
+                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                    .WhereEqualTo("TakingBus", true), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
+                    return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
+
+                ViewData["ChildCount"] = ToBeSignedStudents.Count;
+                return View(ToBeSignedStudents);
             }
+            else return LoginFailed("/" + ControllerName + "/DirectGoHomeSign");
         }
     }
 }

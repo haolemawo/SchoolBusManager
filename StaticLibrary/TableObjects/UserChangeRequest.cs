@@ -9,7 +9,7 @@ namespace WBPlatform.TableObject
 {
     public class UserChangeRequest : DataTableObject<UserChangeRequest>
     {
-        public override string Table => WBConsts.TABLE_Gen_UserRequest;
+        public override string Table => TABLE_Gen_UserRequest;
         public string UserID { get; set; }
         public string SolverID { get; set; }
         public UserChangeRequestTypes RequestTypes { get; set; }

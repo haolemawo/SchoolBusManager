@@ -21,7 +21,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             if (!ValidateSession()) return SessionError;
             if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
-            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             request.SolverID = CurrentUser.ObjectId;
             switch (mode)
@@ -43,7 +43,7 @@ namespace WBPlatform.WebManagement.Controllers
 
             if (request.Status != UCRProcessStatus.Accepted) return SpecialisedInfo("提交成功");
 
-            if (DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             switch (request.RequestTypes)
             {
@@ -58,11 +58,11 @@ namespace WBPlatform.WebManagement.Controllers
             }
             if (DataBaseOperation.UpdateData(ref user) != DBQueryStatus.ONE_RESULT)
             {
-                LW.E("Admin->UCRProcess: Failed to Save user data");
+                L.E("Admin->UCRProcess: Failed to Save user data");
                 return DataBaseError;
             }
 
-            InternalMessage message_User = new InternalMessage() { _Type = GlobalMessageTypes.UCR_Procceed_TO_User, DataObject = request, User = user, ObjectId = request.UserID };
+            InternalMessage message_User = new InternalMessage() { _Type = GlobalMessageTypes.UCR_Procceed_TO_User, DataObject = request, User = user, Identifier = request.UserID };
             MessagingSystem.AddMessageProcesses(message_User);
 
             return SpecialisedInfo("提交成功");

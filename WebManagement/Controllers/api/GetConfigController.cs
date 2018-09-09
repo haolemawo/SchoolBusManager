@@ -7,8 +7,8 @@ using WBPlatform.StaticClasses;
 
 namespace WBPlatform.WebManagement.Controllers
 {
-    [Route(getJSConfigRoute)]
     [ApiController]
+    [Route(getJSConfigRoute)]
     public class GetConfigController : APIController
     {
         [HttpGet]
@@ -18,7 +18,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (ValidateSession())
             {
                 FileString += $"var keys = {APIRoutes.Keys.ToArray().ToParsedString()};\r\n";
-                FileString += $"var values = {APIRoutes.Values.Select((obj) => obj.Item1 + obj.Item2).ToParsedString()};\r\n";
+                FileString += $"var values = {APIRoutes.Values.ToArray().ToParsedString()};\r\n";
 
                 string apiTcket = Cryptography.RandomString(32, false).ToLower();
                 CurrentIdentity.SetApiTicket(apiTcket);

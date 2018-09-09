@@ -38,10 +38,11 @@
             this.currentClients = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.dbConnections = new System.Windows.Forms.Label();
-            this.logsTextbox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.clientEnumTimer = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
+            this.logTextBox = new System.Windows.Forms.RichTextBox();
+            this.logTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,26 +121,13 @@
             this.dbConnections.Text = "0";
             this.dbConnections.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // logsTextbox
-            // 
-            this.logsTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.logsTextbox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logsTextbox.Location = new System.Drawing.Point(0, 0);
-            this.logsTextbox.Multiline = true;
-            this.logsTextbox.Name = "logsTextbox";
-            this.logsTextbox.ReadOnly = true;
-            this.logsTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.logsTextbox.Size = new System.Drawing.Size(989, 412);
-            this.logsTextbox.TabIndex = 2;
-            this.logsTextbox.WordWrap = false;
-            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.logsTextbox);
+            this.panel1.Controls.Add(this.logTextBox);
             this.panel1.Location = new System.Drawing.Point(12, 260);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(991, 414);
@@ -162,6 +150,24 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // logTextBox
+            // 
+            this.logTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.logTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logTextBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logTextBox.ForeColor = System.Drawing.Color.White;
+            this.logTextBox.Location = new System.Drawing.Point(0, 0);
+            this.logTextBox.Name = "logTextBox";
+            this.logTextBox.Size = new System.Drawing.Size(989, 412);
+            this.logTextBox.TabIndex = 3;
+            this.logTextBox.Text = "";
+            // 
+            // logTimer
+            // 
+            this.logTimer.Enabled = true;
+            this.logTimer.Tick += new System.EventHandler(this.logTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -182,7 +188,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -197,10 +202,11 @@
         private System.Windows.Forms.Label currentClients;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label dbConnections;
-        private System.Windows.Forms.TextBox logsTextbox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Timer clientEnumTimer;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.RichTextBox logTextBox;
+        private System.Windows.Forms.Timer logTimer;
     }
 }
 

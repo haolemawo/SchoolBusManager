@@ -6,7 +6,7 @@
     <meta name="description" content="WoodenBench Platform for Schoolbus" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@ViewData["Title"]-小板凳校车管理平台</title>
+    <title>@ViewData["Title"]-小板凳班车管理平台</title>
 
     @Html.Raw(JavaScriptSnippet.FullScript)
 
@@ -43,7 +43,7 @@
             <div class="navbar-collapse collapse" id="navBar01">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="nav-item" id="home"><a class="nav-link" asp-controller="Home" asp-action="Index">主页</a></li>
-                    <li class="nav-item" id="busmgr"><a class="nav-link" asp-controller="BusManager" asp-action="Index">校车管理</a></li>
+                    <li class="nav-item" id="busmgr"><a class="nav-link" asp-controller="BusManager" asp-action="Index">班车管理</a></li>
                     <li class="nav-item" id="classmgr"><a class="nav-link" asp-controller="ClassManager" asp-action="Index">班级管理</a></li>
                     <li class="nav-item" id="mychild"><a class="nav-link" asp-controller="MyChild" asp-action="Index">我的孩子</a></li>
                     <li class="nav-item" id="usermgr"><a class="nav-link" asp-controller="Account" asp-action="Index">我的账户</a></li>
@@ -84,7 +84,7 @@
     <script>
         var _0 = 'Woodenbench for Schoolbus 2018 ~ 2020';
         var _1 = 'Copyright Leroy.H.Y 2018 ~ 2020';
-        var _2 = 'Core Version: @WBConsts.CurrentCoreVersion';
+        var _2 = 'Core Version: @WBConsts.CoreVersion';
         var _3 = 'Web Management Module Version: @Program.Version';
         var _4 = 'Build Branch: @(XConfig.Current.DevelopmentVersion ? "Development" : "Release")';
         var _c = 0, _m = 4;

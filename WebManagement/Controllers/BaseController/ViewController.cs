@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
+using System.Text;
 using WBPlatform.Config;
 using WBPlatform.Logging;
-
 using WBPlatform.StaticClasses;
 using WBPlatform.WebManagement.Tools;
 
@@ -38,13 +38,26 @@ namespace WBPlatform.WebManagement.Controllers
 
         protected enum ResponceCode { RequestIllegal = 400, PermisstionDenied = 403, NotFound = 404, InternalServerError = 500, NotSupported = 501, Default = 200 }
 
+        public static string GetAbsoluteUri(HttpRequest request)
+        {
+            return new StringBuilder()
+                .Append(request.Scheme)
+                .Append("://")
+                .Append(request.Host)
+                .Append(request.PathBase)
+                .Append(request.Path)
+                .Append(request.QueryString)
+                .ToString();
+        }
         private IActionResult _InternalError(ServerAction action, string info, ResponceCode respCode)
         {
-            Exception ex = HttpContext.Features.Get<ExceptionHandlerFeature>()?.Error;
-            string Page = HttpContext.Features.Get<IExceptionHandlerPathFeature>()?.Path;
-
+            Exception ex = HttpContext.Features.Get<ExceptionHandlerFeature>()?.Error;            
+            //string Page = GetAbsoluteUri(Request);
             info = info + "\r\n" + ex?.ToString();
-
+            if (Response.StatusCode == 404)
+            {
+                respCode = ResponceCode.NotFound;
+            }
             Response.StatusCode = Response.StatusCode == 404 ? 404 : (int)respCode;
 
             ViewData["where"] = HomeController.ControllerName;
@@ -52,21 +65,21 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["ErrorAT"] = action.ToString();
             ViewData["RespCode"] = Response.StatusCode.ToString();
             ViewData["ErrorMessage"] = info;
-            ViewData["RAWResp"] = Page;
+            //ViewData["RAWResp"] = Page;
 
             string content = string.Join("\r\n",
                 "Error Report:",
                 DateTime.Now.ToNormalString(),
                 CurrentUser.GetFullIdentity(),
                 Response.StatusCode,
-                ViewData["RAWResp"],
-                ViewData["ErrorMessage"],
+                //ViewData["RAWResp"],
+                ViewData["ErrorMessage"].ToString(),
                 ViewData["ErrorAT"],
                 ViewData["DetailedInfo"]);
 
             WeChatSentMessage _Message = new WeChatSentMessage(WeChatSMsg.text, null, content, null, "liuhaoyu");
 
-            LW.E(content.Replace("\r\n", " -- "));
+            L.E(content.Replace("\r\n", " -- "));
 
             if (respCode != ResponceCode.Default)
                 WeChatMessageSystem.AddToSendList(_Message);

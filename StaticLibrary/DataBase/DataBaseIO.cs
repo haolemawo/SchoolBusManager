@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 using WBPlatform.Logging;
@@ -9,27 +10,20 @@ namespace WBPlatform.Database.IO
     public sealed class DataBaseIO
     {
         public DataBaseIO() { }
-        public DataBaseIO(Dictionary<string, object> data) { Data = data; }
+        public DataBaseIO(Dictionary<string, object> data) { Data = new ConcurrentDictionary<string, object>(data); }
         public object this[string column] => Data[column];
 
-        public Dictionary<string, object> Data { get; private set; } = new Dictionary<string, object>();
+        public ConcurrentDictionary<string, object> Data { get; private set; } = new ConcurrentDictionary<string, object>();
 
-        public T GetT<T>(string Key) => (T)Convert.ChangeType(Data[Key], typeof(T));
+        public T Get<T>(string column) => (T)Convert.ChangeType(Data[column], typeof(T));
 
         public void Put(string column, object _data)
         {
-            if (_data == null) { LW.E("DBOutput: Put " + column + " as null, drop it..."); return; }
-            if (_data is IList) _data = string.Join(",", (IEnumerable<string>)_data);
-            if (Data.ContainsKey(column))
-            {
-                //Don't know why to delete first...
-                //Copied the implemention of Bmob Database SDK
-                Data.Remove(column);
-                Data.Add(column, _data);
-            }
-            else Data.Add(column, _data);
+            if (_data == null) { L.W("Put " + column + " as null, drop it..."); return; }
+            if (_data is IList) _data = string.Join(",", (IList<string>)_data);
+            Data.AddOrUpdate(column, _data, (s, o) => o);
         }
-    } 
+    }
 
     /// <summary>
     /// DO NOT CHANGE THE PROPERTY NAME --- 
@@ -50,6 +44,7 @@ namespace WBPlatform.Database.IO
 
     public class DataBaseException : Exception
     {
+        public DataBaseException() : base() { }
         public DataBaseException(string message) : base(message) { }
         public DataBaseException(string message, Exception innerException) : base(message, innerException) { }
     }

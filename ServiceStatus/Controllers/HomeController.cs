@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
+
+using System.Collections.Generic;
 using System.Diagnostics;
 
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using WBPlatform.ServiceStatus.Models;
 
 namespace WBPlatform.ServiceStatus
@@ -21,6 +23,12 @@ namespace WBPlatform.ServiceStatus
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        //https://dev-status.schoolbus.lhy0403.top/Home/AvailabilityReport
+        [HttpPost]
+        public IActionResult AvailabilityReport()
+        {
+            return Json("OK");
         }
     }
 }

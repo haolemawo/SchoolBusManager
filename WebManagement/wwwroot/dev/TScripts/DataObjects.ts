@@ -3,6 +3,7 @@
     AHChecked = 0;
     LSChecked = 0;
     CSChecked = 0;
+    DirectGoHome = 0;
     Total = 0;
 }
 
@@ -24,6 +25,10 @@ class SignStudentData {
     Student: StudentObject = new StudentObject();
     SignMode: string = "";
     SignResult: boolean = false;
+}
+
+class PureMessageData {
+    Message: string = "";
 }
 
 abstract class DataObject {
@@ -72,6 +77,7 @@ class StudentObject extends DataObject {
     CSChecked: boolean = false;
     AHChecked: boolean = false;
     TakingBus: boolean = false;
+    DirectGoHome: boolean = false;
 }
 
 class BusReportObject {

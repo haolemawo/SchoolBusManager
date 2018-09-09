@@ -1,55 +1,59 @@
 ﻿using Newtonsoft.Json;
 
 using System;
-using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using WBPlatform.Database.Connection;
+
 using WBPlatform.Config;
-using WBPlatform.StaticClasses;
-using WBPlatform.WebManagement.Controllers;
+using WBPlatform.Database.Connection;
 using WBPlatform.Logging;
+using WBPlatform.StaticClasses;
+using WBPlatform.StatusReport;
+using WBPlatform.WebManagement.Controllers;
 
 namespace WBPlatform.WebManagement.Tools
 {
     public static class StatusMonitor
     {
         private static Thread _MonitorThread = new Thread(new ThreadStart(ThreadWork));
-        private static Dictionary<string, object> status = new Dictionary<string, object>();
+        public static StatusReportObject ReportObject { get; private set; } = new StatusReportObject();
         private static NamedPipeServerStream pipe = new NamedPipeServerStream(XConfig.Current.StatusReportNamedPipe, PipeDirection.Out);
 
         public static void StartMonitorThread()
         {
-            LW.I("Starting Monitor Thread");
+            L.I("Starting Monitor Thread");
             _MonitorThread.Start();
-            LW.I("Monitor Thread: Active");
+            L.I("Monitor Thread: Active");
         }
         private static void ThreadWork()
         {
             while (true)
             {
-                status.Clear();
-                status.Add("ReportTime", DateTime.Now);
-                status.Add("SessionsCount", BaseController.GetCount);
-                status.Add("SessionThread", true);
-                status.Add("Tokens", OnePassTicket.GetCount);
-                var WeChatStatus = WeChatMessageSystem.Status();
-                status.Add("WeChatRCVDThreadStatus", WeChatStatus.Item1);
-                status.Add("WeChatSENTThreadStatus", WeChatStatus.Item2);
-                status.Add("WeChatRCVDListCount", WeChatStatus.Item3);
-                status.Add("WeChatSENTListCount", WeChatStatus.Item4);
-                status.Add("Database", DatabaseSocketsClient.Connected);
-                status.Add("CoreMessageSystemThread", MessagingSystem.GetStatus);
-                status.Add("CoreMessageSystemCount", MessagingSystem.GetCount);
-                status.Add("MessageBackupThread", WeChatMessageBackupService.GetStatus);
-                status.Add("MessageBackupCount", WeChatMessageBackupService.GetCount);
-                status.Add("StartupTime", Program.StartUpTime.ToString());
-                status.Add("ServerVer", Program.Version);
-                status.Add("CoreLibVer", WBConsts.CurrentCoreVersion);
-                status.Add("NetCoreCLRVer", Assembly.GetCallingAssembly().ImageRuntimeVersion);
-                string data = JsonConvert.SerializeObject(status);
+                var wcStatus = WeChatMessageSystem.Status();
+
+                ReportObject = new StatusReportObject()
+                {
+                    ReportTime = DateTime.Now,
+                    SessionsCount = BaseController.GetCount,
+                    SessionThread = true,
+                    Tokens = OnePassTicket.GetCount,
+                    WeChatRCVDThreadStatus = wcStatus.Item1,
+                    WeChatSENTThreadStatus = wcStatus.Item2,
+                    WeChatRCVDListCount = wcStatus.Item3,
+                    WeChatSENTListCount = wcStatus.Item4,
+                    Database = DatabaseSocketsClient.Connected,
+                    CoreMessageSystemThread = MessagingSystem.GetStatus,
+                    CoreMessageSystemCount = MessagingSystem.GetCount,
+                    MessageBackupThread = WeChatMessageBackupService.GetStatus,
+                    MessageBackupCount = WeChatMessageBackupService.GetCount,
+                    StartupTime = Program.StartUpTime.ToDetailedString(),
+                    ServerVer = Program.Version,
+                    CoreLibVer = WBConsts.CoreVersion,
+                    NetCoreCLRVer = Assembly.GetCallingAssembly().ImageRuntimeVersion
+                };
+                string data = JsonConvert.SerializeObject(ReportObject);
 
                 byte[] ipByte = Encoding.UTF8.GetBytes(data);
                 //client.Send(ipByte, ipByte.Length, endpoint);

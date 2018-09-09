@@ -1,5 +1,4 @@
-﻿@using WBPlatform.TableObject;
-@model WBPlatform.WebManagement.Tools.ViewStudentInfo;
+﻿@model ViewStudentInfo;
 @{
     ViewData["Title"] = "学生信息";
 }
@@ -40,18 +39,18 @@
             }
         </table>
         <br />
-        <label>校车信息</label>
+        <label>班车信息</label>
         <table id="tfhover3" class="tftable" border="1">
             @if (Model.BusFound && Model.BusTeacherFound)
             {
                 <tr><th>名称</th><th>值</th></tr>
-                <tr><td>校车方向</td><td>@(Model._schoolbus.BusName)</td></tr>
-                <tr><td>校车老师</td><td>@(Model._BTeacher.RealName)</td></tr>
+                <tr><td>班车方向</td><td>@(Model._schoolbus.BusName)</td></tr>
+                <tr><td>班车老师</td><td>@(Model._BTeacher.RealName)</td></tr>
                 <tr><td>联系方式</td><td><a href="tel://@Model._BTeacher.PhoneNumber">@Model._BTeacher.PhoneNumber</a></td></tr>
             }
             else
             {
-                <tr><td colspan="2">找不到学生乘坐的校车！</td></tr>
+                <tr><td colspan="2">找不到学生乘坐的班车！</td></tr>
             }
         </table>
         <br />

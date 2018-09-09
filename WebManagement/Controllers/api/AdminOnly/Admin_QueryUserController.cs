@@ -19,23 +19,18 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (CurrentUser.UserGroup.IsAdmin)
                 {
-                    string _column = (string)PublicTools.DecodeObject(columnName ?? "");
-                    string _operand = (string)PublicTools.DecodeObject(operand ?? "");
-                    string _value = (string)PublicTools.DecodeObject(value ?? "");
+                    string _column = (string)(columnName ?? "").DecodeAsObject();
+                    string _operand = (string)(operand ?? "").DecodeAsObject();
+                    string _value = (string)(value ?? "").DecodeAsObject();
 
                     Dictionary<string, string> dict = new Dictionary<string, string>();
                     DBQuery query = new DBQuery();
-                    if (_operand == "==")
-                    {
-                        query.WhereEqualTo(_column, _value);
-                    }
-                    else if (operand.ToLower() == "contains")
-                    {
-                        query.WhereRecordContainsValue(_column, _value);
-                    }
+
+                    if (_operand == "==") query.WhereEqualTo(_column, _value);
+                    else if (operand.ToLower() == "contains") query.WhereRecordContainsValue(_column, _value);
                     else return RequestIllegal;
 
-                    if (DataBaseOperation.QueryMultipleData(query, out List<UserObject> users) >= 0)
+                    if (DataBaseOperation.QueryMultiple(query, out List<UserObject> users) >= 0)
                     {
                         dict.Add("count", users.Count.ToString());
                         for (int i = 0; i < users.Count; i++)

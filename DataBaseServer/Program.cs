@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
-using WBPlatform.StaticClasses;
+
 using WBPlatform.Config;
 using WBPlatform.Logging;
 namespace WBPlatform.Database.DBServer
@@ -12,10 +12,10 @@ namespace WBPlatform.Database.DBServer
         [STAThread]
         static void Main()
         {
-            LW.InitLog();
+            L.InitLog();
             if (!XConfig.LoadConfig("XConfig.conf"))
             {
-                LW.E("Config File Not Loaded!");
+                L.E("Config File Not Loaded!");
                 return;
             }
             DatabaseCore.InitialiseDBConnection();
@@ -30,10 +30,10 @@ namespace WBPlatform.Database.DBServer
             }
             catch (Exception ex)
             {
-                LW.E(ex.Message);
-                LW.E("MainForm disappeared caused by exception!");
+                L.E(ex.Message);
+                L.E("MainForm disappeared caused by exception!");
                 Thread.Sleep(1000);
-                LW.E("DBServer is to be restarted to keep stability!");
+                L.E("DBServer is to be restarted to keep stability!");
             }
             Application.Restart();
         }

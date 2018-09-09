@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+
+using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using WBPlatform.Logging;
-using Microsoft.AspNetCore;
-using WBPlatform.Config;
-using Microsoft.AspNetCore.Hosting;
 
+using WBPlatform.Config;
 using WBPlatform.Database;
-using WBPlatform.StaticClasses;
+using WBPlatform.Logging;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement
@@ -24,13 +23,12 @@ namespace WBPlatform.WebManagement
         public static CancellationTokenSource ServerStopToken { get; private set; } = new CancellationTokenSource();
         public static void Main(string[] args)
         {
-            LW.SetLogLevel(LogLevel.D);
-            LW.InitLog();
+            L.InitLog();
             StartUpTime = DateTime.Now;
-            LW.I("WoodenBench WebServer Starting....");
-            LW.I($"\t Startup Time {StartUpTime.ToString()}.");
+            L.I("WoodenBench WebServer Starting....");
+            L.I($"\t Startup Time {StartUpTime.ToString()}.");
             Version = new FileInfo(new string(Assembly.GetExecutingAssembly().CodeBase.Skip(8).ToArray())).LastWriteTime.ToString();
-            LW.I($"\t Version {Version}");
+            L.I($"\t Version {Version}");
 
             var v = XConfig.LoadAll();
             if (!(v.Item1 && v.Item2)) return;
@@ -43,22 +41,21 @@ namespace WBPlatform.WebManagement
 
             WeChatHelper.InitialiseEncryptor();
 
-            LW.I("Initialising Core Messaging Systems.....");
+            L.I("Initialising Core Messaging Systems.....");
             WeChatMessageSystem.StartProcessThreads();
             WeChatMessageBackupService.StartBackupThread();
             MessagingSystem.StartProcessThread();
 
             var webHost = BuildWebHost(XConfig.Current.ApplicationInsightInstrumentationKey, args);
-            LW.I("Starting WebHost....");
-
+            L.I("Starting WebHost....");
             WebServerTask = webHost.RunAsync(ServerStopToken.Token);
             WebServerTask.Wait();
-            LW.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);
+            L.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);
         }
 
         public static IWebHost BuildWebHost(string instrumentationKey, string[] args)
         {
-            LW.I("Building WebHost....");
+            L.I("Building WebHost....");
             var host = WebHost.CreateDefaultBuilder(args)
                  .UseIISIntegration()
                  .UseKestrel()

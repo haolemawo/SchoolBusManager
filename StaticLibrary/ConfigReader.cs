@@ -9,6 +9,7 @@ namespace WBPlatform.Config
 {
     public class ConfigCollection
     {
+        public int LogLevel { get; set; }
         private readonly string https = "https://";
         public string ApplicationInsightInstrumentationKey { get; set; }
         public string StatusReportNamedPipe { get; set; }
@@ -72,34 +73,35 @@ namespace WBPlatform.Config
 
         public static bool LoadMessages(string MessageFile)
         {
-            LW.I("Loading Messages....");
+            L.I("Loading Messages....");
             if (!File.Exists(MessageFile)) return false;
             string ConfigString = File.ReadAllText(MessageFile, System.Text.Encoding.UTF8);
             var m = JsonConvert.SerializeObject(Messages);
             var msg = JsonConvert.DeserializeObject<LocalisedMessages>(ConfigString);
             if (msg == null)
             {
-                LW.E("Failed Load Messages.... Exiting...");
+                L.E("Failed Load Messages.... Exiting...");
                 return false;
             }
             Messages = msg;
-            LW.I("Finished Loading Messages....");
+            L.I("Finished Loading Messages....");
             return true;
         }
 
         public static bool LoadConfig(string ConfigFile)
         {
-            LW.I("Loading Config....");
+            L.I("Loading Config....");
             if (!File.Exists(ConfigFile)) return false;
             string ConfigString = File.ReadAllText(ConfigFile);
             var config = JsonConvert.DeserializeObject<ConfigCollection>(ConfigString);
             if (config == null)
             {
-                LW.E("Failed Load Config.... Exiting...");
+                L.E("Failed Load Config.... Exiting...");
                 return false;
             }
             Current = config;
-            LW.I("Finished Loading Config....");
+            L.I("Finished Loading Config....");
+            L._LogLevel = (LogLevel)Current.LogLevel;
             return true;
         }
 
