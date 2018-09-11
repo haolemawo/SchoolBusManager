@@ -19,7 +19,7 @@
         <h6>坐班车总人数：<span id="totalNum">正在加载</span></h6>
         <h6>提示：点击姓名可以查看详细信息</h6>
 
-        <table id="StudentIDs" class="tftable">
+        <table id="StudentIDs" class="tftable" style="text-align: center">
             <thead>
                 <tr>
                     <th>学生姓名</th>
@@ -64,6 +64,7 @@
         childContainer.style.border = "none";
         var viewStudentNode = document.createElement("td");
         viewStudentNode.classList.add("text-underline");
+        viewStudentNode.style.textAlign = "left";
         viewStudentNode.innerHTML = "<a href=\"/BusManager/ViewStudent?StudentID=" + TMP.ObjectId + "&ClassID=" + TMP.ClassID + "&from=MyChild&BusID=" + TMP.BusID + "\">" + TMP.StudentName + "<br/><small>" + TMP.ObjectId + "</small></a>";
         childContainer.appendChild(viewStudentNode);
 
@@ -84,9 +85,8 @@
         btn.classList.add("pretty", "success", "circle");
         btn.innerHTML = '<input type="checkbox"><label><i class="mdi mdi-check"></i></label>';
         var attr = document.createAttribute("onclick");
-        attr.value = "ChangeState('" + TMP.ObjectId + "', " + (TMP.TakingBus ? false : true) + ")";
-        btn.attributes.setNamedItem(attr)
-        //btn.innerText = TMP.TakingBus ? "坐" : "不坐";
+        attr.value = "ChangeState('" + TMP.ObjectId + "', " + (!TMP) + ")";
+        btn.attributes.setNamedItem(attr);
         btn.id = TMP.ObjectId + "_onBusButton";
         child.appendChild(btn);
         childContainer.appendChild(child);

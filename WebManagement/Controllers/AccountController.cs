@@ -71,8 +71,8 @@ namespace WBPlatform.WebManagement.Controllers
                         return DatabaseError(ServerAction.MyAccount_CreateChangeRequest, XConfig.Messages["CreateUCR_Failed"]);
                     }
 
-                    InternalMessage messageAdmin = new InternalMessage() { _Type = GlobalMessageTypes.UCR_Created_TO_ADMIN, DataObject = request, User = CurrentUser, Identifier = request.ObjectId };
-                    InternalMessage message_User = new InternalMessage() { _Type = GlobalMessageTypes.UCR_Created__TO_User, DataObject = request, User = CurrentUser, Identifier = request.ObjectId };
+                    InternalMessage messageAdmin = new InternalMessage() { _Type = InternalMessageTypes.UCR_Created_TO_ADMIN, DataObject = request, User = CurrentUser, Identifier = request.ObjectId };
+                    InternalMessage message_User = new InternalMessage() { _Type = InternalMessageTypes.UCR_Created__TO_User, DataObject = request, User = CurrentUser, Identifier = request.ObjectId };
                     MessagingSystem.AddMessageProcesses(messageAdmin, message_User);
 
                     return Redirect($"/{HomeController.ControllerName}/{nameof(HomeController.RequestResult)}?req=changereq&status=ok&callback=/Account/");

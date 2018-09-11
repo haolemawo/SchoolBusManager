@@ -62,7 +62,7 @@ namespace WBPlatform.WebManagement.Controllers
                 return DataBaseError;
             }
 
-            InternalMessage message_User = new InternalMessage() { _Type = GlobalMessageTypes.UCR_Procceed_TO_User, DataObject = request, User = user, Identifier = request.UserID };
+            InternalMessage message_User = new InternalMessage() { _Type = InternalMessageTypes.UCR_Procceed_TO_User, DataObject = request, User = user, Identifier = request.UserID };
             MessagingSystem.AddMessageProcesses(message_User);
 
             return SpecialisedInfo("提交成功");

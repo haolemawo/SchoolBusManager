@@ -1,50 +1,41 @@
 ﻿@{
     ViewData["Title"] = "主页";
-    UserObject _user = (UserObject)ViewData["_User"];
+    UserObject _user = ViewData["_User"] as UserObject;
 }
 <script>
     $("#navBar01").remove();
     $("#navBar01_btn").remove();
 </script>
 <div class="container">
-
-    <h5>欢迎使用 "班车小板凳" 管理平台</h5>
+    <h5>班车小板凳管理平台</h5>
     <h6>请选择功能:</h6>
     <hr />
-    <div id="ChosenAreas" class="center-margin">
-        <table align="center">
-            <tbody class="center-all text-center" style="border: solid, 1px, black">
-                <tr>
-                    @if (_user.UserGroup.IsBusManager)
-                    {
-                        <td onclick="Jummmmmmp('1');">
-                            <img alt="班车管理" class="choose-square" style="height: 120px; width: 120px;" src="~/images/bus.png" />
-                            <p class="text-underline" style="font-size:10pt">班车管理</p>
-                        </td>
-                    }
-                    @if (_user.UserGroup.IsClassTeacher)
-                    {
-                        <td onclick="Jummmmmmp('2');">
-                            <img alt="班级管理" class="choose-square" style="height: 120px; width: 120px;" src="~/images/class.png" />
-                            <p class="text-underline" style="font-size:10pt">班级管理</p>
-                        </td>
-                    }
-                </tr>
-                <tr>
-                    @if (_user.UserGroup.IsParent)
-                    {
-                        <td onclick="Jummmmmmp('3');">
-                            <img alt="我的孩子" class="choose-square" style="height: 120px; width: 120px;" src="~/images/child.svg" />
-                            <p class="text-underline" style="font-size:10pt">我的孩子</p>
-                        </td>
-                    }
-                    <td onclick="Jummmmmmp('4');">
-                        <img alt="我的账号" class="choose-square" style="height: 120px; width: 120px;" src="~/images/myaccount.png" />
-                        <p class="text-underline" style="font-size:10pt">个人中心</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div id="ChosenAreas" class="center-margin container">
+        @if (_user.UserGroup.IsBusManager)
+        {
+            <div onclick="Jummmmmmp('1')" style="display: inline-block">
+                <img alt="班车管理" class="choose-square" src="~/images/bus.png" />
+                <p class="text-underline" style="font-size:10pt">班车管理</p>
+            </div>
+        }
+        @if (_user.UserGroup.IsClassTeacher && _user.ClassList.Count > 0)
+        {
+            <div onclick="Jummmmmmp('2');" style="display: inline-block">
+                <img alt="班级管理" class="choose-square" src="~/images/class.png" />
+                <p class="text-underline" style="font-size:10pt">班级管理</p>
+            </div>
+        }
+        @if (_user.UserGroup.IsParent)
+        {
+            <div onclick="Jummmmmmp('3');" style="display: inline-block">
+                <img alt="我的孩子" class="choose-square" src="~/images/child.svg" />
+                <p class="text-underline" style="font-size:10pt">我的孩子</p>
+            </div>
+        }
+        <div onclick="Jummmmmmp('4');" style="display: inline-block">
+            <img alt="我的账号" class="choose-square" src="~/images/myaccount.png" />
+            <p class="text-underline" style="font-size:10pt">个人中心</p>
+        </div>
     </div>
 </div>
 <script>

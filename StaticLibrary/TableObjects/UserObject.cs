@@ -67,7 +67,7 @@ namespace WBPlatform.TableObject
             output.Put("Password", Password == passwordHolder ? null : Password);
             output.Put("Sex", Sex);
 
-            //output.Put("isAdmin", UserGroup.IsAdmin);  DISABLED DUE TO SECURTY ISSUE....
+            //output.Put("isAdmin", UserGroup.IsAdmin); //DISABLED DUE TO SECURTY ISSUE....
             output.Put("isClassTeacher", UserGroup.IsClassTeacher);
             output.Put("isBusTeacher", UserGroup.IsBusManager);
             output.Put("isParent", UserGroup.IsParent);

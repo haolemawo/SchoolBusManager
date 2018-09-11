@@ -36,7 +36,7 @@ namespace WBPlatform.WebManagement.Tools
         private static Dictionary<string, string> SendMessageString(WeChatSMsg MessageType, string users, string Title, string Content, string URL = null)
         {
             WeChatMessageBackupService.AddToSendList(users, Title, Content);
-            WeChatHelper.ReNewWCCodes();
+            WeChatHelper.CheckAndRenewWeChatCodes();
             string Message = "{\"touser\":\"" + users + "\",\"msgtype\":\"" + MessageType.ToString() + "\",\"agentid\":" + XConfig.Current.WeChat.AgentId + ",\"" + MessageType.ToString() + "\":";
             switch (MessageType)
             {

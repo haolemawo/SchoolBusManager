@@ -34,7 +34,7 @@ namespace WBPlatform.WebManagement
             if (!(v.Item1 && v.Item2)) return;
 
             StatusMonitor.StartMonitorThread();
-            WeChatHelper.ReNewWCCodes();
+            WeChatHelper.CheckAndRenewWeChatCodes();
 
             DataBaseOperation.InitialiseClient();
             //DataBaseOperation.InitialiseClient(IPAddress.Loopback);
@@ -46,14 +46,14 @@ namespace WBPlatform.WebManagement
             WeChatMessageBackupService.StartBackupThread();
             MessagingSystem.StartProcessThread();
 
-            var webHost = BuildWebHost(XConfig.Current.ApplicationInsightInstrumentationKey, args);
+            var webHost = BuildWebHost(args, XConfig.Current.ApplicationInsightInstrumentationKey);
             L.I("Starting WebHost....");
             WebServerTask = webHost.RunAsync(ServerStopToken.Token);
             WebServerTask.Wait();
             L.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);
         }
 
-        public static IWebHost BuildWebHost(string instrumentationKey, string[] args)
+        public static IWebHost BuildWebHost(string[] args, string instrumentationKey)
         {
             L.I("Building WebHost....");
             var host = WebHost.CreateDefaultBuilder(args)

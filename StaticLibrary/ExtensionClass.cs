@@ -1,7 +1,5 @@
-﻿using ClosedXML.Excel;
-
+﻿
 using Newtonsoft.Json;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,24 +17,11 @@ namespace WBPlatform.StaticClasses
 {
     public static class ExtensionClass
     {
+        public static T ParseToEnum<T>(this string enumString) where T : struct, Enum => (T)Enum.Parse(typeof(T), enumString, true);
         public static string ToNormalString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         public static string ToFileNameString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd-HH-mm-ss");
         public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + ":" + DateTime.Now.Millisecond.ToString("000");
-        public static void SetHeaderColor(this IXLWorksheet sheet)
-        {
-            sheet.FirstRow().Style.Font.Bold = true;
-            sheet.FirstRow().Style.Font.FontColor = XLColor.White;
-            sheet.FirstRow().Style.Fill.BackgroundColor = XLColor.FromArgb(83, 141, 213);
-        }
-        public static void SetContentColor(this IXLWorksheet sheet)
-        {
-            sheet.RowsUsed(r => sheet.FirstRow() != r).Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
-        }
-        public static void SetGrid(this IXLWorksheet sheet)
-        {
-            sheet.RangeUsed().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-            sheet.RangeUsed().Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
-        }
+
         public static void CloseAndDispose(this Socket socket)
         {
             socket?.Disconnect(true);
@@ -44,19 +29,8 @@ namespace WBPlatform.StaticClasses
             socket?.Dispose();
             socket = null;
         }
-
-        public static void SetValues(this IXLRow row, int startAt, params string[] values)
-        {
-            int current = startAt;
-            foreach (var item in values)
-            {
-                row.Cell(current).SetValue(item);
-                current++;
-            }
-        }
-        public static void SetValues(this IXLRow row, params string[] values) => row.SetValues(1, values);
-
-        public static T DeepCloneObject<T>(this object _object) where T : ISerializable
+        
+        public static T DeepCloneObject<T>(this ISerializable _object) where T : ISerializable
         {
             MemoryStream stream = new MemoryStream();
             BinaryFormatter formatter = new BinaryFormatter();
@@ -65,34 +39,25 @@ namespace WBPlatform.StaticClasses
             return (T)formatter.Deserialize(stream);
         }
 
-        public static Dictionary<string, T> ToDictionary<T>(this IEnumerable<T> dataObjects) where T : DataTableObject => dataObjects.ToDictionary(t => { return t.ObjectId; });
+        public static Dictionary<string, T> ToDictionary<T>(this IEnumerable<T> dataObjects) where T : DataTableObject => dataObjects.ToDictionary(t => t.ObjectId);
 
         public static string Middle(this string str, string After, string Before)
         {
-            if (string.IsNullOrWhiteSpace(str))
-            {
-                return "";
-            }
-            string result = "";
+            string result = string.Empty;
+            if (string.IsNullOrWhiteSpace(str)) return result;
             if (str.Contains(After))
             {
                 string s1 = str.Split(After)[1];
-                if (Before == null || "" == Before)
-                {
-                    result = s1;
-                }
+                if (Before == null || string.Empty == Before) result = s1;
                 else
                 {
                     string[] s2 = s1.Split(Before);
-                    if (s2 != null)
-                    {
-                        result = s2[0];
-                    }
+                    if (s2 != null) result = s2[0];
                 }
             }
             return result;
         }
-        public static string[] Split(this string str, string Saperator) => str.Split(new string[] { Saperator }, StringSplitOptions.None);
+        public static string[] Split(this string str, string Saperator) => str.Split(Saperator.MoveToArray(), StringSplitOptions.None);
         public static List<T[]> BreakDown<T>(this T[] data, int size)
         {
             List<T[]> list = new List<T[]>();
@@ -111,21 +76,21 @@ namespace WBPlatform.StaticClasses
             return list;
         }
 
-        //合并任意类型数据
-        public static T[] MergeArray<T>(this T[][] arraies)
+        public static T[] MergeArray<T>(this IEnumerable<IEnumerable<T>> arraies)
         {
             List<T> list = new List<T>();
             foreach (T[] item in arraies)
             {
                 for (int i = 0; i < item.Length; i++) list.Add(item[i]);
             }
-            T[] r = new T[list.Count];
-            int n = 0;
-            foreach (T x in list)
-            {
-                r[n++] = x;
-            }
-            return r;
+            return list.ToArray();
+            //T[] r = new T[list.Count];
+            //int n = 0;
+            //foreach (T x in list)
+            //{
+            //    r[n++] = x;
+            //}
+            //return r;
         }
 
         public static string ToUnicodeString(this string str)
@@ -148,7 +113,7 @@ namespace WBPlatform.StaticClasses
             client = null;
         }
 
-        public static void CloseAndDispose(this NetworkStream stream)
+        public static void CloseAndDispose(this Stream stream)
         {
             stream?.Close();
             stream?.Dispose();
@@ -228,8 +193,8 @@ namespace WBPlatform.StaticClasses
             }
         }
 
-        public static string SHA256Encrypt(this string strIN) => SHAHashEncrypt<SHA256CryptoServiceProvider>(strIN);
-        public static string SHA384Encrypt(this string strIN) => SHAHashEncrypt<SHA384CryptoServiceProvider>(strIN);
-        public static string SHA512Encrypt(this string strIN) => SHAHashEncrypt<SHA512CryptoServiceProvider>(strIN);
+        public static string SHA256Encrypt(this string strIN) => strIN.SHAHashEncrypt<SHA256CryptoServiceProvider>();
+        public static string SHA384Encrypt(this string strIN) => strIN.SHAHashEncrypt<SHA384CryptoServiceProvider>();
+        public static string SHA512Encrypt(this string strIN) => strIN.SHAHashEncrypt<SHA512CryptoServiceProvider>();
     }
 }

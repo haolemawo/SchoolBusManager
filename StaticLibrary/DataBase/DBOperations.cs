@@ -49,7 +49,7 @@ namespace WBPlatform.Database
         }
 
 
-        public static DBQueryStatus QueryMultiple<T>(DBQuery query, out List<T> Result, int queryLimit = 100, int skip = 0) where T : DataTableObject<T>, new()
+        public static DBQueryStatus QueryMultiple<T>(DBQuery query, out List<T> Result, int queryLimit = 1000, int skip = 0) where T : DataTableObject<T>, new()
         {
             query.Limit(query._Limit == -1 ? queryLimit : query._Limit);
             query.Skip(query._Skip == -1 ? skip : query._Skip);

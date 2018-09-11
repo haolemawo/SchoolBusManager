@@ -1,6 +1,6 @@
 ﻿namespace WBPlatform.StaticClasses
 {
-    public enum GlobalMessageTypes
+    public enum InternalMessageTypes
     {
         UCR_Created_TO_ADMIN = 0, UCR_Created__TO_User = 1,
         UCR_Procced_TO_ADMIN = 2, UCR_Procceed_TO_User = 3,

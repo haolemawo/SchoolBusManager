@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Web;
+using System.Xml.Serialization;
 using WBPlatform.Logging;
 
 namespace WBPlatform.StaticClasses
@@ -18,7 +19,23 @@ namespace WBPlatform.StaticClasses
         /// </summary>
         public static object EncodeAsString(this object item) => item is string ? HttpUtility.UrlPathEncode(item as string) : item;
         public static object DecodeAsObject(this object item) => item is string ? HttpUtility.UrlDecode(item as string) : item;
-
+        public static T ParseXMLString<T>(string xml) where T : class
+        {
+            using (TextReader reader = new StringReader(xml))
+            {
+                try
+                {
+                    return (T)new XmlSerializer(typeof(T)).Deserialize(reader);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    // String passed is not XML, simply return defaultXmlClass
+                    L.E("XMLParse Exception!");
+                    ex.LogException();
+                }
+            }
+            return null;
+        }
         //public static object[] EncodeStringArray(this IEnumerable<object> items) => items.EncodeStringArray<object[]>();
         //public static TOut EncodeStringArray<TOut>(this IEnumerable<object> items) where TOut : IEnumerable<object> => (TOut)(IEnumerable<object>)(from _ in items select _.EncodeAsString()).ToArray();
 

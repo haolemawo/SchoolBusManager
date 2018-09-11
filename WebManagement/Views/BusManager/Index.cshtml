@@ -59,7 +59,7 @@
         
         currentBus = wbWeb.GetMgmtBus();
         setCookie("CBusID", currentBus.Bus.ObjectId);
-        $("#BusDirection").text("班车班车: " + currentBus.Bus.BusName);
+        $("#BusDirection").text("班车方向: " + currentBus.Bus.BusName);
         $("#ExpNumber").text("班车总人数: " + currentBus.Total + "人");
         $("#LSChecked").text("离校上车人数: " + currentBus.LSChecked + "人");
         $("#AHChecked").text("到家确认人数: " + currentBus.AHChecked + "人");

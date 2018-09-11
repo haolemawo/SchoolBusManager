@@ -17,21 +17,24 @@ namespace WBPlatform.Database.Connection
         private static TcpClient socketClient = new TcpClient();
         private static NetworkStream stream;
         private static IPEndPoint remoteEndpoint;
+        private static bool IsShutdownStarted { get; set; } = false;
 
         private static TimeSpan WaitTimeout = new TimeSpan(0, 0, XConfig.Current.Database.ClientTimeout);
         private static bool IsFirstTimeInit { get; set; } = true;
 
         public static bool Connected => socketClient.Connected;
         private static ConcurrentDictionary<string, string> _messages { get; set; } = new ConcurrentDictionary<string, string>();
-        //private static void KillConnection()
-        //{
-        //    ReceiverThread.Abort();
-        //    DataBaseConnectionMaintainer.Abort();
-        //    socketclient.CloseAndDispose();
-        //    stream.CloseAndDispose();
-        //}
+        public static void KillConnection()
+        {
+            IsShutdownStarted = true;
+            ReceiverThread = null;
+            DataBaseConnectionMaintainer = null;
+            socketClient.CloseAndDispose();
+            stream.CloseAndDispose();
+        }
         public static bool Initialise(IPAddress ServerIP, int Port)
         {
+            if (IsShutdownStarted) return false;
             socketClient = new TcpClient();
             remoteEndpoint = new IPEndPoint(ServerIP, Port);
             int FailedRetry = XConfig.Current.Database.FailedRetryTime;
@@ -62,26 +65,21 @@ namespace WBPlatform.Database.Connection
             return false;
         }
 
-        // 接收服务端发来信息的方法    
+        // 接收服务端发来信息的方法
         static void Recv()
         {
-            while (true)
+            while (!IsShutdownStarted)
             {
-                while (Connected)
+                while (Connected && !IsShutdownStarted)
                 {
                     try
                     {
                         string requestString = PublicTools.DecodeDatabasePacket(stream);
                         _messages.TryAdd(requestString.Substring(0, 5), requestString.Substring(5));
                     }
-                    catch (ThreadAbortException e)
-                    {
-                        e.LogException();
-                        return;
-                    }
                     catch (Exception ex) { Thread.Sleep(1000); ex.LogException(); }
                 }
-                while (!Connected)
+                while (!Connected && !IsShutdownStarted)
                 {
                     L.E("Message Recieve waiting for connection......");
                     Thread.Sleep(500);
@@ -91,7 +89,7 @@ namespace WBPlatform.Database.Connection
 
         private static void Maintain()
         {
-            while (true)
+            while (!IsShutdownStarted)
             {
                 try
                 {
@@ -105,7 +103,7 @@ namespace WBPlatform.Database.Connection
                 }
                 catch (Exception ex)
                 {
-                    if (ex is ThreadAbortException) return;
+                    if (ex is ThreadAbortException || ex is NullReferenceException) return;
                     ex.LogException();
 
                     socketClient.CloseAndDispose();

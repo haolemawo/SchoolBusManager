@@ -11,7 +11,7 @@
     <RootNamespace>WBPlatform.ServiceStatus</RootNamespace>
     <AssemblyName>WBPlatformServ_Status</AssemblyName>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 

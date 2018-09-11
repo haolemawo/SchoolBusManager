@@ -95,7 +95,7 @@ namespace WBPlatform.WebManagement.Controllers
                 return RequestIllegal(ServerAction.WeChatLogin_PreExecute, XConfig.Messages["WeChatRequestStatusUnexcepted"]);
             else
             {
-                WeChatHelper.ReNewWCCodes();
+                WeChatHelper.CheckAndRenewWeChatCodes();
                 //object LogonUser = null;
                 Dictionary<string, string> JSON = PublicTools.HTTPGet("https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + WeChatHelper.AccessToken + "&code=" + code);
                 if (!JSON.ContainsKey("UserId"))

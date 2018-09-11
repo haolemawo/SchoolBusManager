@@ -29,14 +29,19 @@ namespace WBPlatform.WebManagement.Tools
             L.I("CoreMessaging System Started!");
         }
 
-        public static void AddMessageProcesses(params InternalMessage[] message) { foreach (var item in message) { MessageList.Enqueue(item); } }
+        public static void AddMessageProcesses(params InternalMessage[] message) { foreach (var item in message) { AddMessageProcesses(item); } }
+        public static void AddMessageProcesses(InternalMessage message) => MessageList.Enqueue(message);
 
         private static void _ProcThread()
         {
             while (true)
             {
                 if (!MessageList.TryDequeue(out InternalMessage message)) Thread.Sleep(500);
-                else if (!_ProcessMessage(message)) MessageList.Enqueue(message);
+                else if (!_ProcessMessage(message))
+                {
+                    L.E("Internal Messaging System Process Failed! " + message.ToParsedString());
+                    MessageList.Enqueue(message);
+                }
                 else Thread.Sleep(100);
             }
         }
@@ -45,20 +50,20 @@ namespace WBPlatform.WebManagement.Tools
         {
             switch (message._Type)
             {
-                case GlobalMessageTypes.UCR_Created_TO_ADMIN: return ProcessUCR_CreateToAdmin(message);
-                case GlobalMessageTypes.UCR_Created__TO_User: return ProcessUCR_CreatedToUser(message);
-                case GlobalMessageTypes.UCR_Procceed_TO_User: return ProcessUCRToUser(message);
-                case GlobalMessageTypes.User__Pending_Verify: return UserVerify(message);
-                case GlobalMessageTypes.Admin_WeekReport_Gen: return GenerateWeekReport(message);
-                case GlobalMessageTypes.Admin_ResetAllRecord: return ResetRecord(message);
-                case GlobalMessageTypes.Admin_WeChat_SendMsg: return SendMessage(message);
+                case InternalMessageTypes.UCR_Created_TO_ADMIN: return ProcessUCR_CreateToAdmin(message);
+                case InternalMessageTypes.UCR_Created__TO_User: return ProcessUCR_CreatedToUser(message);
+                case InternalMessageTypes.UCR_Procceed_TO_User: return ProcessUCRToUser(message);
+                case InternalMessageTypes.User__Pending_Verify: return UserVerify(message);
+                case InternalMessageTypes.Admin_WeekReport_Gen: return GenerateWeekReport(message);
+                case InternalMessageTypes.Admin_ResetAllRecord: return ResetRecord(message);
+                case InternalMessageTypes.Admin_WeChat_SendMsg: return SendMessage(message);
 
-                case GlobalMessageTypes.Bus_Status_Report_TC:
-                case GlobalMessageTypes.Bus_Status_Report_TP:
+                case InternalMessageTypes.Bus_Status_Report_TC:
+                case InternalMessageTypes.Bus_Status_Report_TP:
                     return BusIssueReport(message);
 
-                case GlobalMessageTypes.User__Finishd_Verify:
-                case GlobalMessageTypes.UCR_Procced_TO_ADMIN:
+                case InternalMessageTypes.User__Finishd_Verify:
+                case InternalMessageTypes.UCR_Procced_TO_ADMIN:
                     //throw new NotSupportedException("鬼知道你干嘛要调这个函数");
                     return true;
 
@@ -95,6 +100,8 @@ namespace WBPlatform.WebManagement.Tools
 
         private static bool ResetRecord(InternalMessage message)
         {
+            WeChatSentMessage msgResetStart = new WeChatSentMessage(WeChatSMsg.text, null, "操作：开始新一周记录 已经开始处理！", null, message.User.UserName);
+            WeChatMessageSystem.AddToSendList(msgResetStart);
             if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { L.E("No Bus Found???"); return false; }
             foreach (var item in _s)
             {
@@ -113,10 +120,11 @@ namespace WBPlatform.WebManagement.Tools
                 if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) L.I("Succeed Reset Record: Stu->" + item.StudentName + ":" + item.ObjectId);
                 else { L.E("Failed To Reset Student Record: " + item.ToParsedString()); return false; }
             }
-            WeChatSentMessage msgReset = new WeChatSentMessage(WeChatSMsg.text, null, "操作：开始新一周记录 已经完成！", null, message.User.UserName);
-            WeChatMessageSystem.AddToSendList(msgReset);
+            WeChatSentMessage msgResetFinish = new WeChatSentMessage(WeChatSMsg.text, null, "操作：开始新一周记录 已经完成！", null, message.User.UserName);
+            WeChatMessageSystem.AddToSendList(msgResetFinish);
             return true;
         }
+
         private static bool GenerateWeekReport(InternalMessage message)
         {
             var dirInfo = Directory.CreateDirectory("reports");
@@ -167,7 +175,6 @@ namespace WBPlatform.WebManagement.Tools
                         ? UsersDictionary[_bus.TeacherID]
                         : emptyUserObject;
 
-                    var _parents = from k in UsersDictionary where k.Value.ChildList.Contains(_student.ObjectId) select k.Value;
 
                     List<string> values = new List<string>
                     {
@@ -189,7 +196,10 @@ namespace WBPlatform.WebManagement.Tools
 
                     values.Add(_student.DirectGoHome == DirectGoHomeMode.NotSet ? "未设置" : _student.DirectGoHome == DirectGoHomeMode.DirectlyGoHome ? "免接送" : "非免接送");
                     values.Add(_student.TakingBus ? (_student.CSChecked ? "签到" : "未签到") : "---");
+
+                    var _parents = from k in UsersDictionary where k.Value.ChildList.Contains(_student.ObjectId) select k.Value;
                     values.Add(string.Join(';', from _ in _parents select _.RealName + "(" + _.PhoneNumber + ")"));
+
                     sheet.Row(i + 2).SetValues(values.ToArray());
                 }
                 sheet.Columns().AdjustToContents();
@@ -197,6 +207,7 @@ namespace WBPlatform.WebManagement.Tools
                 sheet.SetHeaderColor();
                 sheet.SetGrid();
             }
+
             XLWorkbook wb = new XLWorkbook();
             wb.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             wb.CalculateMode = XLCalculateMode.Auto;
@@ -326,10 +337,10 @@ namespace WBPlatform.WebManagement.Tools
 
             if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", busId), out List<StudentObject> students) < 1)
             {
-                L.W("Failed to query Students List in specific bus ID: " + busId);
+                L.E("Failed to query Students List in specific bus ID: " + busId);
                 return false;
             }
-            if (message._Type == GlobalMessageTypes.Bus_Status_Report_TC)
+            if (message._Type == InternalMessageTypes.Bus_Status_Report_TC)
             {
                 //To Class Teacher
                 string[] ClassList = (from _stu in students select _stu.ClassID).Distinct().ToArray();
@@ -342,20 +353,23 @@ namespace WBPlatform.WebManagement.Tools
                 {
                     if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", _class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
                     {
-                        L.W("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
+                        L.E("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
                     }
-                    string[] _StudentInClass = (from _stu in students where _stu.ClassID == _class.ObjectId select _stu.StudentName).ToArray();
-                    WeChatSentMessage busReportMsg_Teacher = new WeChatSentMessage(WeChatSMsg.text, null,
-                        $"{_ClassTeacher.RealName}: \r\n" +
-                        $"你的班级 {_class.CDepartment} {_class.CGrade} {_class.CNumber} \r\n" +
-                        $"有 {_StudentInClass.Length} 名学生受到班车 {_report.ReportType} 影响: \r\n" +
-                        $"原因：{_report.OtherData}\r\n" +
-                        $"学生列表: {string.Join(",", _StudentInClass)}", null, _ClassTeacher.UserName);
-                    WeChatMessageSystem.AddToSendList(busReportMsg_Teacher);
+                    else
+                    {
+                        string[] _StudentInClass = (from _stu in students where _stu.ClassID == _class.ObjectId select _stu.StudentName).ToArray();
+                        WeChatSentMessage busReportMsg_Teacher = new WeChatSentMessage(WeChatSMsg.text, null,
+                            $"{_ClassTeacher.RealName}: \r\n" +
+                            $"你的班级 {_class.CDepartment} {_class.CGrade} {_class.CNumber} \r\n" +
+                            $"有 {_StudentInClass.Length} 名学生受到班车 {_report.ReportType} 影响: \r\n" +
+                            $"原因：{_report.OtherData}\r\n" +
+                            $"学生列表: {string.Join(", ", _StudentInClass)}", null, _ClassTeacher.UserName);
+                        WeChatMessageSystem.AddToSendList(busReportMsg_Teacher);
+                    }
                 }
                 return true;
             }
-            else if (message._Type == GlobalMessageTypes.Bus_Status_Report_TP)
+            else if (message._Type == InternalMessageTypes.Bus_Status_Report_TP)
             {
                 //To Parents....
                 List<UserObject> AllParents = new List<UserObject>();
@@ -376,18 +390,43 @@ namespace WBPlatform.WebManagement.Tools
                         $"{_parent.RealName}: \r\n" +
                         $"你的 {_ChildrenList.Length} 个孩子受到班车 {_report.ReportType} 影响\r\n" +
                         $"原因: {_report.OtherData}\r\n" +
-                        $"受影响的孩子: {string.Join(",", _ChildrenList)}", null, _parent.UserName);
+                        $"受影响的孩子: {string.Join(", ", _ChildrenList)}", null, _parent.UserName);
                     WeChatMessageSystem.AddToSendList(busReportMsg_Parent);
                 }
                 return true;
             }
             else
             {
-                L.E("MessageSystem->BusStatusReport: This Error may never hit...");
+                L.E("This Error may never hit...");
                 return false;
             }
         }
 
         private static DBQueryStatus GetAdminUsers(out List<UserObject> adminUsers) => DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("isAdmin", true), out adminUsers);
+        public static void SetContentColor(this IXLWorksheet sheet)
+        {
+            sheet.RowsUsed(r => sheet.FirstRow() != r).Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
+        }
+        public static void SetGrid(this IXLWorksheet sheet)
+        {
+            sheet.RangeUsed().Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            sheet.RangeUsed().Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+        }
+        public static void SetHeaderColor(this IXLWorksheet sheet)
+        {
+            sheet.FirstRow().Style.Font.Bold = true;
+            sheet.FirstRow().Style.Font.FontColor = XLColor.White;
+            sheet.FirstRow().Style.Fill.BackgroundColor = XLColor.FromArgb(83, 141, 213);
+        }
+        public static void SetValues(this IXLRow row, int startAt, params string[] values)
+        {
+            int current = startAt;
+            foreach (var item in values)
+            {
+                row.Cell(current).SetValue(item);
+                current++;
+            }
+        }
+        public static void SetValues(this IXLRow row, params string[] values) => row.SetValues(1, values);
     }
 }

@@ -7,6 +7,9 @@ using WBPlatform.Logging;
 
 namespace WBPlatform.Config
 {
+    /// <summary>
+    /// Config Collection, DO NOT CHANGE PROPERTIES' NAME
+    /// </summary>
     public class ConfigCollection
     {
         public int LogLevel { get; set; }

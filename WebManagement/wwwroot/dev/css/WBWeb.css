@@ -1,5 +1,9 @@
 ﻿body {
     padding-bottom: 20px;
+    background-image: url(/Backgrounds/back3.jpg);
+    background-position: center;
+    background-attachment: fixed;
+    margin-bottom: 50px;
 }
 
 /* Wrapping element */
@@ -8,7 +12,7 @@
     padding-left: 15px;
     padding-right: 15px;
 }
-/* Carousel */
+/* Carousel */ 
 .carousel-caption p {
     font-size: 20px;
 }
@@ -19,20 +23,13 @@
 }
 
 /* QR code generator */
-#qrCode {
+.qrCode {
     margin: 15px;
 }
 
 label {
     font-weight: bold;
     font-size: small;
-}
-
-body {
-    background-image: url(/Backgrounds/back3.jpg);
-    background-position: center;
-    background-attachment: fixed;
-    margin-bottom: 50px;
 }
 
 .full-width {
@@ -78,8 +75,11 @@ body {
 }
 
 .choose-square {
-    border: solid, 50px, thick, black;
-    margin: 10px;
+    margin: 5px;
+    max-height: 120px;
+    max-width: 120px;
+    height: 100px;
+    width: 100px;
 }
 
 .pop-box-body {
@@ -88,7 +88,6 @@ body {
     padding: 2px;
 }
 
-.center-all
 .center-margin {
     display: block;
     margin-left: auto;

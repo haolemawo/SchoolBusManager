@@ -20,7 +20,7 @@ namespace WBPlatform.WebManagement.Controllers
             InternalMessage reportInternalMessage = new InternalMessage()
             {
                 User = CurrentUser,
-                _Type = GlobalMessageTypes.Admin_WeekReport_Gen,
+                _Type = InternalMessageTypes.Admin_WeekReport_Gen,
                 DataObject = scope,
                 Identifier = DateTime.Now.ToFileNameString()
             };

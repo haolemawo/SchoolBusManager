@@ -15,7 +15,7 @@
     <ApplicationInsightsAnnotationResourceId>/subscriptions/8dc7966f-2d0e-4614-8988-57911d06e773/resourcegroups/WoodenBench-Platform/providers/microsoft.insights/components/WoodenBench</ApplicationInsightsAnnotationResourceId>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
     <OutputType>Exe</OutputType>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 

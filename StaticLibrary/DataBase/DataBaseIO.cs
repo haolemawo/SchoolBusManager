@@ -20,8 +20,9 @@ namespace WBPlatform.Database.IO
         public void Put(string column, object _data)
         {
             if (_data == null) { L.W("Put " + column + " as null, drop it..."); return; }
-            if (_data is IList) _data = string.Join(",", (IList<string>)_data);
-            Data.AddOrUpdate(column, _data, (s, o) => o);
+            if (_data is IList) _data = string.Join(",", _data as IList<string>);
+            //Data.AddOrUpdate(column, _data, (s, o) => _data);
+            if (!Data.TryAdd(column, _data)) L.E("Failed To Add Data to DataBaseIO.Data, Column Name: " + column);
         }
     }
 

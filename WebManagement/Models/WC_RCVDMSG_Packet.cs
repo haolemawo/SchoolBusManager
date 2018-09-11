@@ -30,7 +30,7 @@ namespace WBPlatform.WebManagement.Tools
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(XMLMessage);
             XmlNode root = doc.FirstChild;
-            MessageType = (WeChatRMsg)Enum.Parse(typeof(WeChatRMsg), root["MsgType"].InnerText, true);
+            MessageType = root["MsgType"].InnerText.ParseToEnum<WeChatRMsg>();
 
             FromUser = root["FromUserName"].InnerText;
             ToUser = root["ToUserName"].InnerText;
@@ -46,9 +46,10 @@ namespace WBPlatform.WebManagement.Tools
                 case WeChatRMsg.image:
                     PicUrl = root["PicUrl"].InnerText;
                     MediaId = root["MediaId"].InnerText;
+
                     break;
                 case WeChatRMsg.EVENT:
-                    Event = (WeChatEvent)Enum.Parse(typeof(WeChatEvent), root["Event"].InnerText, true);
+                    Event = root["Event"].InnerText.ParseToEnum<WeChatEvent>();
                     switch (Event)
                     {
                         case WeChatEvent.LOCATION:

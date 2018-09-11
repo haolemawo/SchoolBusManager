@@ -16,7 +16,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
             bool flag = targ == "bteachers" || targ == "cteachers" || targ == "parents" || targ == "all";
             if (!flag) return RequestIllegal;
-            InternalMessage message = new InternalMessage() { DataObject = msg, Identifier = targ, User = CurrentUser, _Type = GlobalMessageTypes.Admin_WeChat_SendMsg };
+            InternalMessage message = new InternalMessage() { DataObject = msg, Identifier = targ, User = CurrentUser, _Type = InternalMessageTypes.Admin_WeChat_SendMsg };
             MessagingSystem.AddMessageProcesses(message);
             return SpecialisedInfo("发送成功！");
         }

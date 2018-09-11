@@ -34,14 +34,14 @@ namespace WBPlatform.WebManagement.Controllers
                 DataObject = busReport,
                 Identifier = BusID,
                 User = CurrentUser,
-                _Type = GlobalMessageTypes.Bus_Status_Report_TC
+                _Type = InternalMessageTypes.Bus_Status_Report_TC
             };
             InternalMessage message_TP = new InternalMessage()
             {
                 DataObject = busReport,
                 Identifier = BusID,
                 User = CurrentUser,
-                _Type = GlobalMessageTypes.Bus_Status_Report_TP
+                _Type = InternalMessageTypes.Bus_Status_Report_TP
             };
             MessagingSystem.AddMessageProcesses(message_TC, message_TP);
             return Json(new { Report = busReport });
