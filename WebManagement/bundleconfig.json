@@ -6,15 +6,8 @@
     // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
       "wwwroot/dev/css/bootstrap-reboot.css",
-      "wwwroot/dev/css/bootstrap.css",
       "wwwroot/dev/css/WBWeb.css"
     ]
-  },
-  /////////////////////////////////////////////BOOTSTRAP  &&  JQUERY
-  {
-    "outputFileName": "wwwroot/js/library.min.js",
-    "inputFiles": [ "wwwroot/dev/js/lib/jquery.js", "wwwroot/dev/js/lib/bootstrap.js" ],
-    "minify": { "enabled": true }
   },
   //JS FIlES...
   {
@@ -22,16 +15,6 @@
     "inputFiles": [
       "wwwroot/dev/js/service.js"
     ],
-    // Optionally specify minification options
-    "minify": {
-      "enabled": true,
-      "renameLocals": true
-    }
-  },
-  //JS FIlES...
-  {
-    "outputFileName": "wwwroot/js/crpto-js.min.js",
-    "inputFiles": [ "wwwroot/dev/js/Crypto-Js/crypto-js.js" ],
     // Optionally specify minification options
     "minify": {
       "enabled": true,
