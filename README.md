@@ -55,7 +55,7 @@ WOODENBENCH FOR SCHOOLBUS
 
 ## 主菜单
 
-![MainPage ScreenShot](.\docs\mainPage)
+![MainPage ScreenShot](.\docs\mainPage.png)
 
 ## 班车离校,到家,返校签到
 
