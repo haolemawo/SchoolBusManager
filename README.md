@@ -59,7 +59,7 @@
 
 图：“班车管理主页“ 
 
-![BusManage Image](/docs/busManage.png)
+![BusManage Image](docs/busManage.png)
 
 
 
@@ -69,7 +69,7 @@
 
 3\. 学生在周末返校时再次由班车老师点击签到按钮进行签到，标记学生已经上车。
 
-![Signing Image](docs/busManage_signing.png) ![busmanage_Sign2](docs\busManage_edit.png)
+![Signing Image](docs/busManage_signing.png) ![busmanage_Sign2](docs/busManage_edit.png)
 
 图：离校签到（1），编辑签到信息（2）
 
@@ -77,19 +77,19 @@
 
 在免接送设置，我的孩子，我的班级，班车管理等页面，点击学生的姓名，可以查看对应学生的个人信息，包含班级信息，班主任信息，班车信息，班车老师信息，家长信息。
 
-![StuInfo1](docs\student_DetailInfo1.png)![StuInfo2](docs\student_DetailInfo2.png)
+![StuInfo1](docs/student_DetailInfo1.png)![StuInfo2](docs/student_DetailInfo2.png)
 
 ## 学生信息设置
 
 班主任和家长可以设置指定学生在本周是否坐班车，操作简单，直接点击右侧绿色对勾即可。
 
-![MyChild](docs\myChild_MainPage.png)
+![MyChild](docs/myChild_MainPage.png)
 
 ### 免接送协议
 
 小板凳班车管理平台支持学生“免接送协议”的签署，家长可以在“我的孩子”页面中设置其孩子是否签署“免接送协议”，并将永久保存至数据库中。
 
-![MyChild_DirectGoHome](docs\myChild_DirectGoHome.png)
+![MyChild_DirectGoHome](docs/myChild_DirectGoHome.png)
 
 该操作为一次性操作，一旦 “签署“ 该协议或选择 “不签署” 该协议，直到下一次导入数据之前，将不能再更改。
 
@@ -98,7 +98,7 @@
 
 班主任具有查询，更改班级坐班车同学状态的权限，班主任可以在 “班级管理” 查询班级内坐班车的所有学生信息，实时查看学生离校，到家，返校信息。
 
-![classMainPage](docs\myClass_mainPage.png)
+![classMainPage](docs/myClass_mainPage.png)
 
 ## 家长管理页面
 
@@ -110,9 +110,9 @@
 
 在班车运行时，一旦出现问题，班车老师可以提交问题。如：堵车，交通事故，学生迟到等，其相应通知将会通过微信推送到相应班主任和有关家长，必要时也可通知系统管理员。 
 
-![BusManage Report](docs\busManage_report.png)
+![BusManage Report](docs/busManage_report.png)
 
-![BusManage Report Result](docs\busManage_report2.png)
+![BusManage Report Result](docs/busManage_report2.png)
 
 ## 每周报表生成
 
@@ -122,25 +122,26 @@
 - 按班车划分
 - 不划分表，直接列出所有数据
 
-![ManageMain](docs\manage_MainPage.png)
+![ManageMain](docs/manage_MainPage.png)
 
 ### 报表包含的内容
 
 报表包含了学生基本信息，学生班级信息，班车信息等必要内容，主要数据如下：
+
 |      A       |      B       |      C       |       D        |
 | :----------: | :----------: | :----------: | :------------: |
 |     学部     |     年级     |     班级     |   班主任姓名   |
 |   学生姓名   |   学生性别   |   班车方向   |   是否坐班车   |
 |   班车老师   | 离校前到状态 | 返校签到状态 | 免接送协议状态 |
-| 到家签到状态 |   家长信息   |              |                |
+| 到家签到状态 |   家长信息   |        .      |         .       |
 
 ### 按班级划分
 
-![reportclass](docs\busReport_Class.png)
+![reportclass](docs/busReport_Class.png)
 
 ### 按校车划分
 
-![report_Bus](docs\busReport_bus.png)
+![report_Bus](docs/busReport_bus.png)
 
 
 
