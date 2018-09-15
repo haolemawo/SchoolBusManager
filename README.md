@@ -141,7 +141,7 @@
 
 ### 按校车划分
 
-![report_Bus](docs/busReport_bus.png)
+![report_Bus](docs/busReport_Bus.png)
 
 
 
