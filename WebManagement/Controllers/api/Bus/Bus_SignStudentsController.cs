@@ -23,13 +23,13 @@ namespace WBPlatform.WebManagement.Controllers
             string[] DataCollection = str.Split(';');
             if (DataCollection.Length != 4) return RequestIllegal;
 
-            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", BusID).WhereEqualTo("TeacherObjectID", DataCollection[2]), out SchoolBusObject Bus))
+            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(BusID).WhereEqualTo("TeacherObjectID", DataCollection[2]), out SchoolBusObject Bus))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 case DBQueryStatus.NO_RESULTS: return DataBaseError;
                 default:
                     string StudentID = DataCollection[3];
-                    switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", StudentID).WhereEqualTo("BusID", BusID), out StudentObject Student))
+                    switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(StudentID).WhereEqualTo("BusID", BusID), out StudentObject Student))
                     {
                         case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                         case DBQueryStatus.NO_RESULTS: return DataBaseError;
@@ -38,8 +38,9 @@ namespace WBPlatform.WebManagement.Controllers
                             string SType = DataCollection[0];
                             if (SType.ToLower() == "leave") Student.LSChecked = Value;
                             else if (SType.ToLower() == "pleave") Student.AHChecked = Value;
-                            else if (SType.ToLower() == "come") Student.CSChecked = Value;
+                            else if (SType.ToLower() == "come") Student.CSChecked = Value; 
                             else if (SType.ToLower() == "gohome") Student.DirectGoHome = Value ? DirectGoHomeMode.DirectlyGoHome : DirectGoHomeMode.NeedParentsSign;
+                            else if (SType.ToLower() == "week") Student.WeekType = Value ? StudentBigWeekMode.BothTwoTypes : StudentBigWeekMode.BigWeekOnly;
                             else return RequestIllegal;
                             if (DataBaseOperation.UpdateData(ref Student) == DBQueryStatus.ONE_RESULT)
                             {

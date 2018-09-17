@@ -95,12 +95,12 @@ namespace WBPlatform.WebManagement.Controllers
                 return RequestIllegal(ServerAction.WeChatLogin_PreExecute, XConfig.Messages["WeChatRequestStatusUnexcepted"]);
             else
             {
-                WeChatHelper.CheckAndRenewWeChatCodes();
+                WeChatHelper.PrepareCodes();
                 //object LogonUser = null;
                 Dictionary<string, string> JSON = PublicTools.HTTPGet("https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=" + WeChatHelper.AccessToken + "&code=" + code);
                 if (!JSON.ContainsKey("UserId"))
                 {
-                    L.E("WeChat JSON doesnot Contain: UserID, " + JSON.ToParsedString());
+                    L.E("WeChat JSON doesnot Contain: UserID, " + JSON.Stringify());
                     return null;
                 }
                 string WeiXinID = JSON["UserId"];

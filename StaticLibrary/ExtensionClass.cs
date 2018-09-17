@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
-
+using WBPlatform.Database;
 using WBPlatform.Database.IO;
 using WBPlatform.TableObject;
 
@@ -29,7 +29,7 @@ namespace WBPlatform.StaticClasses
             socket?.Dispose();
             socket = null;
         }
-        
+
         public static T DeepCloneObject<T>(this ISerializable _object) where T : ISerializable
         {
             MemoryStream stream = new MemoryStream();
@@ -38,6 +38,8 @@ namespace WBPlatform.StaticClasses
             stream.Position = 0;
             return (T)formatter.Deserialize(stream);
         }
+
+        public static DBQuery WhereIDIs(this DBQuery databaseIO, string objectId) => databaseIO.WhereEqualTo("objectId", objectId);
 
         public static Dictionary<string, T> ToDictionary<T>(this IEnumerable<T> dataObjects) where T : DataTableObject => dataObjects.ToDictionary(t => t.ObjectId);
 
@@ -145,7 +147,7 @@ namespace WBPlatform.StaticClasses
         public static T[] MoveToArray<T>(this T thing) => (T[])thing.ToIEnumerable();
         public static IEnumerable<T> ToIEnumerable<T>(this T thing) => new T[] { thing };
 
-        public static string ToParsedString<T>(this T value) => JsonConvert.SerializeObject(value, typeof(T), new JsonSerializerSettings());
+        public static string Stringify<T>(this T value) => JsonConvert.SerializeObject(value, typeof(T), new JsonSerializerSettings());
 
         public static bool ToParsedObject<T>(this string JSON, out T data)
         {

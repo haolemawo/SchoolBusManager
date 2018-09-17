@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using System.Collections.Generic;
-using System.Linq;
+
+using WBPlatform.Config;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
@@ -19,11 +20,13 @@ namespace WBPlatform.WebManagement.Controllers
             if (!(CurrentUser.ObjectId == TeacherID)) return UserGroupError;
             //user.UserGroup.BusID == BusID &&
             DBQuery BusQuery = new DBQuery();
-            BusQuery.WhereEqualTo("objectId", BusID);
+            BusQuery.WhereIDIs(BusID);
             BusQuery.WhereEqualTo("TeacherObjectID", TeacherID);
             if (DataBaseOperation.QueryMultiple(BusQuery, out List<SchoolBusObject> BusList) != DBQueryStatus.ONE_RESULT) return InternalError;
 
-            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId), out List<StudentObject> StudentList))
+            string[] weekType = XConfig.ServerConfig["WeekType"] == "big" ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
+
+            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId).WhereValueContainedInArray("WeekType", weekType), out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return DataBaseError;
                 case DBQueryStatus.INJECTION_DETECTED: return RequestIllegal;

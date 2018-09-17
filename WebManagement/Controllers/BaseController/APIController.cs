@@ -15,8 +15,8 @@ namespace WBPlatform.WebManagement.Controllers
         public readonly JsonResult DataBaseError;
         public readonly JsonResult UserGroupError;
         public readonly JsonResult RequestIllegal;
-        //Unknown Internal Error.
         public readonly JsonResult InternalError;
+
         public APIController()
         {
             SessionError = Json(1, null, XConfig.Messages["SessionError"]);
@@ -47,10 +47,11 @@ namespace WBPlatform.WebManagement.Controllers
         protected const string ADMIN_weekReportGenerate = "/api/admin/generateWeekReport";
         protected const string ADMIN_NewWeek = "/api/admin/newWeek";
         protected const string ADMIN_SendMessage = "/api/admin/sendMessage";
+        protected const string ADMIN_SetWeekType = "/api/admin/setWeekType";
 
         protected static Dictionary<string, string> APIRoutes { get; private set; } = new Dictionary<string, string>
         {
-            {"API_GetBuses",                getBusesRoute               +    "?UserID={0}&Session={1}" },
+            {"API_GetBuses",                getBusesRoute               +    "?UserID={0}" },
             {"API_GetName",                 getUNameRoute               +    "?UserID={0}" },
             {"API_GetStudents",             getBusStudentsRoute         +    "?BusID={0}&TeacherID={1}&Session={2}" },
             {"API_QueryStudents",           queryStudentsRoute          +    "?BusID={0}&Column={1}&Content={2}" },
@@ -61,6 +62,7 @@ namespace WBPlatform.WebManagement.Controllers
             {"API_SetStudentState",         setStudentState             +    "?studentId={0}&state={1}" },
             {"API_SendMessage",             ADMIN_SendMessage           +    "?targ={0}&msg={1}"  },
             {"API_GenerateReport",          ADMIN_weekReportGenerate    +    "?scope={0}"  },
+            {"API_SetWeekType",             ADMIN_SetWeekType           +    "?type={0}"  },
             {"API_RefreshConfig",           refreshConfig               +    ""  },
             {"API_NewWeek",                 ADMIN_NewWeek               +    ""  }
         };

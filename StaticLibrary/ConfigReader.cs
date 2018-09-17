@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using WBPlatform.Logging;
+using WBPlatform.TableObject;
 
 namespace WBPlatform.Config
 {
@@ -12,13 +13,15 @@ namespace WBPlatform.Config
     /// </summary>
     public class ConfigCollection
     {
+        private const string https = "https://";
+        private const string http = "http://";
+
         public int LogLevel { get; set; }
-        private readonly string https = "https://";
         public string ApplicationInsightInstrumentationKey { get; set; }
         public string StatusReportNamedPipe { get; set; }
         public bool DevelopmentVersion { get; set; }
-        public string WebSiteAddress => DevelopmentVersion ? https + "dev.schoolbus.lhy0403.top" : https + "schoolbus.lhy0403.top";
-        public string StatusPageAddress => DevelopmentVersion ? https + "dev-status.schoolbus.lhy0403.top" : https + "status.schoolbus.lhy0403.top";
+        public string WebSiteAddress => https + (DevelopmentVersion ? "dev.schoolbus.lhy0403.top" : "schoolbus.lhy0403.top");
+        public string StatusPageAddress => https + (DevelopmentVersion ? "dev-status.schoolbus.lhy0403.top" : "status.schoolbus.lhy0403.top");
 
         public DatabaseConfig Database { get; set; } = new DatabaseConfig();
         public WeChatConfig WeChat { get; set; } = new WeChatConfig();
@@ -71,8 +74,9 @@ namespace WBPlatform.Config
 
     public static class XConfig
     {
+        public static ServerConfigCollection ServerConfig { get; } = new ServerConfigCollection();
         public static ConfigCollection Current { get; set; } = new ConfigCollection();
-        public static LocalisedMessages Messages { get; private set; } = new LocalisedMessages();
+        public static LocalisedMessages Messages { get; set; } = new LocalisedMessages();
 
         public static bool LoadMessages(string MessageFile)
         {

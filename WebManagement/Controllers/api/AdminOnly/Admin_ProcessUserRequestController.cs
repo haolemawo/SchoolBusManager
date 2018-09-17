@@ -21,7 +21,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             if (!ValidateSession()) return SessionError;
             if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             request.SolverID = CurrentUser.ObjectId;
             switch (mode)
@@ -43,7 +43,7 @@ namespace WBPlatform.WebManagement.Controllers
 
             if (request.Status != UCRProcessStatus.Accepted) return SpecialisedInfo("提交成功");
 
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             switch (request.RequestTypes)
             {

@@ -10,10 +10,11 @@
             <tr><th>名称</th><th>值</th></tr>
             <tr><td>姓名</td><td>@Model._student.StudentName</td></tr>
             <tr><td>性别</td><td>@(Model._student.Sex == "F" ? "女" : "男")</td></tr>
+            <tr><td>坐校车状态</td><td>@(Model._student.WeekType == StudentBigWeekMode.NotSet ? "未知" : Model._student.WeekType == StudentBigWeekMode.BigWeekOnly ? "仅大周" : "大小周")</td></tr>
+            <tr><td>免接送</td><td>@(Model._student.DirectGoHome == DirectGoHomeMode.NotSet ? "未设置" : Model._student.DirectGoHome == DirectGoHomeMode.NeedParentsSign ? "非免接送" : "免接送")</td></tr>
             <tr><td>离校确认</td><td>@(Model._student.LSChecked ? "√  已签到" : "×  未签到")</td></tr>
             <tr><td>返校确认</td><td>@(Model._student.CSChecked ? "√  已签到" : "×  未签到")</td></tr>
             <tr><td>到家确认</td><td>@(Model._student.AHChecked ? "√  已确认" : "×  未确认")</td></tr>
-
         </table>
         <br />
         <label>班级信息</label>

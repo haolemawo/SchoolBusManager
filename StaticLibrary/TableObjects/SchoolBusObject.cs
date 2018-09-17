@@ -12,6 +12,7 @@ namespace WBPlatform.TableObject
         public string BusName { get; set; }
         public string TeacherID { get; set; }
 
+        public bool BigWeekOnly { get; set; }
         public bool AHChecked { get; set; }
         public bool CSChecked { get; set; }
         public bool LSChecked { get; set; }
@@ -27,6 +28,7 @@ namespace WBPlatform.TableObject
             LSChecked = input.GetBool("LSChecked");
             CSChecked = input.GetBool("CSChecked");
             AHChecked = input.GetBool("AHChecked");
+            BigWeekOnly = input.GetBool("BigWeekOnly");
         }
 
         public override void WriteObject(DataBaseIO output, bool all)
@@ -37,22 +39,8 @@ namespace WBPlatform.TableObject
             output.Put("CSChecked", CSChecked);
             output.Put("LSChecked", LSChecked);
             output.Put("AHChecked", AHChecked);
+            output.Put("BigWeekOnly", BigWeekOnly);
 
         }
-
-        public Dictionary<string, string> ToDictionary()
-        {
-            return new Dictionary<string, string>
-            {
-                { "BusID", ObjectId },
-                { "CreatedAt", CreatedAt.ToString("yyyy-MM-dd HH:mm:ss") },
-                { "Name", BusName },
-                { "TeacherID", TeacherID },
-                { "ArriveHome", AHChecked.ToString().ToLower() },
-                { "ComingSchool", CSChecked.ToString().ToLower() },
-                { "LeavingSchool", LSChecked.ToString().ToLower() }
-            };
-        }
-        public override string ToString() => JsonConvert.SerializeObject(ToDictionary());
     }
 }

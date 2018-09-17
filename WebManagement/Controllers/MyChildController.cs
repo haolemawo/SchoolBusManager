@@ -54,7 +54,7 @@ namespace WBPlatform.WebManagement.Controllers
                 ViewData["ChildCount"] = ToBeSignedStudents.Count;
                 for (int i = 0; i < ToBeSignedStudents.Count; i++)
                 {
-                    ViewData["ChildNum_" + i.ToString()] = ToBeSignedStudents[i].ToParsedString();
+                    ViewData["ChildNum_" + i.ToString()] = ToBeSignedStudents[i].Stringify();
                 }
                 ViewData["cBusID"] = BusID;
                 ViewData["cTeacherID"] = BusTeacherID;
@@ -72,14 +72,31 @@ namespace WBPlatform.WebManagement.Controllers
 
                 if (DataBaseOperation.QueryMultiple(new DBQuery()
                     .WhereEqualTo("DirectGoHome", 0)
-                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
-                    .WhereEqualTo("TakingBus", true), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
+                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray()), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
                     return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
 
                 ViewData["ChildCount"] = ToBeSignedStudents.Count;
                 return View(ToBeSignedStudents);
             }
             else return LoginFailed("/" + ControllerName + "/DirectGoHomeSign");
+        }
+
+        public IActionResult WeekType()
+        {
+            ViewData["where"] = ControllerName;
+            if (ValidateSession())
+            {
+                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+
+                if (DataBaseOperation.QueryMultiple(new DBQuery()
+                    .WhereEqualTo("WeekType", 0)
+                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray()), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
+                    return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
+
+                ViewData["ChildCount"] = ToBeSignedStudents.Count;
+                return View(ToBeSignedStudents);
+            }
+            else return LoginFailed("/" + ControllerName + "/WeekType");
         }
     }
 }

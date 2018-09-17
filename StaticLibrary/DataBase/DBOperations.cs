@@ -69,7 +69,7 @@ namespace WBPlatform.Database
         }
         //public static DBQueryStatus DeleteData(string Table, string ObjectID)
         //{
-        //    DBQueryStatus result = _DBRequestInternal(Table, DBVerbs.Delete, new DBQuery().WhereEqualTo("objectId", ObjectID), null, out DataBaseIO[] inputs);
+        //    DBQueryStatus result = _DBRequestInternal(Table, DBVerbs.Delete, new DBQuery().WhereIDIs(ObjectID), null, out DataBaseIO[] inputs);
         //    return result;
         //}
 
@@ -79,7 +79,7 @@ namespace WBPlatform.Database
         {
             if (query == null)
             {
-                query = new DBQuery().WhereEqualTo("objectId", item.ObjectId);
+                query = new DBQuery().WhereIDIs(item.ObjectId);
             }
             query.Limit(1);
             DataBaseIO output = new DataBaseIO();
@@ -94,7 +94,8 @@ namespace WBPlatform.Database
             item.ReadFields(inputs[0]);
             return _result;
         }
-
+        
+        public static DBQueryStatus CreateData<T>(T data) where T : DataTableObject<T>, new() => CreateData(ref data);
         public static DBQueryStatus CreateData<T>(ref T data) where T : DataTableObject<T>, new() => CreateData(data, out data);
         public static DBQueryStatus CreateData<T>(T data, out T dataOut) where T : DataTableObject<T>, new()
         {
@@ -143,7 +144,7 @@ namespace WBPlatform.Database
                         break;
                 }
 
-                string internalQueryString = internalQuery.ToParsedString();
+                string internalQueryString = internalQuery.Stringify();
 
                 string _MessageId = MessageId;
                 if (!DatabaseSocketsClient.SendCommand(internalQueryString, _MessageId, out string rcvdData))

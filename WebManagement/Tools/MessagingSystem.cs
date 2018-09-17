@@ -39,7 +39,7 @@ namespace WBPlatform.WebManagement.Tools
                 if (!MessageList.TryDequeue(out InternalMessage message)) Thread.Sleep(500);
                 else if (!_ProcessMessage(message))
                 {
-                    L.E("Internal Messaging System Process Failed! " + message.ToParsedString());
+                    L.E("Internal Messaging System Process Failed! " + message.Stringify());
                     MessageList.Enqueue(message);
                 }
                 else Thread.Sleep(100);
@@ -109,7 +109,7 @@ namespace WBPlatform.WebManagement.Tools
                 item.CSChecked = false;
                 item.LSChecked = false;
                 if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) L.I("Succeed Reset Record: Bus->" + item.BusName + ":" + item.ObjectId);
-                else { L.E("Failed To Reset Bus Record: " + item.ToParsedString()); return false; }
+                else { L.E("Failed To Reset Bus Record: " + item.Stringify()); return false; }
             }
             if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { L.E("No Students Found???"); return false; }
             foreach (var item in _st)
@@ -118,7 +118,7 @@ namespace WBPlatform.WebManagement.Tools
                 item.CSChecked = false;
                 item.LSChecked = false;
                 if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) L.I("Succeed Reset Record: Stu->" + item.StudentName + ":" + item.ObjectId);
-                else { L.E("Failed To Reset Student Record: " + item.ToParsedString()); return false; }
+                else { L.E("Failed To Reset Student Record: " + item.Stringify()); return false; }
             }
             WeChatSentMessage msgResetFinish = new WeChatSentMessage(WeChatSMsg.text, null, "操作：开始新一周记录 已经完成！", null, message.User.UserName);
             WeChatMessageSystem.AddToSendList(msgResetFinish);
@@ -295,7 +295,7 @@ namespace WBPlatform.WebManagement.Tools
         }
         private static bool ProcessUCRToUser(InternalMessage message)
         {
-            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", message.Identifier), out UserObject requestSender))
+            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(message.Identifier), out UserObject requestSender))
             {
                 case DBQueryStatus.ONE_RESULT:
                     string stat = ((UserChangeRequest)message.DataObject).Status == UCRProcessStatus.Accepted ? "审核通过" : "未通过";
@@ -351,7 +351,7 @@ namespace WBPlatform.WebManagement.Tools
                 }
                 foreach (ClassObject _class in classes)
                 {
-                    if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", _class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
+                    if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(_class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
                     {
                         L.E("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
                     }

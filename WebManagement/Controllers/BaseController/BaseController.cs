@@ -64,7 +64,6 @@ namespace WBPlatform.WebManagement.Controllers
             //if (SessionCollection.ContainsKey(SessionString) && (UA == "JumpToken_FreeLogin" || SessionCollection[SessionString].UserAgent == UA))
             if (SessionCollection[Session] != null && SessionCollection[Session].UserAgent == UA)
             {
-
                 lock (SessionCollection) SessionCollection[Session].SetLastActive();
                 CurrentIdentity = SessionCollection[Session];
                 User.AddIdentity(CurrentIdentity.Identity);
@@ -75,11 +74,11 @@ namespace WBPlatform.WebManagement.Controllers
                 Telemetry.Context.Session.Id = Session;
 
                 ViewData[UID_CookieName] = _userIC;
-                ViewData["cUser"] = CurrentUser.ToParsedString().Replace(CurrentUser.Password, "Looking for Password?");
+                ViewData["cUser"] = CurrentUser.Stringify().Replace(CurrentUser.Password, "Looking for Password?");
                 ViewData["CurrentRequest"] = HttpContext;
 
                 Response.Cookies.Append("ai_user", _userIC);
-                Response.Cookies.Append("ai_session", HttpContext.Connection.RemoteIpAddress.ToString() + "-" + _userIC + Request.Cookies["Session"].Substring(0, 8) ?? "Unknown");
+                Response.Cookies.Append("ai_session", HttpContext.Connection.RemoteIpAddress.ToString() + "-" + _userIC + Session?.Substring(0, 5) ?? "Unknown");
                 Response.Cookies.Append("ai_authUser", CurrentUser.UserName);
 
                 //API CALL

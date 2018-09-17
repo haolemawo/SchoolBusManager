@@ -64,7 +64,7 @@ namespace WBPlatform.WebManagement.Controllers
         //            string targetId = uid;
         //            string message = (string)PublicTools.DecodeObject(Encoding.UTF8.GetString(Convert.FromBase64String(msg ?? "")));
         //            ViewData["registerMsg"] = message;
-        //            return DataBaseOperation.QuerySingleData(new DBQuery().WhereEqualTo("objectId", uid), out UserObject _user) == DBQueryStatus.ONE_RESULT
+        //            return DataBaseOperation.QuerySingleData(new DBQuery().WhereIDIs(uid), out UserObject _user) == DBQueryStatus.ONE_RESULT
         //                ? View(_user)
         //                : NotFoundError(ServerAction.INTERNAL_ERROR, XConfig.Messages["NoUserFoundByGivenID"]);
         //        }
@@ -100,7 +100,7 @@ namespace WBPlatform.WebManagement.Controllers
                             else
                             {
                                 // MY SINGLE Viewer
-                                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("UserID", CurrentUser.ObjectId).WhereEqualTo("objectId", reqId), out UserChangeRequest requests))
+                                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("UserID", CurrentUser.ObjectId).WhereIDIs(reqId), out UserChangeRequest requests))
                                 {
                                     case DBQueryStatus.INTERNAL_ERROR:
                                     case DBQueryStatus.NO_RESULTS:
@@ -131,7 +131,7 @@ namespace WBPlatform.WebManagement.Controllers
                             }
                             else
                             {
-                                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", reqId), out UserChangeRequest requests))
+                                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(reqId), out UserChangeRequest requests))
                                 {
                                     case DBQueryStatus.INTERNAL_ERROR:
                                     case DBQueryStatus.NO_RESULTS:

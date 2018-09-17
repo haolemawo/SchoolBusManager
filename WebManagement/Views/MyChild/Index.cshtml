@@ -16,6 +16,10 @@
         <label>免接送设置：</label>
         <button class="btn btn-success btn-sm" onclick="location.href = '/MyChild/DirectGoHome'">设置免接送</button>
         <hr />
+        <label>学生大小周设置：</label>
+        <button class="btn btn-success btn-sm" onclick="location.href = '/MyChild/WeekType'">设置大小周</button>
+        <hr />
+        <p>本周是：@(XConfig.ServerConfig["WeekType"] == "big" ? "大周" : "小周")</p>
         <h6>坐班车总人数：<span id="totalNum">正在加载</span></h6>
         <h6>提示：点击姓名可以查看详细信息</h6>
 
@@ -43,7 +47,6 @@
         var result = wbWeb.SetStudentState(StudentID, ChangeTo);
         console.log(result);
         $("#" + result.Student.ObjectId + "_onBusButton").checked = result.SignResult;
-        //$("#" + result.Student.ObjectId + "_label").text(result.SignResult ? "坐" : "不坐");
         $("#" + result.Student.ObjectId + "_onBusButton").attr("onclick", "ChangeState('" + result.Student.ObjectId + "', " + (result.Student.TakingBus ? false : true) + ")")
     }
     document.getElementById("UserID").innerHTML = "你好，" + wbWeb.CurrentUser.RealName;

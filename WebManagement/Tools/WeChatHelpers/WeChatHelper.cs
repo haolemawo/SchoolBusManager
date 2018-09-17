@@ -41,22 +41,10 @@ namespace WBPlatform.WebManagement.Tools
             return true;
         }
 
-        public static bool CheckAndRenewWeChatCodes()
-        {
-            L.I("Checking Validity of WeChat Codes");
-            if (AvailableTime_Ticket.Subtract(DateTime.Now).TotalMilliseconds <= 0)
-            {
-                L.I("Renewing WeChat Ticket....");
-                RenewWeChatCodes();
-                return false;
-            }
-            if (AvailableTime_Token.Subtract(DateTime.Now).TotalMilliseconds <= 0)
-            {
-                L.I("Renewing WeChat Tokens...");
-                RenewWeChatCodes();
-                return false;
-            }
-            return true;
-        }
+        public static void PrepareCodes() { if (IsCodeOutDated) RenewWeChatCodes(); }
+
+        private static bool IsCodeOutDated =>
+            AvailableTime_Ticket.Subtract(DateTime.Now).TotalSeconds < 0 ||
+            AvailableTime_Token.Subtract(DateTime.Now).TotalSeconds < 0;
     }
 }

@@ -24,6 +24,7 @@ namespace WBPlatform.Database.IO
             //Data.AddOrUpdate(column, _data, (s, o) => _data);
             if (!Data.TryAdd(column, _data)) L.E("Failed To Add Data to DataBaseIO.Data, Column Name: " + column);
         }
+        public override string ToString() => throw new NotSupportedException();
     }
 
     /// <summary>
@@ -41,6 +42,7 @@ namespace WBPlatform.Database.IO
 
         public string Message { get; set; } = "";
         public DataBaseException Exception { get; set; }
+        public override string ToString() => throw new NotSupportedException();
     }
 
     public class DataBaseException : Exception

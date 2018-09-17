@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using System.Collections;
 using System.Collections.Generic;
 
 using WBPlatform.Database;
-using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {

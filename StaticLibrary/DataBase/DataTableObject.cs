@@ -14,7 +14,7 @@ namespace WBPlatform.TableObject
         [JsonIgnore] public const string TABLE_Mgr_BusData = "SchoolBuses";
         [JsonIgnore] public const string TABLE_Mgr_WeekIssue = "WeeklyIssues";
         [JsonIgnore] public const string TABLE_Gen_UserTable = "AllUsersTable";
-        [JsonIgnore] public const string TABLE_Gen_General = "GeneralData";
+        [JsonIgnore] public const string TABLE_ServerConfig = "ServerConfig";
         [JsonIgnore] public const string TABLE_Gen_Bugreport = "UserQuestions";
         [JsonIgnore] public const string TABLE_Gen_Notification = "Notifications";
         [JsonIgnore] public const string TABLE_Gen_UserRequest = "UserRequest";

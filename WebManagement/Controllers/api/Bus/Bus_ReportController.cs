@@ -18,7 +18,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             if (!ValidateSession()) return SessionError;
             if (TeacherID != CurrentUser.ObjectId) return RequestIllegal;
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", BusID).WhereEqualTo("TeacherObjectID", TeacherID), out SchoolBusObject bus) != DBQueryStatus.ONE_RESULT) return RequestIllegal;
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(BusID).WhereEqualTo("TeacherObjectID", TeacherID), out SchoolBusObject bus) != DBQueryStatus.ONE_RESULT) return RequestIllegal;
 
             BusReport busReport = new BusReport
             {

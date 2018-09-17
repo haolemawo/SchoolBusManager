@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using System;
 using System.Collections.Generic;
 
 using WBPlatform.Database;
@@ -15,7 +15,8 @@ namespace WBPlatform.WebManagement.Controllers
         [HttpGet]
         public JsonResult Get(string BusID, string Column, string Content)
         {
-            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("objectId", BusID), out List<SchoolBusObject> BusList))
+            throw new NotSupportedException();
+            switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereIDIs(BusID), out List<SchoolBusObject> BusList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 case DBQueryStatus.NO_RESULTS: return DataBaseError;

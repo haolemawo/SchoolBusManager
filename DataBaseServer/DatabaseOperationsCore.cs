@@ -95,7 +95,7 @@ namespace WBPlatform.Database.DBServer
                 reply.Exception = new DataBaseException("DBServer Process Exception", ex);
                 L.E("Exception! => \r\n" + ex);
             }
-            return reply.ToParsedString();
+            return reply.Stringify();
         }
 
         private static string BuildQueryString(string TableName, DBQuery dbQuery)

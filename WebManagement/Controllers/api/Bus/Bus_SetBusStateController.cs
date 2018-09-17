@@ -18,7 +18,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (!ValidateSession()) return SessionError;
             if (!CurrentUser.UserGroup.IsParent && !CurrentUser.UserGroup.IsClassTeacher) return UserGroupError;
 
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", studentId), out StudentObject Student) != DBQueryStatus.ONE_RESULT)
+            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(studentId), out StudentObject Student) != DBQueryStatus.ONE_RESULT)
                 return RequestIllegal;
 
             //Check if this student is onder user's control;

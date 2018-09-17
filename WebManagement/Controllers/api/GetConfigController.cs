@@ -17,12 +17,12 @@ namespace WBPlatform.WebManagement.Controllers
             string FileString = "";
             if (ValidateSession())
             {
-                FileString += $"var keys = {APIRoutes.Keys.ToArray().ToParsedString()};\r\n";
-                FileString += $"var values = {APIRoutes.Values.ToArray().ToParsedString()};\r\n";
+                FileString += $"var keys = {APIRoutes.Keys.ToArray().Stringify()};\r\n";
+                FileString += $"var values = {APIRoutes.Values.ToArray().Stringify()};\r\n";
 
                 string apiTcket = Cryptography.RandomString(32, false).ToLower();
                 CurrentIdentity.SetApiTicket(apiTcket);
-                FileString += $"wbWeb.Initialise({CurrentUser.ToParsedString().Replace(CurrentUser.Password, "Looking for Password?")},\"{apiTcket}-{CurrentIdentity.Identity.Name}\", keys, values);\r\n";
+                FileString += $"wbWeb.Initialise({CurrentUser.Stringify().Replace(CurrentUser.Password, "Looking for Password?")},\"{apiTcket}-{CurrentIdentity.Identity.Name}\", keys, values);\r\n";
                 FileString += "json = null;";
             }
             else

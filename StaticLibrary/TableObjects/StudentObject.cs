@@ -16,6 +16,7 @@ namespace WBPlatform.TableObject
         public string Sex { get; set; }
 
         public string ClassID { get; set; }
+        public StudentBigWeekMode WeekType { get; set; }
         public bool LSChecked { get; set; }
         public bool CSChecked { get; set; }
         public bool AHChecked { get; set; }
@@ -39,6 +40,7 @@ namespace WBPlatform.TableObject
             LSChecked = input.GetBool("LSChecked");
             TakingBus = input.GetBool("TakingBus");
             AHChecked = input.GetBool("CHChecked");
+            WeekType = (StudentBigWeekMode)input.GetInt("WeekType");
             DirectGoHome = (DirectGoHomeMode)input.GetInt("DirectGoHome");
         }
 
@@ -54,6 +56,7 @@ namespace WBPlatform.TableObject
             output.Put("CSChecked", CSChecked);
             output.Put("LSChecked", LSChecked);
             output.Put("TakingBus", TakingBus);
+            output.Put("WeekType", (int)WeekType);
             output.Put("DirectGoHome", (int)DirectGoHome);
         }
     }

@@ -19,7 +19,7 @@ namespace WBPlatform.WebManagement.Controllers
             if (!ValidateSession()) return SessionError;
             if (string.IsNullOrEmpty(UserID)) return RequestIllegal;
             string uName = "";
-            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("objectId", UserID), out UserObject user))
+            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(UserID), out UserObject user))
             {
                 case DBQueryStatus.INTERNAL_ERROR:
                 case DBQueryStatus.MORE_RESULTS:

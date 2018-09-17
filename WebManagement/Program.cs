@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using WBPlatform.Config;
 using WBPlatform.Database;
 using WBPlatform.Logging;
+using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement
@@ -23,22 +25,27 @@ namespace WBPlatform.WebManagement
         public static CancellationTokenSource ServerStopToken { get; private set; } = new CancellationTokenSource();
         public static void Main(string[] args)
         {
-            L.InitLog();
             StartUpTime = DateTime.Now;
+            L.InitLog();
             L.I("WoodenBench WebServer Starting....");
-            L.I($"\t Startup Time {StartUpTime.ToString()}.");
+            L.I($"Startup Time {StartUpTime.ToString()}.");
+
             Version = new FileInfo(new string(Assembly.GetExecutingAssembly().CodeBase.Skip(8).ToArray())).LastWriteTime.ToString();
-            L.I($"\t Version {Version}");
+            L.I($"Version: {Version}");
 
             var v = XConfig.LoadAll();
-            if (!(v.Item1 && v.Item2)) return;
-
-            StatusMonitor.StartMonitorThread();
-            WeChatHelper.CheckAndRenewWeChatCodes();
+            if (!(v.Item1 && v.Item2))
+            {
+                L.E("XConfig Load error... Quiting");
+                return;
+            }
 
             DataBaseOperation.InitialiseClient();
-            //DataBaseOperation.InitialiseClient(IPAddress.Loopback);
 
+            XConfig.ServerConfig.GetConfig();
+
+            StatusMonitor.StartMonitorThread();
+            WeChatHelper.PrepareCodes();
             WeChatHelper.InitialiseEncryptor();
 
             L.I("Initialising Core Messaging Systems.....");
@@ -57,7 +64,6 @@ namespace WBPlatform.WebManagement
         {
             L.I("Building WebHost....");
             var host = WebHost.CreateDefaultBuilder(args)
-                 .UseIISIntegration()
                  .UseKestrel()
                  .UseApplicationInsights(instrumentationKey)
                  .UseStartup<Startup>()

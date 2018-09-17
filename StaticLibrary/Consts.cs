@@ -25,6 +25,13 @@ namespace WBPlatform.StaticClasses
         NeedParentsSign = 2
     }
 
+    public enum StudentBigWeekMode
+    {
+        NotSet = 0,
+        BigWeekOnly = 1,
+        BothTwoTypes = 2
+    }
+
     public enum NotificationType
     {
         WindowsClient = 1,
