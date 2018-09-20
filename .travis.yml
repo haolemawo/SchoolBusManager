@@ -1,6 +1,6 @@
 language: csharp
 solution: WoodenBench Platform.sln
-mono: none
+mono: 3.10.0
 dotnet: 2.1.402
 script:
  - dotnet restore
