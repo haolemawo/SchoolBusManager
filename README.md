@@ -1,3 +1,5 @@
+
+
 # 班车小板凳
 
 * WOODENBENCH FOR SCHOOLBUS
@@ -6,7 +8,17 @@
 
 * CROSS-PLATFORM APPLICATION PROJECT REPORT
 
-项目状态：[![Build Status](https://travis-ci.org/lhy0403/SchoolBusManager.svg?branch=master)](https://travis-ci.org/lhy0403/SchoolBusManager)
+项目状态：
+
+[![Build Status](https://travis-ci.org/lhy0403/SchoolBusManager.svg?branch=master)](https://travis-ci.org/lhy0403/SchoolBusManager)
+
+[![GitHub forks](https://img.shields.io/github/forks/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/network) 
+
+[![GitHub stars](https://img.shields.io/github/stars/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/stargazers)
+
+[![GitHub issues](https://img.shields.io/github/issues/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/issues) 
+
+[![Author](https://img.shields.io/badge/Author-Leroy.H.Y-brightgreen.svg)](https://www.lhy0403.top)
 
 # 项目简介
 
