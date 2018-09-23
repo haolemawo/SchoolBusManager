@@ -3,7 +3,7 @@ solution: WoodenBench-Platform.sln
 mono: none
 dotnet: 2.1.402
 install:
-  - apt install nuget
+  - sudo apt install nuget
   - nuget restore WoodenBench-Platform.sln
 script:
  - dotnet build ./StandardLibrary/StandardLibrary.csproj
