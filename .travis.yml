@@ -1,11 +1,11 @@
 language: csharp
 solution: WoodenBench-Platform.sln
-mono: latest
+mono: none
 dotnet: 2.1.402
 install:
   - curl -L -o nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
   - mono nuget.exe restore WoodenBench-Platform.sln
 script:
- - dotnet build StandardLibrary\StandardLibrary.csproj
- - dotnet build WebManagement\WebManagement.csproj
- - dotnet build ServiceStatus\ServiceStatus.csproj
+ - dotnet build ./StandardLibrary/StandardLibrary.csproj
+ - dotnet build ./WebManagement/WebManagement.csproj
+ - dotnet build ./ServiceStatus/ServiceStatus.csproj

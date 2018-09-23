@@ -6,6 +6,8 @@
 
 * CROSS-PLATFORM APPLICATION PROJECT REPORT
 
+项目状态：[![Build Status](https://travis-ci.org/lhy0403/SchoolBusManager.svg?branch=master)](https://travis-ci.org/lhy0403/SchoolBusManager)
+
 # 项目简介
 
 ## 为什么会有小板凳
