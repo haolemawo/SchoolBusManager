@@ -1,34 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json;
-
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-
-using WBPlatform.ServiceStatus.Models;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace WBPlatform.ServiceStatus
 {
     public class HomeController : Controller
     {
-        public static string ServerStatus { get; set; } = "{\"ReportTime\": \"Unknown\",  \"SessionsCount\": 0,  \"SessionThread\": false,  \"Tokens\": 0,  \"WeChatRCVDThreadStatus\": false,  \"WeChatSENTThreadStatus\": false,  \"WeChatRCVDListCount\": 0,  \"WeChatSENTListCount\": 0,  \"Database\": false,  \"CoreMessageSystemThread\": false,  \"CoreMessageSystemCount\": 0,  \"MessageBackupThread\": false,  \"MessageBackupCount\": 0,  \"StartupTime\": \"Unknown\",  \"ServerVer\": \"Unknown\",  \"CoreLibVer\": \"Unknown\",  \"NetCoreCLRVer\": \"Unknown\" }";
+        public static StatusReportObject ServerStatus { get; set; } = new StatusReportObject();
         public IActionResult Index()
         {
-            Dictionary<string, object> status = JsonConvert.DeserializeObject<Dictionary<string, object>>(ServerStatus);
-            ViewData["msg"] = ServerStatus;
-            ViewData["parsedMsg"] = status;
-            return View();
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            Type type = typeof(StatusReportObject);
+            PropertyInfo[] ps = type.GetProperties();
+            foreach (PropertyInfo info in ps)
+            {
+                var name = info.GetCustomAttribute<DisplayNameAttribute>();
+                dict.Add(name == null ? info.Name : name.DisplayName, info.GetValue(ServerStatus, null) ?? new object());
+            }
+            return View(dict);
         }
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-        //https://dev-status.schoolbus.lhy0403.top/Home/AvailabilityReport
-        [HttpPost]
-        public IActionResult AvailabilityReport()
-        {
-            return Json("OK");
-        }
+        public IActionResult Error() => NoContent();
+        [HttpPost] public IActionResult AvailabilityReport() => Json("OK");
     }
 }

@@ -10,7 +10,7 @@ using WBPlatform.Config;
 using WBPlatform.Database.Connection;
 using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
-using WBPlatform.StatusReport;
+using WBPlatform.ServiceStatus;
 using WBPlatform.WebManagement.Controllers;
 
 namespace WBPlatform.WebManagement.Tools
@@ -22,7 +22,7 @@ namespace WBPlatform.WebManagement.Tools
         
         public static bool SendStatus()
         {
-            var wcStatus = WeChatMessageSystem.Status();
+            (bool, bool, int, int) wcStatus = WeChatMessageSystem.GetStatus();
 
             ReportObject = new StatusReportObject()
             {

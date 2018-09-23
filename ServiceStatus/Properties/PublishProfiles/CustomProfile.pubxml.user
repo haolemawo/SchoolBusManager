@@ -29,25 +29,25 @@
       <publishTime>07/31/2018 00:05:23</publishTime>
     </File>
     <File Include="Microsoft.AI.DependencyCollector.dll">
-      <publishTime>07/10/2018 10:53:56</publishTime>
+      <publishTime>08/10/2018 15:11:42</publishTime>
     </File>
     <File Include="Microsoft.AI.PerfCounterCollector.dll">
-      <publishTime>07/10/2018 11:09:04</publishTime>
+      <publishTime>08/10/2018 15:22:22</publishTime>
     </File>
     <File Include="Microsoft.AI.ServerTelemetryChannel.dll">
-      <publishTime>07/06/2018 22:40:44</publishTime>
+      <publishTime>08/10/2018 16:23:16</publishTime>
     </File>
     <File Include="Microsoft.AI.WindowsServer.dll">
-      <publishTime>07/10/2018 11:06:28</publishTime>
+      <publishTime>08/10/2018 15:21:20</publishTime>
     </File>
     <File Include="Microsoft.ApplicationInsights.AspNetCore.dll">
-      <publishTime>07/12/2018 18:42:34</publishTime>
+      <publishTime>08/14/2018 21:58:18</publishTime>
     </File>
     <File Include="Microsoft.ApplicationInsights.dll">
-      <publishTime>07/06/2018 22:37:28</publishTime>
+      <publishTime>08/10/2018 16:21:18</publishTime>
     </File>
     <File Include="Microsoft.Extensions.PlatformAbstractions.dll">
-      <publishTime>07/27/2018 10:10:49</publishTime>
+      <publishTime>09/15/2018 19:11:16</publishTime>
     </File>
     <File Include="ServiceStatus.deps.json">
       <publishTime>06/15/2018 00:33:08</publishTime>
@@ -73,29 +73,35 @@
     <File Include="ServiceStatus.Views.pdb">
       <publishTime>06/15/2018 00:32:55</publishTime>
     </File>
+    <File Include="StandardLibrary.dll">
+      <publishTime>09/23/2018 23:45:38</publishTime>
+    </File>
+    <File Include="StandardLibrary.pdb">
+      <publishTime>09/23/2018 23:45:38</publishTime>
+    </File>
     <File Include="WBPlatformServ_Status.deps.json">
-      <publishTime>08/01/2018 22:34:38</publishTime>
+      <publishTime>09/23/2018 23:45:42</publishTime>
     </File>
     <File Include="WBPlatformServ_Status.dll">
-      <publishTime>08/01/2018 22:34:34</publishTime>
+      <publishTime>09/23/2018 23:45:40</publishTime>
     </File>
     <File Include="WBPlatformServ_Status.dll.config">
-      <publishTime>07/31/2018 10:49:35</publishTime>
+      <publishTime>09/23/2018 21:49:14</publishTime>
     </File>
     <File Include="WBPlatformServ_Status.pdb">
-      <publishTime>08/01/2018 22:34:34</publishTime>
+      <publishTime>09/23/2018 23:45:40</publishTime>
     </File>
     <File Include="WBPlatformServ_Status.runtimeconfig.json">
-      <publishTime>08/01/2018 22:34:38</publishTime>
+      <publishTime>09/23/2018 23:45:42</publishTime>
     </File>
     <File Include="WBPlatformServ_Status.Views.dll">
-      <publishTime>08/01/2018 22:34:35</publishTime>
+      <publishTime>09/23/2018 23:45:40</publishTime>
     </File>
     <File Include="WBPlatformServ_Status.Views.pdb">
-      <publishTime>08/01/2018 22:34:35</publishTime>
+      <publishTime>09/23/2018 23:45:40</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>08/01/2018 22:34:38</publishTime>
+      <publishTime>09/23/2018 23:45:42</publishTime>
     </File>
     <File Include="WoodenBench_Helper.dll">
       <publishTime>08/01/2018 22:34:32</publishTime>
@@ -146,13 +152,13 @@
       <publishTime>06/26/2018 17:27:13</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.css">
-      <publishTime>06/26/2018 17:27:13</publishTime>
+      <publishTime>08/08/2018 11:25:43</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.css.map">
       <publishTime>06/26/2018 17:27:13</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.min.css">
-      <publishTime>06/26/2018 17:27:13</publishTime>
+      <publishTime>08/08/2018 11:25:43</publishTime>
     </File>
     <File Include="wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map">
       <publishTime>06/26/2018 17:27:13</publishTime>
@@ -203,10 +209,10 @@
       <publishTime>06/26/2018 17:27:14</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/dist/jquery.validate.js">
-      <publishTime>06/26/2018 17:27:14</publishTime>
+      <publishTime>08/08/2018 11:25:43</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/dist/jquery.validate.min.js">
-      <publishTime>06/26/2018 17:27:14</publishTime>
+      <publishTime>08/08/2018 11:25:43</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery-validation/LICENSE.md">
       <publishTime>06/26/2018 17:27:14</publishTime>
@@ -215,7 +221,7 @@
       <publishTime>06/26/2018 17:27:15</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery/dist/jquery.js">
-      <publishTime>06/26/2018 17:27:15</publishTime>
+      <publishTime>08/08/2018 11:25:43</publishTime>
     </File>
     <File Include="wwwroot/lib/jquery/dist/jquery.min.js">
       <publishTime>06/26/2018 17:27:15</publishTime>

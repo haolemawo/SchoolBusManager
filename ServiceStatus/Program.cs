@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
+using Newtonsoft.Json;
+using System;
 using System.IO.Pipes;
 using System.Text;
 using System.Threading;
 
-using WBPlatform.StaticClasses;
 using WBPlatform.Config;
-
 using WBPlatform.Logging;
+
 namespace WBPlatform.ServiceStatus
 {
     public class Program
@@ -16,14 +17,13 @@ namespace WBPlatform.ServiceStatus
         public static void Main(string[] args)
         {
             L.InitLog();
-
             var v = XConfig.LoadAll();
             if (!(v.Item1 && v.Item2)) return;
 
-            new Thread(new ThreadStart(GetStateString)).Start();
+            new Thread(new ThreadStart(GetState)) { Name = "Platform State Obtainer" }.Start();
             BuildWebHost(args).Run();
         }
-        public static void GetStateString()
+        public static void GetState()
         {
             NamedPipeClientStream client = new NamedPipeClientStream("localhost", XConfig.Current.StatusReportNamedPipe, PipeDirection.In);
             while (true)
@@ -32,13 +32,24 @@ namespace WBPlatform.ServiceStatus
                 while (client.IsConnected)
                 {
                     var data = new byte[65535];
-                    var count = client.Read(data, 0, data.Length);
-                    if (count > 0)
+                    try
                     {
-                        HomeController.ServerStatus = Encoding.UTF8.GetString(data, 0, count);
+                        var count = client.Read(data, 0, data.Length);
+                        if (count > 0)
+                        {
+                            HomeController.ServerStatus = JsonConvert.DeserializeObject<StatusReportObject>(Encoding.UTF8.GetString(data, 0, count));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.LogException();
+                    }
+                    finally
+                    {
+                        GC.Collect();
                     }
                 }
-                L.E("GetStateString: DisConnected from the WBWebServer....");
+                L.E("DisConnected from the WBWebServer....");
                 Thread.Sleep(1000);
             }
         }

@@ -16,7 +16,7 @@ namespace WBPlatform.WebManagement.Controllers
         public IActionResult Get()
         {
             Response.StatusCode = 500;
-            var m = WeChatMessageSystem.Status();
+            var m = WeChatMessageSystem.GetStatus();
             if (!DatabaseSocketsClient.Connected)
             {
                 return Json("DataBase Error");

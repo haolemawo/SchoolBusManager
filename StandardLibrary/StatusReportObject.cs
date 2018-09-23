@@ -1,59 +1,89 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.ComponentModel;
+using WBPlatform.StaticClasses;
 
-namespace WBPlatform.StatusReport
+namespace WBPlatform.ServiceStatus
 {
-    public class StatusReportObject : IDisposable
+    public class StatusReportObject
     {
-        public DateTime ReportTime { get; set; }
-        public int SessionsCount { get; set; }
-        public bool SessionThread { get; set; }
-        public int Tokens { get; set; }
-        public bool WeChatRCVDThreadStatus { get; set; }
-        public bool WeChatSENTThreadStatus { get; set; }
-        public int WeChatRCVDListCount { get; set; }
-        public int WeChatSENTListCount { get; set; }
-        public bool Database { get; set; }
+        [JsonIgnore]
+        [DisplayName("服务器整体状态")]
+        public bool IsAlive => SessionThread &&
+            WeChatRCVDThreadStatus &&
+            WeChatSENTThreadStatus &&
+            CoreMessageSystemThread &&
+            MessageBackupThread &&
+            Math.Abs(ReportTime.Subtract(DateTime.Now).TotalMinutes) < 1;
+
+        [DisplayName("上次报告时间")]
+        public DateTime ReportTime { get; set; } = DateTime.MinValue;
+
+        [DisplayName("Session 计数")]
+        public int SessionsCount { get; set; } = 0;
+
+        [DisplayName("Session 线程状态")]
+        public bool SessionThread { get; set; } = false;
+
+        [DisplayName("Token 计数")]
+        public int Tokens { get; set; } = 0;
+
+        [DisplayName("微信消息接收线程状态")]
+        public bool WeChatRCVDThreadStatus { get; set; } = false;
+
+        [DisplayName("微信消息发送线程状态")]
+        public bool WeChatSENTThreadStatus { get; set; } = false;
+
+        [DisplayName("微信消息接收队列")]
+        public int WeChatRCVDListCount { get; set; } = 0;
+
+        [DisplayName("微信消息发送队列")]
+        public int WeChatSENTListCount { get; set; } = 0;
+
+        [DisplayName("主数据库连接")]
+        public bool Database { get; set; } = false;
+
+        [DisplayName("内部通信系统状态")]
         public bool CoreMessageSystemThread { get; set; }
-        public int CoreMessageSystemCount { get; set; }
-        public bool MessageBackupThread { get; set; }
-        public int MessageBackupCount { get; set; }
-        public string StartupTime { get; set; }
-        public string ServerVer { get; set; }
-        public string CoreLibVer { get; set; }
-        public string NetCoreCLRVer { get; set; }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        [DisplayName("内部通信队列")]
+        public int CoreMessageSystemCount { get; set; } = 0;
 
-        protected virtual void Dispose(bool disposing)
+        [DisplayName("消息副本提供程序")]
+        public bool MessageBackupThread { get; set; } = false;
+
+        [DisplayName("消息副本提供程序队列")]
+        public int MessageBackupCount { get; set; } = 0;
+
+        [DisplayName("服务启动时间")]
+        public string StartupTime { get; set; } = DateTime.MinValue.ToDetailedString();
+
+        [DisplayName("服务程序版本号")]
+        public string ServerVer { get; set; } = "V0.0.0.0";
+
+        [DisplayName("核心库版本号")]
+        public string CoreLibVer { get; set; } = "V0.0.0.0";
+
+        [DisplayName("运行时版本号")]
+        public string NetCoreCLRVer { get; set; } = "V0.0.0.0";
+    }
+
+    public class DescriptedField<TValue> where TValue : IConvertible
+    {
+        public TValue Value { get; set; }
+        public string Description { get; private set; }
+        public DescriptedField(TValue value, string Description)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects).
-                }
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
-                disposedValue = true;
-            }
+            Value = value;
+            this.Description = Description;
         }
+        public static bool operator ==(object value, DescriptedField<TValue> field)
+            => value is DescriptedField<TValue>
+                ? (value as DescriptedField<TValue>).Value.Equals(field.Value)
+                : false;
+        public static bool operator !=(object value, DescriptedField<TValue> field) => !(value == field);
+        public override bool Equals(object obj) => Value.Equals(obj);
+        public override int GetHashCode() => Value.GetHashCode();
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~StatusReportObject() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

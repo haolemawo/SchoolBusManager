@@ -15,12 +15,12 @@ using WBPlatform.TableObject;
 
 namespace WBPlatform.StaticClasses
 {
-    public static class ExtensionClass
+    public static class Extensions
     {
         public static T ParseToEnum<T>(this string enumString) where T : struct, Enum => (T)Enum.Parse(typeof(T), enumString, true);
         public static string ToNormalString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         public static string ToFileNameString(this DateTime dateTime) => dateTime.ToString("yyyy-MM-dd-HH-mm-ss");
-        public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + ":" + DateTime.Now.Millisecond.ToString("000");
+        public static string ToDetailedString(this DateTime dateTime) => dateTime.ToNormalString() + ":" + dateTime.Millisecond.ToString("000");
 
         public static void CloseAndDispose(this Socket socket)
         {

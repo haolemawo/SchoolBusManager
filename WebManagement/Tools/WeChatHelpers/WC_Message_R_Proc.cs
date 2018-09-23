@@ -17,7 +17,7 @@ namespace WBPlatform.WebManagement.Tools
     {
         private static ConcurrentQueue<WeChatRcvdMessage> RcvdMessageList { get; set; } = new ConcurrentQueue<WeChatRcvdMessage>();
         private static Thread ProcessorRCVDThread = new Thread(new ThreadStart(_ProcessRCVD));
-        public static (bool, bool, int, int) Status()
+        public static (bool, bool, int, int) GetStatus()
         {
             return (ProcessorRCVDThread.IsAlive, ProcessorSENTThread.IsAlive, RcvdMessageList.Count, SentMessageList.Count);
         }

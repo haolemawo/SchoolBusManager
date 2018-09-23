@@ -127,6 +127,12 @@
     <File Include="runtimes/win/lib/netcoreapp2.0/System.Drawing.Common.dll">
       <publishTime>05/15/2018 13:29:42</publishTime>
     </File>
+    <File Include="StandardLibrary.dll">
+      <publishTime>09/23/2018 23:38:45</publishTime>
+    </File>
+    <File Include="StandardLibrary.pdb">
+      <publishTime>09/23/2018 23:38:45</publishTime>
+    </File>
     <File Include="System.Composition.AttributedModel.dll">
       <publishTime>09/15/2018 19:11:13</publishTime>
     </File>
@@ -152,19 +158,19 @@
       <publishTime>04/22/2018 09:30:28</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>09/18/2018 10:33:33</publishTime>
+      <publishTime>09/23/2018 23:42:37</publishTime>
     </File>
     <File Include="WebManagement.deps.json">
-      <publishTime>09/17/2018 22:03:24</publishTime>
+      <publishTime>09/23/2018 23:42:37</publishTime>
     </File>
     <File Include="WebManagement.dll">
-      <publishTime>09/17/2018 22:03:15</publishTime>
+      <publishTime>09/23/2018 23:42:33</publishTime>
     </File>
     <File Include="WebManagement.dll.config">
-      <publishTime>09/17/2018 16:31:56</publishTime>
+      <publishTime>09/23/2018 21:49:19</publishTime>
     </File>
     <File Include="WebManagement.pdb">
-      <publishTime>09/17/2018 22:03:15</publishTime>
+      <publishTime>09/23/2018 23:42:33</publishTime>
     </File>
     <File Include="WebManagement.PrecompiledViews.dll">
       <publishTime>06/11/2018 14:34:26</publishTime>
@@ -173,13 +179,13 @@
       <publishTime>06/14/2018 23:13:12</publishTime>
     </File>
     <File Include="WebManagement.runtimeconfig.json">
-      <publishTime>09/17/2018 22:03:24</publishTime>
+      <publishTime>09/23/2018 23:42:37</publishTime>
     </File>
     <File Include="WebManagement.Views.dll">
-      <publishTime>09/17/2018 22:03:17</publishTime>
+      <publishTime>09/23/2018 23:42:34</publishTime>
     </File>
     <File Include="WebManagement.Views.pdb">
-      <publishTime>09/17/2018 22:03:17</publishTime>
+      <publishTime>09/23/2018 23:42:34</publishTime>
     </File>
     <File Include="WoodenBench_Helper.dll">
       <publishTime>09/17/2018 21:38:31</publishTime>
@@ -263,7 +269,7 @@
       <publishTime>06/26/2018 17:27:26</publishTime>
     </File>
     <File Include="wwwroot/css/WBWeb.min.css">
-      <publishTime>09/17/2018 16:31:58</publishTime>
+      <publishTime>09/23/2018 21:49:21</publishTime>
     </File>
     <File Include="wwwroot/dev/css/bootstrap-grid.css">
       <publishTime>07/12/2018 09:22:44</publishTime>
@@ -797,10 +803,10 @@
       <publishTime>08/24/2018 00:23:05</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js">
-      <publishTime>09/17/2018 19:52:39</publishTime>
+      <publishTime>09/23/2018 21:49:21</publishTime>
     </File>
     <File Include="wwwroot/dev/js/service.js.map">
-      <publishTime>09/17/2018 19:52:39</publishTime>
+      <publishTime>09/23/2018 21:49:21</publishTime>
     </File>
     <File Include="wwwroot/dev/js/UserActivity.js">
       <publishTime>08/10/2018 22:19:10</publishTime>
