@@ -1,9 +1,14 @@
 language: csharp
 solution: WoodenBench-Platform.sln
-mono: none
+mono: latest
 dotnet: 2.1.402
+install:
+
+  - curl -L -o nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+
+  - mono nuget.exe restore WoodenBench-Platform.sln
+
 script:
- - nuget restore Newtonsoft.Json
  - dotnet restore
  - dotnet build ./StandardLibrary/StandardLibrary.csproj
  - dotnet build ./WebManagement/WebManagement.csproj
