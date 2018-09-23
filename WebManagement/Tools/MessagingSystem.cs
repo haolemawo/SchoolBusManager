@@ -37,7 +37,7 @@ namespace WBPlatform.WebManagement.Tools
             while (true)
             {
                 if (!MessageList.TryDequeue(out InternalMessage message)) Thread.Sleep(500);
-                else if (!_ProcessMessage(message))
+                else if (_ProcessMessage(message))
                 {
                     L.E("Internal Messaging System Process Failed! " + message.Stringify());
                     MessageList.Enqueue(message);
@@ -52,21 +52,12 @@ namespace WBPlatform.WebManagement.Tools
             {
                 case InternalMessageTypes.UCR_Created_TO_ADMIN: return ProcessUCR_CreateToAdmin(message);
                 case InternalMessageTypes.UCR_Created__TO_User: return ProcessUCR_CreatedToUser(message);
-                case InternalMessageTypes.UCR_Procceed_TO_User: return ProcessUCRToUser(message);
-                case InternalMessageTypes.User__Pending_Verify: return UserVerify(message);
+                case InternalMessageTypes.UCR_Procceed_TO_User: return ProcessUCR_ProceedToUser(message);
+                //case InternalMessageTypes.User__Pending_Verify: return UserVerify(message);
                 case InternalMessageTypes.Admin_WeekReport_Gen: return GenerateWeekReport(message);
                 case InternalMessageTypes.Admin_ResetAllRecord: return ResetRecord(message);
                 case InternalMessageTypes.Admin_WeChat_SendMsg: return SendMessage(message);
-
-                case InternalMessageTypes.Bus_Status_Report_TC:
-                case InternalMessageTypes.Bus_Status_Report_TP:
-                    return BusIssueReport(message);
-
-                case InternalMessageTypes.User__Finishd_Verify:
-                case InternalMessageTypes.UCR_Procced_TO_ADMIN:
-                    //throw new NotSupportedException("鬼知道你干嘛要调这个函数");
-                    return true;
-
+                case InternalMessageTypes.Bus_Status_Report: return BusIssueReport(message);
                 default: throw new NotSupportedException("不支持就是不支持……");
             }
         }
@@ -78,21 +69,11 @@ namespace WBPlatform.WebManagement.Tools
             WeChatSentMessage wxMsg = new WeChatSentMessage(WeChatSMsg.text, null, "来自管理员 " + message.User.RealName + "的消息：\r\n" + MessageString, null, null);
             switch (message.Identifier)
             {
-                case "all":
-                    wxMsg.toUser = (from _ in _usr select _.UserName).ToArray();
-                    break;
-                case "bteachers":
-                    wxMsg.toUser = (from _ in _usr where _.UserGroup.IsBusManager select _.UserName).ToArray();
-                    break;
-                case "cteachers":
-                    wxMsg.toUser = (from _ in _usr where _.UserGroup.IsClassTeacher select _.UserName).ToArray();
-                    break;
-                case "parents":
-                    wxMsg.toUser = (from _ in _usr where _.UserGroup.IsParent select _.UserName).ToArray();
-                    break;
-                default:
-                    L.E("Unknown SendMessage Identifier " + message.Identifier);
-                    return true;
+                case "all": wxMsg.toUser = (from _ in _usr select _.UserName).ToArray(); break;
+                case "bteachers": wxMsg.toUser = (from _ in _usr where _.UserGroup.IsBusManager select _.UserName).ToArray(); break;
+                case "cteachers": wxMsg.toUser = (from _ in _usr where _.UserGroup.IsClassTeacher select _.UserName).ToArray(); break;
+                case "parents": wxMsg.toUser = (from _ in _usr where _.UserGroup.IsParent select _.UserName).ToArray(); break;
+                default: L.E("Unknown SendMessage Identifier " + message.Identifier); return true;
             }
             WeChatMessageSystem.AddToSendList(wxMsg);
             return true;
@@ -293,7 +274,7 @@ namespace WBPlatform.WebManagement.Tools
             WeChatMessageSystem.AddToSendList(UCR_Created_TO_User_Msg);
             return true;
         }
-        private static bool ProcessUCRToUser(InternalMessage message)
+        private static bool ProcessUCR_ProceedToUser(InternalMessage message)
         {
             switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(message.Identifier), out UserObject requestSender))
             {
@@ -313,22 +294,23 @@ namespace WBPlatform.WebManagement.Tools
                     return false;
             }
         }
-        private static bool UserVerify(InternalMessage message)
-        {
-            if ((int)GetAdminUsers(out List<UserObject> adminUsers_createUser) < 1)
-            {
-                L.W("No Administrator found!! thus no Register Request can be solved!");
-                return false;
-            }
-            string escapedString = (string)message.DataObject.ToString().EncodeAsString();
-            string URL = Convert.ToBase64String(Encoding.UTF8.GetBytes(escapedString), Base64FormattingOptions.None);
-            WeChatSentMessage userVerifyMsg = new WeChatSentMessage(WeChatSMsg.textcard, "新用户注册审核通知",
-                $"有一位新用户在{message.User.CreatedAt.ToString()}申请了注册用户，请审核！\r\n提供的姓名：{message.User.RealName}\r\n手机号码：{message.User.PhoneNumber}",
-                XConfig.Current.WebSiteAddress + "/Manage/UserManage?from=userCreate&mode=edit&uid=" + message.User.ObjectId + "&msg=" + URL,
-                (from usr in adminUsers_createUser select usr.UserName).ToArray());
-            WeChatMessageSystem.AddToSendList(userVerifyMsg);
-            return true;
-        }
+        //private static bool UserVerify(InternalMessage message)
+        //{
+        //    if ((int)GetAdminUsers(out List<UserObject> adminUsers_createUser) < 1)
+        //    {
+        //        L.W("No Administrator found!! thus no Register Request can be solved!");
+        //        return false;
+        //    }
+        //    string escapedString = (string)message.DataObject.ToString().EncodeAsString();
+        //    string URL = Convert.ToBase64String(Encoding.UTF8.GetBytes(escapedString), Base64FormattingOptions.None);
+        //    WeChatSentMessage userVerifyMsg = new WeChatSentMessage(WeChatSMsg.textcard, "新用户注册审核通知",
+        //        $"有一位新用户在{message.User.CreatedAt.ToString()}申请了注册用户，请审核！\r\n提供的姓名：{message.User.RealName}\r\n手机号码：{message.User.PhoneNumber}",
+        //        XConfig.Current.WebSiteAddress + "/Manage/UserManage?from=userCreate&mode=edit&uid=" + message.User.ObjectId + "&msg=" + URL,
+        //        (from usr in adminUsers_createUser select usr.UserName).ToArray());
+        //    WeChatMessageSystem.AddToSendList(userVerifyMsg);
+        //    return true;
+        //}
+
         private static bool BusIssueReport(InternalMessage message)
         {
             var _report = message.DataObject as BusReport;
@@ -340,67 +322,58 @@ namespace WBPlatform.WebManagement.Tools
                 L.E("Failed to query Students List in specific bus ID: " + busId);
                 return false;
             }
-            if (message._Type == InternalMessageTypes.Bus_Status_Report_TC)
+
+            //To Class Teacher
+            string[] ClassList = (from _stu in students select _stu.ClassID).Distinct().ToArray();
+            if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereValueContainedInArray("objectId", ClassList), out List<ClassObject> classes) < 1)
             {
-                //To Class Teacher
-                string[] ClassList = (from _stu in students select _stu.ClassID).Distinct().ToArray();
-                if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereValueContainedInArray("objectId", ClassList), out List<ClassObject> classes) < 1)
-                {
-                    L.W("Failed to query Classes from ClassList..." + string.Join(';', ClassList));
-                    return false;
-                }
-                foreach (ClassObject _class in classes)
-                {
-                    if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(_class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
-                    {
-                        L.E("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
-                    }
-                    else
-                    {
-                        string[] _StudentInClass = (from _stu in students where _stu.ClassID == _class.ObjectId select _stu.StudentName).ToArray();
-                        WeChatSentMessage busReportMsg_Teacher = new WeChatSentMessage(WeChatSMsg.text, null,
-                            $"{_ClassTeacher.RealName}: \r\n" +
-                            $"你的班级 {_class.CDepartment} {_class.CGrade} {_class.CNumber} \r\n" +
-                            $"有 {_StudentInClass.Length} 名学生受到班车 {_report.ReportType} 影响: \r\n" +
-                            $"原因：{_report.OtherData}\r\n" +
-                            $"学生列表: {string.Join(", ", _StudentInClass)}", null, _ClassTeacher.UserName);
-                        WeChatMessageSystem.AddToSendList(busReportMsg_Teacher);
-                    }
-                }
-                return true;
-            }
-            else if (message._Type == InternalMessageTypes.Bus_Status_Report_TP)
-            {
-                //To Parents....
-                List<UserObject> AllParents = new List<UserObject>();
-                foreach (StudentObject studentObject in students)
-                {
-                    if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereRecordContainsValue("ChildIDs", studentObject.ObjectId), out List<UserObject> _Parents) < 1)
-                    {
-                        L.W("Failed to get Child's parent.. ChildID: " + studentObject.ObjectId);
-                        continue;
-                    }
-                    AllParents.AddRange(_Parents);
-                }
-                AllParents = AllParents.Distinct(DataTableComparer<UserObject>.Default).ToList();
-                foreach (UserObject _parent in AllParents)
-                {
-                    string[] _ChildrenList = (from _stu in students where _parent.ChildList.Contains(_stu.ObjectId) select _stu.StudentName).Distinct().ToArray();
-                    WeChatSentMessage busReportMsg_Parent = new WeChatSentMessage(WeChatSMsg.text, null,
-                        $"{_parent.RealName}: \r\n" +
-                        $"你的 {_ChildrenList.Length} 个孩子受到班车 {_report.ReportType} 影响\r\n" +
-                        $"原因: {_report.OtherData}\r\n" +
-                        $"受影响的孩子: {string.Join(", ", _ChildrenList)}", null, _parent.UserName);
-                    WeChatMessageSystem.AddToSendList(busReportMsg_Parent);
-                }
-                return true;
-            }
-            else
-            {
-                L.E("This Error may never hit...");
+                L.W("Failed to query Classes from ClassList..." + string.Join(';', ClassList));
                 return false;
             }
+            foreach (ClassObject _class in classes)
+            {
+                if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(_class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
+                {
+                    L.E("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
+                }
+                else
+                {
+                    string[] _StudentInClass = (from _stu in students where _stu.ClassID == _class.ObjectId select _stu.StudentName).ToArray();
+                    WeChatSentMessage busReportMsg_Teacher = new WeChatSentMessage(WeChatSMsg.text, null,
+                        $"{_ClassTeacher.RealName}: \r\n" +
+                        $"你的班级 {_class.CDepartment} {_class.CGrade} {_class.CNumber} \r\n" +
+                        $"有 {_StudentInClass.Length} 名学生受到班车 {_report.ReportType} 影响: \r\n" +
+                        $"原因：{_report.OtherData}\r\n" +
+                        $"学生列表: {string.Join(", ", _StudentInClass)}", null, _ClassTeacher.UserName);
+                    WeChatMessageSystem.AddToSendList(busReportMsg_Teacher);
+                }
+            }
+
+            //To Parents....
+            List<UserObject> AllParents = new List<UserObject>();
+            foreach (StudentObject studentObject in students)
+            {
+                if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereRecordContainsValue("ChildIDs", studentObject.ObjectId), out List<UserObject> _Parents) < 1)
+                {
+                    L.W("Failed to get Child's parent.. ChildID: " + studentObject.ObjectId);
+                    continue;
+                }
+                AllParents.AddRange(_Parents);
+            }
+            AllParents = AllParents.Distinct(DataTableComparer<UserObject>.Default).ToList();
+            foreach (UserObject _parent in AllParents)
+            {
+                string[] _ChildrenList = (from _stu in students where _parent.ChildList.Contains(_stu.ObjectId) select _stu.StudentName).Distinct().ToArray();
+                WeChatSentMessage busReportMsg_Parent = new WeChatSentMessage(WeChatSMsg.text, null,
+                    $"{_parent.RealName}: \r\n" +
+                    $"你的 {_ChildrenList.Length} 个孩子受到班车 {_report.ReportType} 影响\r\n" +
+                    $"原因: {_report.OtherData}\r\n" +
+                    $"受影响的孩子: {string.Join(", ", _ChildrenList)}", null, _parent.UserName);
+                WeChatMessageSystem.AddToSendList(busReportMsg_Parent);
+            }
+            return true;
         }
+
 
         private static DBQueryStatus GetAdminUsers(out List<UserObject> adminUsers) => DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("isAdmin", true), out adminUsers);
         public static void SetContentColor(this IXLWorksheet sheet)

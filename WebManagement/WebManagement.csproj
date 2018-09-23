@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StaticLibrary\CoreLibrary.csproj" />
+    <ProjectReference Include="..\StandardLibrary\StandardLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

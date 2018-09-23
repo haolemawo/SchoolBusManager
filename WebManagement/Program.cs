@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 
 using WBPlatform.Config;
 using WBPlatform.Database;
+using WBPlatform.Database.Connection;
 using WBPlatform.Logging;
 using WBPlatform.TableObject;
+using WBPlatform.WebManagement.Controllers;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement
@@ -40,11 +42,16 @@ namespace WBPlatform.WebManagement
                 return;
             }
 
+            L.I("Starting Job Watcher");
+            TimedJob.StartJobWatcher();
+            TimedJob.AddToJobList("Get Config", XConfig.ServerConfig.GetConfig, 10, 0);
+            TimedJob.AddToJobList("Session Checker", BaseController.CheckSessions, 10, 0);
+            TimedJob.AddToJobList("Status Monitor", StatusMonitor.SendStatus, 10);
+
             DataBaseOperation.InitialiseClient();
 
             XConfig.ServerConfig.GetConfig();
 
-            StatusMonitor.StartMonitorThread();
             WeChatHelper.PrepareCodes();
             WeChatHelper.InitialiseEncryptor();
 
@@ -58,6 +65,7 @@ namespace WBPlatform.WebManagement
             WebServerTask = webHost.RunAsync(ServerStopToken.Token);
             WebServerTask.Wait();
             L.E("WebServer Stoped! Cancellation Token = " + ServerStopToken.IsCancellationRequested);
+            DatabaseSocketsClient.KillConnection();
         }
 
         public static IWebHost BuildWebHost(string[] args, string instrumentationKey)

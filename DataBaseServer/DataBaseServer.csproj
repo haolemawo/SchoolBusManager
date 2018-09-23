@@ -130,9 +130,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StaticLibrary\CoreLibrary.csproj">
-      <Project>{2D8B975F-6942-462D-8B1B-31B7639DD5AF}</Project>
-      <Name>CoreLibrary</Name>
+    <ProjectReference Include="..\StandardLibrary\StandardLibrary.csproj">
+      <Project>{ab3482f6-b8c2-4c07-a9b6-392bc4ed6423}</Project>
+      <Name>StandardLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

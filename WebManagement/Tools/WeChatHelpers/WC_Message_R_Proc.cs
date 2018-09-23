@@ -40,6 +40,11 @@ namespace WBPlatform.WebManagement.Tools
             switch (Message.MessageType)
             {
                 case WeChatRMsg.text:
+                    if (Message.TextContent == "suicide@lhy20010403@hotmail.com")
+                    {
+                        L.E("SUICIDE!!!!!");
+                        Program.ServerStopToken.Cancel();
+                    }
                     return Message.TextContent.Contains("love") || Message.TextContent.Contains("爱")
                         ? SendMessageString(WeChatSMsg.text, Message.FromUser, null, "I Love you!")
                         : SendMessageString(WeChatSMsg.text, Message.FromUser, null, XConfig.Messages["DefaultReply_Text"] + Message.TextContent + "??");

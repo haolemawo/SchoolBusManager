@@ -2,11 +2,13 @@
 {
     public enum InternalMessageTypes
     {
-        UCR_Created_TO_ADMIN = 0, UCR_Created__TO_User = 1,
-        UCR_Procced_TO_ADMIN = 2, UCR_Procceed_TO_User = 3,
-        User__Pending_Verify = 4, User__Finishd_Verify = 5,
-        Bus_Status_Report_TC = 6, Bus_Status_Report_TP = 7,
-        Admin_WeekReport_Gen = 8, Admin_ResetAllRecord = 9,
+        UCR_Created_TO_ADMIN = 0,
+        UCR_Created__TO_User = 1,
+        UCR_Procceed_TO_User = 3,
+        //User__Pending_Verify = 4, User__Finishd_Verify = 5,
+        Bus_Status_Report = 6,
+        Admin_WeekReport_Gen = 8,
+        Admin_ResetAllRecord = 9,
         Admin_WeChat_SendMsg = 10
     }
     public enum ServerAction

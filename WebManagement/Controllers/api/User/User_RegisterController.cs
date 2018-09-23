@@ -56,7 +56,7 @@ namespace WBPlatform.WebManagement.Controllers
                     };
                     if (DataBaseOperation.CreateData(ref user) == DBQueryStatus.ONE_RESULT)
                     {
-                        MessagingSystem.AddMessageProcesses(new InternalMessage() { User = user, _Type = InternalMessageTypes.User__Pending_Verify, DataObject = dict["table"] });
+                        //MessagingSystem.AddMessageProcesses(new InternalMessage() { User = user, _Type = InternalMessageTypes.User__Pending_Verify, DataObject = dict["table"] });
                         Response.Redirect("/Home");
                         return SpecialisedInfo("OK");
                     }

@@ -48,16 +48,17 @@ namespace WBPlatform.Config
             set => _collection.AddOrUpdate(key, new ConfigObject() { PropName = key, PropContent = value }, new System.Func<string, ConfigObject, ConfigObject>((str, conf) => { conf.PropContent = value; return conf; }));
         }
 
-        public void GetConfig()
+        public bool GetConfig()
         {
             if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<ConfigObject> configs) >= DBQueryStatus.NO_RESULTS)
             {
-                _collection = new ConcurrentDictionary<string, ConfigObject>(configs.ToDictionary((c) => c.PropName));
+                _collection = new ConcurrentDictionary<string, ConfigObject>(configs.ToDictionary(c => c.PropName));
+                return true;
             }
             else
             {
-                L.E("No Config Loaded! See Logs...");
-                return;
+                L.E("Exception occured while loading ConfigData");
+                return false;
             }
         }
 
@@ -89,5 +90,10 @@ namespace WBPlatform.Config
                 GetConfig();
             }
         }
+    }
+    public static class ServerConfigCollectionExtensions
+    {
+        public static bool IsBigWeek(this ServerConfigCollection collection) => collection["WeekType"] == "big";
+        public static void SetWeekType(this ServerConfigCollection collection, bool isBigWeek) => collection["WeekType"] = isBigWeek ? "big" : "small";
     }
 }

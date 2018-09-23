@@ -15,14 +15,18 @@ namespace WBPlatform.WebManagement.Controllers
 {
     public class BaseController : Controller
     {
-        public static readonly string UID_CookieName = "identifiedUID";
-        public static int GetCount => SessionCollection.Count;
+        public const string UID_CookieName = "identifiedUID";
+        public static int SessionCount => SessionCollection.Count;
         private static AutoDictionary<string, UserIdentity> SessionCollection { get; set; } = new AutoDictionary<string, UserIdentity>();
 
         protected UserObject CurrentUser => CurrentIdentity.User;
         protected UserIdentity CurrentIdentity { get; private set; } = UserIdentity.Default;
         protected TelemetryClient Telemetry { get; set; } = new TelemetryClient();
 
+        public static bool CheckSessions()
+        {
+            return true;
+        }
 
         //public static string RenewSession(string SessionString, string UserAgent, UserObject _user)
         //{

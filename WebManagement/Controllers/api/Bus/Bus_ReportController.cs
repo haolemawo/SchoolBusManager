@@ -28,22 +28,9 @@ namespace WBPlatform.WebManagement.Controllers
                 OtherData = Content
             };
             if (DataBaseOperation.CreateData(ref busReport) != DBQueryStatus.ONE_RESULT) return DataBaseError;
-
-            InternalMessage message_TC = new InternalMessage()
-            {
-                DataObject = busReport,
-                Identifier = BusID,
-                User = CurrentUser,
-                _Type = InternalMessageTypes.Bus_Status_Report_TC
-            };
-            InternalMessage message_TP = new InternalMessage()
-            {
-                DataObject = busReport,
-                Identifier = BusID,
-                User = CurrentUser,
-                _Type = InternalMessageTypes.Bus_Status_Report_TP
-            };
-            MessagingSystem.AddMessageProcesses(message_TC, message_TP);
+            
+            InternalMessage message_TP = new InternalMessage(InternalMessageTypes.Bus_Status_Report, CurrentUser, busReport, BusID);
+            MessagingSystem.AddMessageProcesses(message_TP);
             return Json(new { Report = busReport });
         }
     }
