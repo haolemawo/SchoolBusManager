@@ -3,6 +3,7 @@ solution: WoodenBench-Platform.sln
 mono: none
 dotnet: 2.1.402
 script:
+ - nuget restore Newtonsoft.Json
  - dotnet restore
  - dotnet build ./StandardLibrary/StandardLibrary.csproj
  - dotnet build ./WebManagement/WebManagement.csproj
