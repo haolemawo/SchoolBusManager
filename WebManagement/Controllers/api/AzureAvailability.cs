@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using WBPlatform.Database.Connection;
-using WBPlatform.StaticClasses;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
@@ -17,11 +15,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             Response.StatusCode = 500;
             var m = WeChatMessageSystem.GetStatus();
-            if (!DatabaseSocketsClient.Connected)
-            {
-                return Json("DataBase Error");
-            }
-            else if (!MessagingSystem.GetStatus)
+            if (!MessagingSystem.GetStatus)
             {
                 return Json("Messaging System Nor Working");
             }

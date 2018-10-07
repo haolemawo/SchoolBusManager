@@ -30,13 +30,13 @@
                 {
                     <tr id="@stu.ObjectId" style="background: none">
                         <td style="text-align: left">
-                            <a href="/BusManager/ViewStudent?StudentID=@(stu.ObjectId)&ClassID=@(stu.ClassID)&from=MyChild&BusID=@stu.BusID">@stu.StudentName<br />@stu.ObjectId</a>
+                            <a href="/BusManager/ViewStudent?StudentID=@(stu.ObjectId)&ClassID=@(stu.Class.ObjectId)&from=MyChild&BusID=@stu.Bus.ObjectId">@stu.StudentName<br />@stu.ObjectId</a>
                         </td>
                         <td>
-                            <button id="@(stu.ObjectId)_trueBtn" class="btn btn-success btn-sm" onclick="SetDirectGoHome('@stu.BusID', '@stu.ObjectId', false, '@stu.StudentName')">家长接送</button>
+                            <button id="@(stu.ObjectId)_trueBtn" class="btn btn-success btn-sm" onclick="SetDirectGoHome('@stu.Bus.ObjectId', '@stu.ObjectId', false, '@stu.StudentName')">家长接送</button>
                         </td>
                         <td>
-                            <button id="@(stu.ObjectId)_falseBtn" class="btn btn-info btn-sm" onclick="SetDirectGoHome('@stu.BusID', '@stu.ObjectId', true, '@stu.StudentName')">免接送</button>
+                            <button id="@(stu.ObjectId)_falseBtn" class="btn btn-info btn-sm" onclick="SetDirectGoHome('@stu.Bus.ObjectId', '@stu.ObjectId', true, '@stu.StudentName')">免接送</button>
                         </td>
                     </tr>
                 }

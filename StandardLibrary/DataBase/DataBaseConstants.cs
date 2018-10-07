@@ -16,8 +16,7 @@ namespace WBPlatform.Database
 
     public enum DBQueryStatus
     {
-        INJECTION_DETECTED = -3,
-        NOT_CONNECTED = -2,
+        INJECTION_DETECTED = -2,
         INTERNAL_ERROR = -1,
         NO_RESULTS = 0,
         ONE_RESULT = 1,

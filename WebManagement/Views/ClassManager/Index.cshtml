@@ -15,7 +15,7 @@
         <hr />
         <p>我的班级：@ViewData["ClassName"].ToString()</p>
         <p id="totalNum">坐班车学生人数：正在加载</p>
-        <p>本周是：@(XConfig.ServerConfig["WeekType"] == "big" ? "大周" : "小周")</p>
+        <p>本周是：@(ServerConfig.Current.IsBigWeek() ? "大周" : "小周")</p>
     </div>
     <table id="StudentIDs" class="tftable">
         <thead>

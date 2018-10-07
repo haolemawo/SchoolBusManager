@@ -15,9 +15,9 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = HomeController.ControllerName;
             if (ValidateSession())
             {
-                if (CurrentUser.UserGroup.IsClassTeacher && CurrentUser.ClassList.Count > 0)
+                if (CurrentUser.IsClassTeacher /*&& CurrentUser.ClassList.Count > 0*/)
                 {
-                    switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(CurrentUser.ClassList[0]), out ClassObject myClass))
+                    switch (DataBaseOperation.QuerySingle(c => c.Teacher.ObjectId == CurrentUser.ObjectId, out ClassObject myClass))
                     {
                         case DBQueryStatus.INTERNAL_ERROR: return DatabaseError(ServerAction.MyClass_Index, XConfig.Messages.InternalDataBaseError);
                         case DBQueryStatus.NO_RESULTS: return NotFoundError(ServerAction.MyClass_Index, XConfig.Messages["ClassNotFound"]);

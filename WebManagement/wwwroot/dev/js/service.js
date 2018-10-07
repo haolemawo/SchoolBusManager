@@ -212,62 +212,65 @@ var ResultData = (function () {
     }
     return ResultData;
 }());
-var Networking = (function () {
-    function Networking(XTag) {
-        this.XTag = "";
-        this.ASync = false;
-        this.XTag = XTag;
-    }
-    Networking.prototype.AjaxGet = function (OutputDataType, URL) {
-        var _result;
-        $.ajax({
-            async: this.ASync,
-            headers: { "X-WoodenBench-Protection": this.XTag },
-            url: localStorage.getItem("_") + URL,
-            success: function (data) { _result = data; },
-            error: function () { _result = false; }
-        });
-        if (_result === false) {
-            console.error("Get Value from " + URL + "Failed!");
-            return null;
+var wbWeb;
+(function () {
+    var Networking = (function () {
+        function Networking(XTag) {
+            this.XTag = "";
+            this.ASync = false;
+            this.XTag = XTag;
         }
-        var result = new ResultData(OutputDataType);
-        $.extend(result, _result);
-        if (result.ErrCode == 0)
-            return result.Data;
-        console.warn("API Call At " + URL + " ResultCode=" + result.ErrCode);
-        console.warn(result);
-    };
-    return Networking;
-}());
-var WoodenBenchWeb = (function () {
-    function WoodenBenchWeb() {
-        this.CurrentUser = new UserObject();
-    }
-    WoodenBenchWeb.prototype.Initialise = function (UserConfig, APITicket, RouteKey, RouteValue) {
-        this.Session = getCookie("Session");
-        this.ApiTicket = APITicket;
-        this.Config = new TSDictionary(RouteKey, RouteValue);
-        this.Network = new Networking(CryptoJS.SHA384("{0}:{1}:{2}".format(this.Session, this.ApiTicket, window.navigator.userAgent)).toString());
-        localStorage.setItem("_", location.protocol + "//" + location.host);
-        deserialize(UserConfig, this.CurrentUser);
-    };
-    WoodenBenchWeb.prototype.GetMgmtBus = function () { return this.Network.AjaxGet(GetBusResultData, this.Config.GetValue("API_GetBuses").format(this.CurrentUser.ObjectId)); };
-    WoodenBenchWeb.prototype.GetName = function (UserID) { return this.Network.AjaxGet(GetUserNameData, this.Config.GetValue("API_GetName").format(UserID)); };
-    WoodenBenchWeb.prototype.GetStudents = function (BusID, TeacherID) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetStudents").format(BusID, TeacherID, this.Session)); };
-    WoodenBenchWeb.prototype.QueryStudents = function (BusID, Column, Content) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_QueryStudents").format(BusID, Column, Content)); };
-    WoodenBenchWeb.prototype.BusIssueReport = function (BusID, Type, Content) { return this.Network.AjaxGet(NewReportData, this.Config.GetValue("API_BusIssueReport").format(BusID, this.CurrentUser.ObjectId, Type, Content)); };
-    WoodenBenchWeb.prototype.SignStudent = function (BusID, StudentID, Mode, Value) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SignStudent").format(BusID, btoa("{0};{1};{2};{3}".format(Mode, Value, this.CurrentUser.ObjectId, StudentID)))); };
-    WoodenBenchWeb.prototype.GetClassStudents = function (ClassID) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetClassStudents").format(ClassID, this.CurrentUser.ObjectId)); };
-    WoodenBenchWeb.prototype.GetMyChild = function () { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetMyChildren").format(this.CurrentUser.ObjectId)); };
-    WoodenBenchWeb.prototype.SetStudentState = function (StudentID, State) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); };
-    WoodenBenchWeb.prototype.GenerateReport = function (scope) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_GenerateReport").format(scope)).Message; };
-    WoodenBenchWeb.prototype.NewWeekRecord = function () { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_NewWeek")).Message; };
-    WoodenBenchWeb.prototype.SendMessage = function (targ, msg) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_SendMessage").format(targ, msg)).Message; };
-    WoodenBenchWeb.prototype.SetWeekType = function (type) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_SetWeekType").format(type)).Message; };
-    return WoodenBenchWeb;
-}());
-var wbWeb = new WoodenBenchWeb();
+        Networking.prototype.AjaxGet = function (OutputDataType, URL) {
+            var _result;
+            $.ajax({
+                async: this.ASync,
+                headers: { "X-WoodenBench-Protection": this.XTag },
+                url: localStorage.getItem("_") + URL,
+                success: function (data) { _result = data; },
+                error: function () { _result = false; }
+            });
+            if (_result === false) {
+                console.error("Get Value from " + URL + "Failed!");
+                return null;
+            }
+            var result = new ResultData(OutputDataType);
+            $.extend(result, _result);
+            if (result.ErrCode == 0)
+                return result.Data;
+            console.warn("API Call At " + URL + " ResultCode=" + result.ErrCode);
+            console.warn(result);
+        };
+        return Networking;
+    }());
+    var WoodenBenchWeb = (function () {
+        function WoodenBenchWeb() {
+            this.CurrentUser = new UserObject();
+        }
+        WoodenBenchWeb.prototype.Initialise = function (UserConfig, APITicket, RouteKey, RouteValue) {
+            this.Session = getCookie("Session");
+            this.ApiTicket = APITicket;
+            this.Config = new TSDictionary(RouteKey, RouteValue);
+            this.Network = new Networking(CryptoJS.SHA384("{0}:{1}:{2}".format(this.Session, this.ApiTicket, window.navigator.userAgent)).toString());
+            localStorage.setItem("_", location.protocol + "//" + location.host);
+            deserialize(UserConfig, this.CurrentUser);
+        };
+        WoodenBenchWeb.prototype.GetMgmtBus = function () { return this.Network.AjaxGet(GetBusResultData, this.Config.GetValue("API_GetBuses").format(this.CurrentUser.ObjectId)); };
+        WoodenBenchWeb.prototype.GetName = function (UserID) { return this.Network.AjaxGet(GetUserNameData, this.Config.GetValue("API_GetName").format(UserID)); };
+        WoodenBenchWeb.prototype.GetStudents = function (BusID, TeacherID) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetStudents").format(BusID, TeacherID, this.Session)); };
+        WoodenBenchWeb.prototype.QueryStudents = function (BusID, Column, Content) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_QueryStudents").format(BusID, Column, Content)); };
+        WoodenBenchWeb.prototype.BusIssueReport = function (BusID, Type, Content) { return this.Network.AjaxGet(NewReportData, this.Config.GetValue("API_BusIssueReport").format(BusID, this.CurrentUser.ObjectId, Type, Content)); };
+        WoodenBenchWeb.prototype.SignStudent = function (BusID, StudentID, Mode, Value) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SignStudent").format(BusID, btoa("{0};{1};{2};{3}".format(Mode, Value, this.CurrentUser.ObjectId, StudentID)))); };
+        WoodenBenchWeb.prototype.GetClassStudents = function (ClassID) { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetClassStudents").format(ClassID, this.CurrentUser.ObjectId)); };
+        WoodenBenchWeb.prototype.GetMyChild = function () { return this.Network.AjaxGet(GetStudentsData, this.Config.GetValue("API_GetMyChildren").format(this.CurrentUser.ObjectId)); };
+        WoodenBenchWeb.prototype.SetStudentState = function (StudentID, State) { return this.Network.AjaxGet(SignStudentData, this.Config.GetValue("API_SetStudentState").format(StudentID, State)); };
+        WoodenBenchWeb.prototype.GenerateReport = function (scope) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_GenerateReport").format(scope)).Message; };
+        WoodenBenchWeb.prototype.NewWeekRecord = function () { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_NewWeek")).Message; };
+        WoodenBenchWeb.prototype.SendMessage = function (targ, msg) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_SendMessage").format(targ, msg)).Message; };
+        WoodenBenchWeb.prototype.SetWeekType = function (type) { return this.Network.AjaxGet(PureMessageData, this.Config.GetValue("API_SetWeekType").format(type)).Message; };
+        return WoodenBenchWeb;
+    }());
+    wbWeb = new WoodenBenchWeb();
+})();
 function setCookie(name, value) {
     var TimeMins = 40;
     var exp = new Date();

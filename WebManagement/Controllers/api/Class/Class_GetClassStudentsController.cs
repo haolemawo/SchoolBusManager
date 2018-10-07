@@ -1,12 +1,9 @@
-﻿using System.Collections;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using System.Collections.Generic;
 
-using Microsoft.AspNetCore.Mvc;
-
 using WBPlatform.Database;
-using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
-using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
 {
@@ -18,12 +15,12 @@ namespace WBPlatform.WebManagement.Controllers
         public JsonResult Get(string ClassID, string TeacherID)
         {
             if (!ValidateSession()) return SessionError;
-            if (!(CurrentUser.ClassList.Contains(ClassID) && CurrentUser.ObjectId == TeacherID)) return UserGroupError;
+            if (!(/*CurrentUser.ClassList.Contains(ClassID) &&*/ CurrentUser.ObjectId == TeacherID)) return UserGroupError;
 
-            DBQuery StudentQuery = new DBQuery();
-            StudentQuery.WhereEqualTo("ClassID", ClassID);
+            //DBQuery StudentQuery = new DBQuery();
+            //StudentQuery.WhereEqualTo("ClassID", ClassID);
             Dictionary<string, string> dict = new Dictionary<string, string>();
-            switch (DataBaseOperation.QueryMultiple(StudentQuery, out List<StudentObject> StudentList))
+            switch (DataBaseOperation.QueryMultiple(s => s.Class.ObjectId == ClassID, out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;
                 default: return Json(new { StudentList.Count, StudentList });

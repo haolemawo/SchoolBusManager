@@ -96,9 +96,10 @@ namespace WBPlatform.WebManagement.Tools
                             var time = Message.RecievedTime;
                             var toUser = Message.FromUser;
                             L.I($"Recieved Location: {Latitude}:{Longitude}%{Precision}@{time} form {toUser}");
-                            if (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("Username", toUser), out UserObject _user) == DBQueryStatus.ONE_RESULT)
+                            if (DataBaseOperation.QuerySingle(u => u.UserName == toUser, out UserObject _user) == DBQueryStatus.ONE_RESULT)
                             {
-                                _user.CurrentPoint = Message.Location;
+                                _user.X = Latitude;
+                                _user.Y = Longitude;
                                 _user.Precision = Precision;
                                 if (DataBaseOperation.UpdateData(ref _user) != DBQueryStatus.ONE_RESULT)
                                     L.E("Cannot save User with new Position...");

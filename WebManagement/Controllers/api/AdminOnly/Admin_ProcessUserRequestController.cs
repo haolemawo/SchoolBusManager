@@ -20,10 +20,10 @@ namespace WBPlatform.WebManagement.Controllers
         public JsonResult Get(string reqId, string mode, string detail)
         {
             if (!ValidateSession()) return SessionError;
-            if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(reqId), out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+            if (!CurrentUser.IsAdmin) return UserGroupError;
+            if (DataBaseOperation.QuerySingle(q => q.ObjectId == reqId /*new DBQuery().WhereIDIs(reqId)*/, out UserChangeRequest request) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
-            request.SolverID = CurrentUser.ObjectId;
+            request.Solver = CurrentUser;
             switch (mode)
             {
                 case "0":
@@ -43,7 +43,7 @@ namespace WBPlatform.WebManagement.Controllers
 
             if (request.Status != UCRProcessStatus.Accepted) return SpecialisedInfo("提交成功");
 
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(request.UserID), out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
+            if (DataBaseOperation.QuerySingle(u => request.User.ObjectId == u.ObjectId /*new DBQuery().WhereIDIs(request.User.ObjectId)*/, out UserObject user) != DBQueryStatus.ONE_RESULT) return DataBaseError;
 
             switch (request.RequestTypes)
             {
@@ -62,7 +62,7 @@ namespace WBPlatform.WebManagement.Controllers
                 return DataBaseError;
             }
 
-            InternalMessage message_User = new InternalMessage() { _Type = InternalMessageTypes.UCR_Procceed_TO_User, DataObject = request, User = user, Identifier = request.UserID };
+            InternalMessage message_User = new InternalMessage() { _Type = InternalMessageTypes.UCR_Procceed_TO_User, DataObject = request, User = user, Identifier = request.User.ObjectId };
             MessagingSystem.AddMessageProcesses(message_User);
 
             return SpecialisedInfo("提交成功");

@@ -26,8 +26,8 @@
         <label>设置大小周</label>
         <div class="center-all row">
             <div class="col">
-                <label class="container">本周是：<label>@(XConfig.ServerConfig["WeekType"] == "big" ? "大" : "小")周</label></label>
-                <button class="btn btn-info center-all" style="width: 100%" onclick="setWeekType('@(XConfig.ServerConfig["WeekType"] == "big" ? "small" : "big")')">切换为：@(XConfig.ServerConfig["WeekType"] == "big" ? "小" : "大")周</button>
+                <label class="container">本周是：<label>@(ServerConfig.Current.IsBigWeek() ? "大" : "小")周</label></label>
+                <button class="btn btn-info center-all" style="width: 100%" onclick="setWeekType('@(ServerConfig.Current.IsBigWeek() ? "big" : "small")')">切换为：@(ServerConfig.Current.IsBigWeek() ? "小" : "大")周</button>
             </div>
             <script>
                 function setWeekType(type) {

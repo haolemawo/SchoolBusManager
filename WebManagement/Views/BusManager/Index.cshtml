@@ -13,7 +13,7 @@
     </div>
     <hr />
     <div class="container">
-        <p>本周是：@(XConfig.ServerConfig["WeekType"] == "big" ? "大周" : "小周")</p>
+        <p>本周是：@(ServerConfig.Current.IsBigWeek() ? "大周" : "小周")</p>
         <p id="ExpNumber">班车总人数: 加载中...</p>
         <p id="LSChecked">离校上车人数: 加载中...</p>
         <p id="AHChecked">到家确认人数: 加载中...</p>

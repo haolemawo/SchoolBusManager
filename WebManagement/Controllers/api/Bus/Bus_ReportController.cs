@@ -18,17 +18,17 @@ namespace WBPlatform.WebManagement.Controllers
         {
             if (!ValidateSession()) return SessionError;
             if (TeacherID != CurrentUser.ObjectId) return RequestIllegal;
-            if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(BusID).WhereEqualTo("TeacherObjectID", TeacherID), out SchoolBusObject bus) != DBQueryStatus.ONE_RESULT) return RequestIllegal;
+            if (DataBaseOperation.QuerySingle(b => b.ObjectId == BusID && b.Teacher.ObjectId == TeacherID, out SchoolBusObject bus) != DBQueryStatus.ONE_RESULT) return RequestIllegal;
 
             BusReport busReport = new BusReport
             {
-                BusID = BusID,
-                TeacherID = TeacherID,
+                Bus = bus,
+                Teacher = CurrentUser,
                 ReportType = (BusReportTypeE)Convert.ToInt32(ReportType),
                 OtherData = Content
             };
             if (DataBaseOperation.CreateData(ref busReport) != DBQueryStatus.ONE_RESULT) return DataBaseError;
-            
+
             InternalMessage message_TP = new InternalMessage(InternalMessageTypes.Bus_Status_Report, CurrentUser, busReport, BusID);
             MessagingSystem.AddMessageProcesses(message_TP);
             return Json(new { Report = busReport });

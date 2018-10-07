@@ -17,7 +17,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             ViewData["where"] = HomeController.ControllerName;
             return ValidateSession()
-                ? CurrentUser.UserGroup.IsBusManager
+                ? CurrentUser.IsBusManager
                     ? View()
                     : PermissionDenied(ServerAction.BusManage_Index, XConfig.Messages["NotBusTeacher"], ResponceCode.Default)
                 : LoginFailed("/" + ControllerName + "/");
@@ -27,7 +27,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             ViewData["where"] = ControllerName;
             return ValidateSession()
-                ? View() 
+                ? View()
                 : LoginFailed("/" + ControllerName + "/WeekIssue");
         }
 
@@ -40,10 +40,10 @@ namespace WBPlatform.WebManagement.Controllers
                 ViewData["cUser"] = CurrentUser.ToString();
                 if (Request.Cookies["SignMode"] == signmode)
                 {
-                    DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("TeacherObjectID", CurrentUser.ObjectId), out SchoolBusObject busObject);
+                    DataBaseOperation.QuerySingle(b => b.Teacher.ObjectId == CurrentUser.ObjectId  /*new DBQuery().WhereEqualTo("TeacherObjectID", CurrentUser.ObjectId)*/, out SchoolBusObject busObject);
                     if (busObject == null)
                     {
-                        busObject = new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到班车", TeacherID = CurrentUser.ObjectId };
+                        busObject = new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到班车", Teacher = CurrentUser };
                     }
                     ViewData["cBus"] = busObject.ObjectId;
                     ViewData["mode"] = signmode;
@@ -62,9 +62,9 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                if (CurrentUser.UserGroup.IsBusManager)
+                if (CurrentUser.IsBusManager)
                 {
-                    DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("TeacherObjectID", CurrentUser.ObjectId), out SchoolBusObject busObject);
+                    DataBaseOperation.QuerySingle(s => s.Teacher.ObjectId == CurrentUser.ObjectId, out SchoolBusObject busObject);
                     ViewData["cBus"] = busObject.ObjectId;
                     ViewData["cTeacher"] = CurrentUser.ObjectId;
                 }
@@ -106,7 +106,7 @@ namespace WBPlatform.WebManagement.Controllers
 
                 ViewData["where"] = from;
                 // User Group Check
-                if (CurrentUser.UserGroup.IsParent || CurrentUser.UserGroup.IsClassTeacher || CurrentUser.UserGroup.IsBusManager || CurrentUser.UserGroup.IsAdmin)
+                if (CurrentUser.IsParent || CurrentUser.IsClassTeacher || CurrentUser.IsBusManager || CurrentUser.IsAdmin)
                 {
                     DBQueryStatus flag;
                     IActionResult result = null;
@@ -114,7 +114,7 @@ namespace WBPlatform.WebManagement.Controllers
                     ViewStudentInfo info = new ViewStudentInfo();
 
                     //Search student with spec ClassID and StudentID and BusID
-                    flag = DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(StudentID).WhereEqualTo("ClassID", ClassID).WhereEqualTo("BusID", BusID), out StudentObject Student);
+                    flag = DataBaseOperation.QuerySingle(s => s.ObjectId == StudentID && s.Class.ObjectId == ClassID && s.Bus.ObjectId == BusID /*new DBQuery().WhereIDIs(StudentID).WhereEqualTo("ClassID", ClassID).WhereEqualTo("BusID", BusID)*/, out StudentObject Student);
                     result = CheckFlag(flag, true, "GetStudentBy_CID_BID_SID");
                     if (result != null) return result;
                     if (Student != null)
@@ -123,7 +123,7 @@ namespace WBPlatform.WebManagement.Controllers
                         info._student = Student;
 
                         //Get Class information with ClassID
-                        flag = DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(Student.ClassID), out ClassObject Class);
+                        flag = DataBaseOperation.QuerySingle(c => c.ObjectId == Student.Class.ObjectId /*new DBQuery().WhereIDIs(Student.Class.ObjectId)*/, out ClassObject Class);
                         result = CheckFlag(flag, true, "GetClassBy_CID");
                         if (result != null) return result;
                         else
@@ -138,7 +138,7 @@ namespace WBPlatform.WebManagement.Controllers
                                 info.ClassFound = true;
                                 info._class = Class;
                                 //Get Class Teacher Information
-                                flag = DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(Class.TeacherID), out UserObject Teacher);
+                                flag = DataBaseOperation.QuerySingle(t => t.ObjectId == Class.Teacher.ObjectId/*new DBQuery().WhereIDIs(Class.Teacher.ObjectId)*/, out UserObject Teacher);
                                 result = CheckFlag(flag, true, "GetClassTeacherBy_CID_BID_SID");
                                 if (result != null) return result;
                                 else
@@ -158,7 +158,7 @@ namespace WBPlatform.WebManagement.Controllers
                         }
 
                         //Get Parents
-                        flag = DataBaseOperation.QueryMultiple(new DBQuery().WhereRecordContainsValue("ChildIDs", Student.ObjectId), out List<UserObject> Parents);
+                        flag = DataBaseOperation.QueryMultiple(p => p.ChildList.Contains(Student.ObjectId), out List<UserObject> Parents);
                         result = CheckFlag(flag, false, "GetParentsBy_UID");
                         if (result != null) return result;
                         else
@@ -177,7 +177,7 @@ namespace WBPlatform.WebManagement.Controllers
 
 
                         // Get SchoolBus
-                        flag = DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(Student.BusID), out SchoolBusObject Bus);
+                        flag = DataBaseOperation.QuerySingle(b => b.ObjectId == Student.Bus.ObjectId, out SchoolBusObject Bus);
                         result = CheckFlag(flag, true, "GetBusBy_BID");
                         if (result != null) return result;
                         else
@@ -192,7 +192,7 @@ namespace WBPlatform.WebManagement.Controllers
                                 info.BusFound = true;
                                 info._schoolbus = Bus;
                                 // Get SchoolBus Teacher.
-                                flag = DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(Bus.TeacherID), out UserObject BusTeacher);
+                                flag = DataBaseOperation.QuerySingle(u => u.ObjectId == Bus.Teacher.ObjectId, out UserObject BusTeacher);
                                 result = CheckFlag(flag, true, "GetBusTeacherBy_UID");
                                 if (result != null) return result;
                                 else
@@ -212,7 +212,7 @@ namespace WBPlatform.WebManagement.Controllers
                         }
 
                         //        Is in user's class?                           Is in user's Bus??                      Is user's child??                Or the god...
-                        return CurrentUser.ClassList.Contains(Student.ClassID) || CurrentUser.ObjectId == Bus.TeacherID || CurrentUser.ChildList.Contains(Student.ObjectId) || CurrentUser.UserGroup.IsAdmin
+                        return /*CurrentUser.ClassList.Contains(Student.Class.ObjectId) || */CurrentUser.ObjectId == Bus.Teacher.ObjectId || CurrentUser.ChildList.Contains(Student.ObjectId) || CurrentUser.IsAdmin
                             ? View(info)
                             : PermissionDenied(ServerAction.General_ViewStudent, XConfig.Messages.UserPermissionDenied);
                     }

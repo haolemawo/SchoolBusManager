@@ -11,21 +11,21 @@
     <h6>请选择功能:</h6>
     <hr />
     <div id="ChosenAreas" class="center-margin container">
-        @if (_user.UserGroup.IsBusManager)
+        @if (_user.IsBusManager)
         {
             <div onclick="Jummmmmmp('1')" style="display: inline-block">
                 <img alt="班车管理" class="choose-square" src="~/images/bus.png" />
                 <p class="text-underline" style="font-size:10pt">班车管理</p>
             </div>
         }
-        @if (_user.UserGroup.IsClassTeacher && _user.ClassList.Count > 0)
+        @if (_user.IsClassTeacher)
         {
             <div onclick="Jummmmmmp('2');" style="display: inline-block">
                 <img alt="班级管理" class="choose-square" src="~/images/class.png" />
                 <p class="text-underline" style="font-size:10pt">班级管理</p>
             </div>
         }
-        @if (_user.UserGroup.IsParent)
+        @if (_user.IsParent)
         {
             <div onclick="Jummmmmmp('3');" style="display: inline-block">
                 <img alt="我的孩子" class="choose-square" src="~/images/child.svg" />

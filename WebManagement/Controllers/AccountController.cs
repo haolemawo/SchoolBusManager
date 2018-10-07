@@ -58,11 +58,11 @@ namespace WBPlatform.WebManagement.Controllers
                     UserChangeRequest request = new UserChangeRequest()
                     {
                         DetailTexts = reason,
-                        SolverID = "",
+                        Solver = null,
                         NewContent = newVal,
                         Status = UCRProcessStatus.NotSolved,
                         RequestTypes = types,
-                        UserID = CurrentUser.ObjectId
+                        User = CurrentUser
                     };
 
                     if (DataBaseOperation.CreateData(ref request) != DBQueryStatus.ONE_RESULT)
@@ -79,7 +79,7 @@ namespace WBPlatform.WebManagement.Controllers
                 }
                 else
                 {
-                    return View(new UserChangeRequest() { UserID = CurrentUser.ObjectId });
+                    return View(new UserChangeRequest() { User = CurrentUser });
                 }
             }
             return LoginFailed("/" + ControllerName + "/" + nameof(RequestChange));

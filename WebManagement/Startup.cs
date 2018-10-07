@@ -1,10 +1,20 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using System;
+using System.Data.Common;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using WBPlatform.Config;
+using WBPlatform.Database.Connection;
+using WBPlatform.DataBase_ng;
+using WBPlatform.Logging;
 
 namespace WBPlatform.WebManagement
 {
@@ -19,7 +29,8 @@ namespace WBPlatform.WebManagement
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
-        {
+        {            
+            //services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(DBConnectionBuilder.Connection));
             services.AddMvc();
             services.AddAntiforgery();
             services.AddCors();
@@ -39,11 +50,11 @@ namespace WBPlatform.WebManagement
             {
                 ContentTypeProvider = provider
             });
-            
+
             app.UseCors();
             app.UseHsts();
             app.UseHttpsRedirection();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();

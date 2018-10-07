@@ -13,16 +13,16 @@ namespace WBPlatform.WebManagement.Controllers
         public JsonResult Get(string type)
         {
             if (!ValidateSession()) return SessionError;
-            if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
+            if (!CurrentUser.IsAdmin) return UserGroupError;
 
             type = type.ToLower();
             if (type == "big" || type == "small")
             {
-                XConfig.ServerConfig["WeekType"] = type;
-                XConfig.ServerConfig.SaveConfig();
+                ServerConfig.Current["WeekType"] = type;
+                ServerConfig.Current.SaveConfig();
             }
             else return RequestIllegal;
-            return SpecialisedInfo("已经切换为：" + (XConfig.ServerConfig["WeekType"] == "big" ? "大周" : "小周"));
+            return SpecialisedInfo("已经切换为：" + (ServerConfig.Current["WeekType"] == "big" ? "大周" : "小周"));
         }
     }
 }

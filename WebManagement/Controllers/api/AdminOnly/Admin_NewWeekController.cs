@@ -13,7 +13,7 @@ namespace WBPlatform.WebManagement.Controllers
         public JsonResult Get(string scope)
         {
             if (!ValidateSession()) return SessionError;
-            if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
+            if (!CurrentUser.IsAdmin) return UserGroupError;
 
             InternalMessage reportInternalMessage = new InternalMessage() { User = CurrentUser, _Type = InternalMessageTypes.Admin_WeekReport_Gen, DataObject = scope, Identifier = "##########" };
             InternalMessage resetDataInternalMessage = new InternalMessage() { User = CurrentUser, _Type = InternalMessageTypes.Admin_ResetAllRecord };

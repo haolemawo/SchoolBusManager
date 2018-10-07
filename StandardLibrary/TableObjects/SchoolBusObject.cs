@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 using System.Collections.Generic;
-
+using System.ComponentModel.DataAnnotations.Schema;
 using WBPlatform.Database.IO;
 using WBPlatform.StaticClasses;
 
@@ -10,37 +10,12 @@ namespace WBPlatform.TableObject
     public class SchoolBusObject : DataTableObject<SchoolBusObject>
     {
         public string BusName { get; set; }
-        public string TeacherID { get; set; }
+        [ForeignKey("TeacherID")]
+        public UserObject Teacher { get; set; }
 
         public bool BigWeekOnly { get; set; }
         public bool AHChecked { get; set; }
         public bool CSChecked { get; set; }
         public bool LSChecked { get; set; }
-
-        public SchoolBusObject() { }
-        public override string Table => TABLE_Mgr_BusData;
-
-        public override void ReadFields(DataBaseIO input)
-        {
-            base.ReadFields(input);
-            BusName = input.GetString("BusName");
-            TeacherID = input.GetString("TeacherObjectID");
-            LSChecked = input.GetBool("LSChecked");
-            CSChecked = input.GetBool("CSChecked");
-            AHChecked = input.GetBool("AHChecked");
-            BigWeekOnly = input.GetBool("BigWeekOnly");
-        }
-
-        public override void WriteObject(DataBaseIO output, bool all)
-        {
-            base.WriteObject(output, all);
-            output.Put("BusName", BusName);
-            output.Put("TeacherObjectID", TeacherID);
-            output.Put("CSChecked", CSChecked);
-            output.Put("LSChecked", LSChecked);
-            output.Put("AHChecked", AHChecked);
-            output.Put("BigWeekOnly", BigWeekOnly);
-
-        }
     }
 }

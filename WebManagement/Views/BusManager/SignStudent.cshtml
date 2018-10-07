@@ -15,7 +15,7 @@
     <br />
     <div class="container">
         <p>以下数据将每10秒刷新一次：</p>
-        <p>本周是：@(XConfig.ServerConfig["WeekType"] == "big" ? "大周" : "小周")</p>
+        <p>本周是：@(ServerConfig.Current.IsBigWeek() ? "大周" : "小周")</p>
         <p id="TimeoutLabel">刷新时间：10</p>
         @if (SignMode == "LS" || SignMode == "CD")
         {

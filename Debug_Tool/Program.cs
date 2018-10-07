@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using WBPlatform.Config;
 using WBPlatform.Database;
 using WBPlatform.Database.Connection;
-using WBPlatform.Database.IO;
+using WBPlatform.DataBase_ng;
 using WBPlatform.Logging;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
@@ -13,23 +13,29 @@ namespace Debug_Tool
 {
     public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             L.InitLog();
             XConfig.LoadConfig("XConfig.conf");
-            DataBaseOperation.InitialiseClient();
+
+            DBConnectionBuilder.InitialiseDBConnection();
+            var Context = new DataBaseContext();
+            DataBaseOperation.Initialise(Context);
 
             UserObject me = new UserObject()
             {
-                HeadImagePath = "liuhaoyu.gif",
-                Password = "",
+                AvatarPath = "liuhaoyu.gif",
                 PhoneNumber = "18632738306",
                 Sex = "M",
-                UserGroup = new UserGroup(true, true, true, true),
+                IsAdmin = true,
+                IsBusManager = true,
+                IsParent = true,
+                IsClassTeacher = true,
+                X = 118.90F,
+                Y = 119.80F,
                 UserName = "liuhaoyu",
                 Precision = 3,
                 RealName = "刘浩宇",
-                CurrentPoint = new System.Drawing.PointF(0, 0)
             };
             L.D(DataBaseOperation.CreateData(ref me).Stringify());
             //L.D(DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("UserName", "liuhaoyu"), out UserObject me).ToString());
@@ -46,7 +52,7 @@ namespace Debug_Tool
                     CDepartment = dePartMent[RandomInt(0, 3)],
                     CGrade = RandomInt(1, 14) + "年级",
                     CNumber = RandomInt(1, 8) + "班",
-                    TeacherID = me.ObjectId
+                    Teacher = me
                 };
                 L.D(DataBaseOperation.CreateData(ref @class).ToString());
                 L.D(@class.Stringify());
@@ -59,7 +65,7 @@ namespace Debug_Tool
                 SchoolBusObject bo = new SchoolBusObject()
                 {
                     BusName = item,
-                    TeacherID = me.ObjectId,
+                    Teacher = me,
                     BigWeekOnly = RandomBool,
                     AHChecked = false,
                     CSChecked = false,
@@ -75,8 +81,8 @@ namespace Debug_Tool
             {
                 StudentObject stu = new StudentObject()
                 {
-                    BusID = busList[RandomInt(0, busList.Count)].ObjectId,
-                    ClassID = classList[RandomInt(0, classList.Count)].ObjectId,
+                    Bus = busList[RandomInt(0, busList.Count)],
+                    Class = classList[RandomInt(0, classList.Count)],
                     Sex = RandomBool ? "M" : "F",
                     StudentName = item,
                     AHChecked = false,
@@ -96,9 +102,9 @@ namespace Debug_Tool
                     ChildList = new List<string>() { stu.ObjectId },
                     PhoneNumber = "00000000000",
                     RealName = stu.StudentName + "的" + (sexParent ? "爸爸" : "妈妈"),
-                    UserGroup = new UserGroup(false, false, false, true),
+                    IsParent = true,
                     UserName = "stu_Parent" + stu.ObjectId,
-                    HeadImagePath = ""
+                    AvatarPath = ""
                 };
                 L.D(DataBaseOperation.CreateData(ref user).ToString());
                 L.D(user.Stringify());
@@ -112,13 +118,11 @@ namespace Debug_Tool
                 }
             }
 
-            me.HeadImagePath = "liuhaoyu.gif";
-            me.ClassList.Add(classList[RandomInt(0, classList.Count)].ObjectId);
+            me.AvatarPath = "liuhaoyu.gif";
             L.D(DataBaseOperation.UpdateData(ref me).ToString());
             L.D(me.Stringify());
 
 
-            DatabaseSocketsClient.KillConnection();
             return;
         }
         public static bool RandomBool => new Random().Next(0, 2) == 1;

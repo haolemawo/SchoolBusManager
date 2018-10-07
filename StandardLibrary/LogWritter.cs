@@ -79,7 +79,7 @@ namespace WBPlatform.Logging
             Console.Write(LogMsg);
             Console.ResetColor();
 
-            Fs.Write(LogMsg);
+            Fs?.Write(LogMsg);
 
             LogEvent.LogString = LogMsg;
             LogEvent.LogLevel = level;

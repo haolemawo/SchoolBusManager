@@ -65,14 +65,14 @@ namespace WBPlatform.WebManagement.Tools
         private static bool SendMessage(InternalMessage message)
         {
             string MessageString = message.DataObject as string;
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> _usr) <= 0) { L.E("No Users Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<UserObject> _usr) <= 0) { L.E("No Users Found???"); return false; }
             WeChatSentMessage wxMsg = new WeChatSentMessage(WeChatSMsg.text, null, "来自管理员 " + message.User.RealName + "的消息：\r\n" + MessageString, null, null);
             switch (message.Identifier)
             {
                 case "all": wxMsg.toUser = (from _ in _usr select _.UserName).ToArray(); break;
-                case "bteachers": wxMsg.toUser = (from _ in _usr where _.UserGroup.IsBusManager select _.UserName).ToArray(); break;
-                case "cteachers": wxMsg.toUser = (from _ in _usr where _.UserGroup.IsClassTeacher select _.UserName).ToArray(); break;
-                case "parents": wxMsg.toUser = (from _ in _usr where _.UserGroup.IsParent select _.UserName).ToArray(); break;
+                case "bteachers": wxMsg.toUser = (from _ in _usr where _.IsBusManager select _.UserName).ToArray(); break;
+                case "cteachers": wxMsg.toUser = (from _ in _usr where _.IsClassTeacher select _.UserName).ToArray(); break;
+                case "parents": wxMsg.toUser = (from _ in _usr where _.IsParent select _.UserName).ToArray(); break;
                 default: L.E("Unknown SendMessage Identifier " + message.Identifier); return true;
             }
             WeChatMessageSystem.AddToSendList(wxMsg);
@@ -83,7 +83,7 @@ namespace WBPlatform.WebManagement.Tools
         {
             WeChatSentMessage msgResetStart = new WeChatSentMessage(WeChatSMsg.text, null, "操作：开始新一周记录 已经开始处理！", null, message.User.UserName);
             WeChatMessageSystem.AddToSendList(msgResetStart);
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> _s) <= 0) { L.E("No Bus Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<SchoolBusObject> _s) <= 0) { L.E("No Bus Found???"); return false; }
             foreach (var item in _s)
             {
                 item.AHChecked = false;
@@ -92,7 +92,7 @@ namespace WBPlatform.WebManagement.Tools
                 if (DataBaseOperation.UpdateData(item) == DBQueryStatus.ONE_RESULT) L.I("Succeed Reset Record: Bus->" + item.BusName + ":" + item.ObjectId);
                 else { L.E("Failed To Reset Bus Record: " + item.Stringify()); return false; }
             }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> _st) <= 0) { L.E("No Students Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<StudentObject> _st) <= 0) { L.E("No Students Found???"); return false; }
             foreach (var item in _st)
             {
                 item.AHChecked = false;
@@ -112,19 +112,19 @@ namespace WBPlatform.WebManagement.Tools
             string ReportVisibleName = "班车统计报告";
             string ReportFilePath = dirInfo.FullName + "//" + message.DataObject + "-GenBy-" + message.User.GetIdentifiableCode() + "-" + message.Identifier + ".xlsx";
 
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<SchoolBusObject> busList) <= 0) { L.E("No Bus Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<StudentObject> studentsList) <= 0) { L.E("No Students Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<ClassObject> classList) <= 0) { L.E("No Classes Found???"); return false; }
-            if (DataBaseOperation.QueryMultiple(new DBQuery().Limit(5000), out List<UserObject> userList) <= 0) { L.E("No Users Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<SchoolBusObject> busList) <= 0) { L.E("No Bus Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<StudentObject> studentsList) <= 0) { L.E("No Students Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<ClassObject> classList) <= 0) { L.E("No Classes Found???"); return false; }
+            if (DataBaseOperation.QueryAll(out List<UserObject> userList) <= 0) { L.E("No Users Found???"); return false; }
 
             Dictionary<string, SchoolBusObject> SchoolBusDictionary = busList.ToDictionary();
             Dictionary<string, ClassObject> ClassDictionary = classList.ToDictionary();
             Dictionary<string, StudentObject> StudentsDictionary = studentsList.ToDictionary();
             Dictionary<string, UserObject> UsersDictionary = userList.ToDictionary();
 
-            ClassObject emptyClassObject = new ClassObject() { CDepartment = "-未知-", CGrade = "-未知-", CNumber = "-未知-", TeacherID = DataTableObject.DefaultObjectID, ObjectId = DataTableObject.DefaultObjectID };
+            ClassObject emptyClassObject = new ClassObject() { CDepartment = "-未知-", CGrade = "-未知-", CNumber = "-未知-", Teacher = null, ObjectId = DataTableObject.DefaultObjectID };
             UserObject emptyUserObject = new UserObject() { RealName = "-未知-", ObjectId = DataTableObject.DefaultObjectID };
-            SchoolBusObject emptySchoolBusObject = new SchoolBusObject() { BusName = "-未知-", TeacherID = DataTableObject.DefaultObjectID, ObjectId = DataTableObject.DefaultObjectID };
+            SchoolBusObject emptySchoolBusObject = new SchoolBusObject() { BusName = "-未知-", Teacher = null, ObjectId = DataTableObject.DefaultObjectID };
 
             void FillStudentsDataIntoSheet(IXLWorksheet sheet, StudentObject[] students)
             {
@@ -132,56 +132,56 @@ namespace WBPlatform.WebManagement.Tools
                 for (int i = 0; i < students.Length; i++)
                 {
                     // HERE NEEDS SOME DATA PROCESS ABOUT 'NULL'
-                    var _student = students[i];
-                    _student.ClassID = _student.ClassID ?? DataTableObject.DefaultObjectID;
-                    _student.BusID = _student.BusID ?? DataTableObject.DefaultObjectID;
-
-                    var _class = ClassDictionary.ContainsKey(_student.ClassID)
-                        ? ClassDictionary[_student.ClassID]
-                        : emptyClassObject;
-
-                    _class.TeacherID = _class.TeacherID ?? DataTableObject.DefaultObjectID;
-
-                    var _classTeacher = UsersDictionary.ContainsKey(_class.TeacherID)
-                        ? UsersDictionary[_class.TeacherID]
-                        : emptyUserObject;
-
-                    var _bus = SchoolBusDictionary.ContainsKey(_student.BusID)
-                        ? SchoolBusDictionary[_student.BusID]
-                        : emptySchoolBusObject;
-
-                    _bus.TeacherID = _bus.TeacherID ?? DataTableObject.DefaultObjectID;
-
-                    var _busTeacher = UsersDictionary.ContainsKey(_bus.TeacherID)
-                        ? UsersDictionary[_bus.TeacherID]
-                        : emptyUserObject;
-
-
-                    List<string> values = new List<string>
-                    {
-                        _class.CDepartment,_class.CGrade,_class.CNumber,
-                        _classTeacher.RealName,
-                        _student.StudentName,
-                        _student.Sex == "M" ? "男" : "女",
-                        _bus.BusName,
-                        _student.TakingBus ? "是" : "否"
-                    };
-
-                    if (_student.TakingBus)
-                    {
-                        values.Add(_busTeacher.RealName);
-                        values.Add(_student.LSChecked ? "签到" : "未签到");
-                        values.Add(_student.AHChecked ? "签到" : "未签到");
-                    }
-                    else values.AddRange(new string[] { "---", "---", "---" });
-
-                    values.Add(_student.DirectGoHome == DirectGoHomeMode.NotSet ? "未设置" : _student.DirectGoHome == DirectGoHomeMode.DirectlyGoHome ? "免接送" : "非免接送");
-                    values.Add(_student.TakingBus ? (_student.CSChecked ? "签到" : "未签到") : "---");
-
-                    var _parents = from k in UsersDictionary where k.Value.ChildList.Contains(_student.ObjectId) select k.Value;
-                    values.Add(string.Join(';', from _ in _parents select _.RealName + "(" + _.PhoneNumber + ")"));
-
-                    sheet.Row(i + 2).SetValues(values.ToArray());
+                    //var _student = students[i];
+                    //_student.Class = _student.Class ?? DataTableObject.DefaultObjectID;
+                    //_student.Bus = _student.Bus ?? DataTableObject.DefaultObjectID;
+                    //
+                    //var _class = ClassDictionary.ContainsKey(_student.Class)
+                    //    ? ClassDictionary[_student.Class]
+                    //    : emptyClassObject;
+                    //
+                    //_class.Teacher = _class.Teacher ?? DataTableObject.DefaultObjectID;
+                    //
+                    //var _classTeacher = UsersDictionary.ContainsKey(_class.TeacherID.ObjectId)
+                    //    ? UsersDictionary[_class.TeacherID]
+                    //    : emptyUserObject;
+                    //
+                    //var _bus = SchoolBusDictionary.ContainsKey(_student.Bus.ObjectId)
+                    //    ? SchoolBusDictionary[_student.Bus]
+                    //    : emptySchoolBusObject;
+                    //
+                    //_bus.Teacher = _bus.Teacher ?? DataTableObject.DefaultObjectID;
+                    //
+                    //var _busTeacher = UsersDictionary.ContainsKey(_bus.Teacher)
+                    //    ? UsersDictionary[_bus.Teacher]
+                    //    : emptyUserObject;
+                    //
+                    //
+                    //List<string> values = new List<string>
+                    //{
+                    //    _class.CDepartment,_class.CGrade,_class.CNumber,
+                    //    _classTeacher.RealName,
+                    //    _student.StudentName,
+                    //    _student.Sex == "M" ? "男" : "女",
+                    //    _bus.BusName,
+                    //    _student.TakingBus ? "是" : "否"
+                    //};
+                    //
+                    //if (_student.TakingBus)
+                    //{
+                    //    values.Add(_busTeacher.RealName);
+                    //    values.Add(_student.LSChecked ? "签到" : "未签到");
+                    //    values.Add(_student.AHChecked ? "签到" : "未签到");
+                    //}
+                    //else values.AddRange(new string[] { "---", "---", "---" });
+                    //
+                    //values.Add(_student.DirectGoHome == DirectGoHomeMode.NotSet ? "未设置" : _student.DirectGoHome == DirectGoHomeMode.DirectlyGoHome ? "免接送" : "非免接送");
+                    //values.Add(_student.TakingBus ? (_student.CSChecked ? "签到" : "未签到") : "---");
+                    //
+                    //var _parents = from k in UsersDictionary where k.Value.ChildList.Contains(_student.ObjectId) select k.Value;
+                    //values.Add(string.Join(';', from _ in _parents select _.RealName + "(" + _.PhoneNumber + ")"));
+                    //
+                    //sheet.Row(i + 2).SetValues(values.ToArray());
                 }
                 sheet.Columns().AdjustToContents();
                 sheet.SetContentColor();
@@ -211,7 +211,7 @@ namespace WBPlatform.WebManagement.Tools
                             count++;
                         }
                         var sheetClass = wb.Worksheets.Add(sheetBName);
-                        FillStudentsDataIntoSheet(sheetClass, (from x in StudentsDictionary.Values where x.ClassID == _class.ObjectId select x).ToArray());
+                        FillStudentsDataIntoSheet(sheetClass, (from x in StudentsDictionary.Values where x.Class == _class select x).ToArray());
                     }
                     break;
                 case "bus":
@@ -227,7 +227,7 @@ namespace WBPlatform.WebManagement.Tools
                             count++;
                         }
                         var sheetBus = wb.Worksheets.Add(_bus.BusName);
-                        FillStudentsDataIntoSheet(sheetBus, (from x in StudentsDictionary.Values where x.BusID == _bus.ObjectId select x).ToArray());
+                        FillStudentsDataIntoSheet(sheetBus, (from x in StudentsDictionary.Values where x.Bus == _bus select x).ToArray());
                     }
                     break;
                 case "all":
@@ -276,7 +276,7 @@ namespace WBPlatform.WebManagement.Tools
         }
         private static bool ProcessUCR_ProceedToUser(InternalMessage message)
         {
-            switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(message.Identifier), out UserObject requestSender))
+            switch (DataBaseOperation.QuerySingle(u => u.ObjectId == message.Identifier, out UserObject requestSender))
             {
                 case DBQueryStatus.ONE_RESULT:
                     string stat = ((UserChangeRequest)message.DataObject).Status == UCRProcessStatus.Accepted ? "审核通过" : "未通过";
@@ -317,28 +317,28 @@ namespace WBPlatform.WebManagement.Tools
             var busId = message.Identifier;
             var _busTeacher = message.User;
 
-            if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", busId), out List<StudentObject> students) < 1)
+            if ((int)DataBaseOperation.QueryMultiple(s => s.Bus.ObjectId == busId, out List<StudentObject> students) < 1)
             {
                 L.E("Failed to query Students List in specific bus ID: " + busId);
                 return false;
             }
 
             //To Class Teacher
-            string[] ClassList = (from _stu in students select _stu.ClassID).Distinct().ToArray();
-            if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereValueContainedInArray("objectId", ClassList), out List<ClassObject> classes) < 1)
+            string[] ClassList = (from _stu in students select _stu.Class.ObjectId).Distinct().ToArray();
+            if ((int)DataBaseOperation.QueryMultiple(c => ClassList.Contains(c.ObjectId), out List<ClassObject> classes) < 1)
             {
                 L.W("Failed to query Classes from ClassList..." + string.Join(';', ClassList));
                 return false;
             }
             foreach (ClassObject _class in classes)
             {
-                if (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(_class.TeacherID), out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
+                if (DataBaseOperation.QuerySingle(u => u.ObjectId == _class.Teacher.ObjectId, out UserObject _ClassTeacher) != DBQueryStatus.ONE_RESULT)
                 {
                     L.E("Failed to get ClassTeacher of ClassID: " + _class.ObjectId);
                 }
                 else
                 {
-                    string[] _StudentInClass = (from _stu in students where _stu.ClassID == _class.ObjectId select _stu.StudentName).ToArray();
+                    string[] _StudentInClass = (from _stu in students where _stu.Class == _class select _stu.StudentName).ToArray();
                     WeChatSentMessage busReportMsg_Teacher = new WeChatSentMessage(WeChatSMsg.text, null,
                         $"{_ClassTeacher.RealName}: \r\n" +
                         $"你的班级 {_class.CDepartment} {_class.CGrade} {_class.CNumber} \r\n" +
@@ -353,7 +353,7 @@ namespace WBPlatform.WebManagement.Tools
             List<UserObject> AllParents = new List<UserObject>();
             foreach (StudentObject studentObject in students)
             {
-                if ((int)DataBaseOperation.QueryMultiple(new DBQuery().WhereRecordContainsValue("ChildIDs", studentObject.ObjectId), out List<UserObject> _Parents) < 1)
+                if ((int)DataBaseOperation.QueryMultiple(u => u.ChildList.Contains(studentObject.ObjectId), out List<UserObject> _Parents) < 1)
                 {
                     L.W("Failed to get Child's parent.. ChildID: " + studentObject.ObjectId);
                     continue;
@@ -375,7 +375,7 @@ namespace WBPlatform.WebManagement.Tools
         }
 
 
-        private static DBQueryStatus GetAdminUsers(out List<UserObject> adminUsers) => DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("isAdmin", true), out adminUsers);
+        private static DBQueryStatus GetAdminUsers(out List<UserObject> adminUsers) => DataBaseOperation.QueryMultiple(u => u.IsAdmin, out adminUsers);
         public static void SetContentColor(this IXLWorksheet sheet)
         {
             sheet.RowsUsed(r => sheet.FirstRow() != r).Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);

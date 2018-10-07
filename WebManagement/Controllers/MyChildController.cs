@@ -17,7 +17,7 @@ namespace WBPlatform.WebManagement.Controllers
         {
             ViewData["where"] = HomeController.ControllerName;
             return ValidateSession()
-                ? (CurrentUser.ChildList.Count <= 0 && !CurrentUser.UserGroup.IsParent)
+                ? (CurrentUser.ChildList.Count <= 0 && !CurrentUser.IsParent)
                     ? PermissionDenied(ServerAction.MyChild_Index, XConfig.Messages["NotParent"], ResponceCode.Default)
                     : View()
                 : LoginFailed("/" + ControllerName);
@@ -32,17 +32,18 @@ namespace WBPlatform.WebManagement.Controllers
                 if (ID == null) return RequestIllegal(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.ParameterUnexpected);
                 string[] IDSplit = ID.Split(";");
                 if (IDSplit.Length != 2) return RequestIllegal(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.RequestIllegal);
-                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+                if (!CurrentUser.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
 
                 BusID = IDSplit[0];
                 BusTeacherID = IDSplit[1];
 
                 List<StudentObject> ToBeSignedStudents = new List<StudentObject>();
-                switch (DataBaseOperation.QueryMultiple(new DBQuery()
-                    .WhereEqualTo("BusID", BusID)
-                    .WhereEqualTo("CHChecked", false)
-                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
-                    .WhereEqualTo("TakingBus", true), out List<StudentObject> StudentListInBus))
+                //new DBQuery()
+                //.WhereEqualTo("BusID", BusID)
+                //.WhereEqualTo("CHChecked", false)
+                //.WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                //.WhereEqualTo("TakingBus", true)
+                switch (DataBaseOperation.QueryMultiple(s => s.Bus.ObjectId == BusID && !s.CSChecked && CurrentUser.ChildList.Contains(s.ObjectId) && s.TakingBus, out List<StudentObject> StudentListInBus))
                 {
                     case DBQueryStatus.INTERNAL_ERROR: return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
                     case DBQueryStatus.NO_RESULTS:
@@ -68,11 +69,10 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
-
-                if (DataBaseOperation.QueryMultiple(new DBQuery()
-                    .WhereEqualTo("DirectGoHome", 0)
-                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray()), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
+                if (!CurrentUser.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+                //.WhereEqualTo("DirectGoHome", 0)
+                //.WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                if (DataBaseOperation.QueryMultiple(s => s.DirectGoHome == DirectGoHomeMode.NotSet && CurrentUser.ChildList.Contains(s.ObjectId), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
                     return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
 
                 ViewData["ChildCount"] = ToBeSignedStudents.Count;
@@ -86,11 +86,11 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+                if (!CurrentUser.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
 
-                if (DataBaseOperation.QueryMultiple(new DBQuery()
-                    .WhereEqualTo("WeekType", 0)
-                    .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray()), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
+                //.WhereEqualTo("WeekType", 0)
+                // .WhereValueContainedInArray("ObjectId", CurrentUser.ChildList.ToArray())
+                if (DataBaseOperation.QueryMultiple(s => s.WeekType == StudentBigWeekMode.NotSet && CurrentUser.ChildList.Contains(s.ObjectId), out List<StudentObject> ToBeSignedStudents) == DBQueryStatus.INTERNAL_ERROR)
                     return DatabaseError(ServerAction.MyChild_MarkAsArrived, XConfig.Messages.InternalDataBaseError);
 
                 ViewData["ChildCount"] = ToBeSignedStudents.Count;

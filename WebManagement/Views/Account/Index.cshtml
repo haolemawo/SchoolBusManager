@@ -19,9 +19,9 @@
         <label>真实姓名：</label>@Model.RealName<br />
         <label>性别：</label>@(Model.Sex == "M" ? "男" : "女")<br />
         <label>手机号码：</label>@Model.PhoneNumber<br />
-        <label>已经设置密码：</label>@(string.IsNullOrEmpty(Model.Password) ? "否❌" : "是✔")<br />
+        @*<label>已经设置密码：</label>@(string.IsNullOrEmpty(Model.Password) ? "否❌" : "是✔")<br />*@
 
-        @if (string.IsNullOrEmpty(Model.Password))
+        @*@if (string.IsNullOrEmpty(Model.Password))
         {
             <button class="btn btn-default btn-sm" onclick="jump(@(string.IsNullOrEmpty(Model.Password).ToString().ToLower()))">设置密码</button> <br /><br />
             <script>
@@ -43,14 +43,14 @@
                     });
                 }
             </script>
-        }
+        }*@
 
         <label>用户权限分配：</label>
         <div class="container">
-            <label>家长：</label>@(Model.UserGroup.IsParent ? "是✔" : "否❌")<br />
-            <label>班车老师：</label>@(Model.UserGroup.IsBusManager ? "是✔" : "否❌")<br />
-            <label>班主任：</label>@(Model.UserGroup.IsClassTeacher ? "是✔" : "否❌")<br />
-            <label>系统管理员：</label>@(Model.UserGroup.IsAdmin ? "是✔" : "否❌")<br />
+            <label>家长：</label>@(Model.IsParent ? "是✔" : "否❌")<br />
+            <label>班车老师：</label>@(Model.IsBusManager ? "是✔" : "否❌")<br />
+            <label>班主任：</label>@(Model.IsClassTeacher ? "是✔" : "否❌")<br />
+            <label>系统管理员：</label>@(Model.IsAdmin ? "是✔" : "否❌")<br />
         </div>
     </div>
     <hr />
@@ -66,14 +66,12 @@
             <div id="innerTechInfo" hidden>
                 <br />
                 <label>技术信息: </label><br />
-                <label>UGIdentifier：</label>@Model.UserGroup.ToString()<br />
-                <label>ChildList：</label>@Model.GetChildIdString(";")<br />
-                <label>ClassList：</label>@Model.GetClassIdString(";")<br />
+                <label>UGIdentifier：</label>@Model.ToString()<br />
                 <label>CreationTime：</label>@Model.CreatedAt<br />
                 <label>ModifiedTime：</label>@Model.UpdatedAt<br />
             </div>
         </div>
-        @if (Model.UserGroup.IsAdmin)
+        @if (Model.IsAdmin)
         {
             <br /> <br />
             <label>管理员选项: </label> <br />

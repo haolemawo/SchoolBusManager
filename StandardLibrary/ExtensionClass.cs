@@ -39,7 +39,9 @@ namespace WBPlatform.StaticClasses
             return (T)formatter.Deserialize(stream);
         }
 
-        public static DBQuery WhereIDIs(this DBQuery databaseIO, string objectId) => databaseIO.WhereEqualTo("objectId", objectId);
+        //public static DBQuery WhereIDIs(this DBQuery databaseIO, string objectId) => databaseIO.WhereEqualTo("objectId", objectId);
+
+        //public static IEnumerable<T> WhereIDIs<T>(this IEnumerable<T> ts, string id) where T : DataTableObject => ts.Where(t => t.ObjectId == id);
 
         public static Dictionary<string, T> ToDictionary<T>(this IEnumerable<T> dataObjects) where T : DataTableObject => dataObjects.ToDictionary(t => t.ObjectId);
 
@@ -162,18 +164,18 @@ namespace WBPlatform.StaticClasses
             return Convert.ToBase64String(plainTextBytes);
         }
 
-        public static string GetString(this DataBaseIO io, string Key) => io.Get<string>(Key) ?? string.Empty;
-
-        public static List<string> GetList(this DataBaseIO io, string Key) => io.GetList(Key, ',');
-        public static List<string> GetList(this DataBaseIO io, string Key, char splitter)
-        {
-            string _listString = GetString(io, Key);
-            return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(splitter).ToList();
-        }
-
-        public static bool GetBool(this DataBaseIO io, string Key) => io.Get<bool>(Key);
-        public static int GetInt(this DataBaseIO io, string Key) => io.Get<int>(Key);
-        public static DateTime GetDateTime(this DataBaseIO io, string Key) => io.Get<DateTime>(Key);
+        //public static string GetString(this DataBaseIO io, string Key) => io.Get<string>(Key) ?? string.Empty;
+        //
+        //public static List<string> GetList(this DataBaseIO io, string Key) => io.GetList(Key, ',');
+        //public static List<string> GetList(this DataBaseIO io, string Key, char splitter)
+        //{
+        //    string _listString = GetString(io, Key);
+        //    return string.IsNullOrWhiteSpace(_listString) ? new List<string>() : _listString.Split(splitter).ToList();
+        //}
+        //
+        //public static bool GetBool(this DataBaseIO io, string Key) => io.Get<bool>(Key);
+        //public static int GetInt(this DataBaseIO io, string Key) => io.Get<int>(Key);
+        //public static DateTime GetDateTime(this DataBaseIO io, string Key) => io.Get<DateTime>(Key);
 
         public static string SHAHashEncrypt<TProvider>(this string strIN) where TProvider : HashAlgorithm, new()
         {

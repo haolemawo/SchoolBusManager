@@ -23,6 +23,5 @@ namespace WBPlatform.WebManagement.Tools
 
         public void SetApiTicket(string Ticket) => ApiTicket = Ticket;
         public void SetLastActive() => LastActive = DateTime.Now;
-        public static UserIdentity Default => new UserIdentity("Unknown", UserObject.Default);
     }
 }

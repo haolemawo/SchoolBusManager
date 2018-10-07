@@ -21,7 +21,7 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = HomeController.ControllerName;
             if (ValidateSession())
             {
-                if (!CurrentUser.UserGroup.IsAdmin)
+                if (!CurrentUser.IsAdmin)
                 {
                     L.E("Someone trying access illegal page!, Page: index, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                     return RequestIllegal(ServerAction.Manage_Index, "试图访问管理页面", ResponceCode.PermisstionDenied);
@@ -35,7 +35,7 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                if (!CurrentUser.UserGroup.IsAdmin)
+                if (!CurrentUser.IsAdmin)
                 {
                     L.E("Someone trying access illegal page!, Page: messageSend, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                     return RequestIllegal(ServerAction.Manage_Index, "试图访问管理页面", ResponceCode.PermisstionDenied);
@@ -52,7 +52,7 @@ namespace WBPlatform.WebManagement.Controllers
         //    ViewData["where"] = ControllerName;
         //    if (ValidateSession())
         //    {
-        //        if (!CurrentUser.UserGroup.IsAdmin)
+        //        if (!CurrentUser.IsAdmin)
         //        {
         //            LW.E("Someone trying access illegal page!, Page: UserManage, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
         //            return NotFound();
@@ -88,7 +88,7 @@ namespace WBPlatform.WebManagement.Controllers
                             if (string.IsNullOrEmpty(reqId))
                             {
                                 // MY LIST
-                                switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("UserID", CurrentUser.ObjectId), out List<UserChangeRequest> requests))
+                                switch (DataBaseOperation.QueryMultiple(t => t.ObjectId == CurrentUser.ObjectId, out List<UserChangeRequest> requests))
                                 {
                                     case DBQueryStatus.INTERNAL_ERROR: return DatabaseError(ServerAction.General_ViewChangeRequests, XConfig.Messages.InternalDataBaseError);
                                     default:
@@ -99,8 +99,8 @@ namespace WBPlatform.WebManagement.Controllers
                             }
                             else
                             {
-                                // MY SINGLE Viewer
-                                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("UserID", CurrentUser.ObjectId).WhereIDIs(reqId), out UserChangeRequest requests))
+                                // MY SINGLE Viewer  new DBQuery().WhereEqualTo("UserID", CurrentUser.ObjectId).WhereIDIs(reqId)
+                                switch (DataBaseOperation.QuerySingle(req => req.User.ObjectId == CurrentUser.ObjectId && req.ObjectId == reqId, out UserChangeRequest requests))
                                 {
                                     case DBQueryStatus.INTERNAL_ERROR:
                                     case DBQueryStatus.NO_RESULTS:
@@ -113,14 +113,14 @@ namespace WBPlatform.WebManagement.Controllers
                         case "manage":
                             ViewData["where"] = ControllerName;
                             ViewData["mode"] = "manage";
-                            if (!CurrentUser.UserGroup.IsAdmin)
+                            if (!CurrentUser.IsAdmin)
                             {
                                 L.E("Someone trying access illegal page!, Page: changeRequest: arg=manage, user:" + CurrentUser.UserName + ", possible referer:" + Request.Headers["Referer"]);
                                 return NotFound();
                             }
                             if (string.IsNullOrEmpty(reqId))
                             {
-                                switch (DataBaseOperation.QueryMultiple(new DBQuery(), out List<UserChangeRequest> requests))
+                                switch (DataBaseOperation.QueryAll(out List<UserChangeRequest> requests))
                                 {
                                     case DBQueryStatus.INTERNAL_ERROR:
                                         return DatabaseError(ServerAction.Manage_VerifyChangeRequest, XConfig.Messages.InternalDataBaseError);
@@ -131,7 +131,7 @@ namespace WBPlatform.WebManagement.Controllers
                             }
                             else
                             {
-                                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereIDIs(reqId), out UserChangeRequest requests))
+                                switch (DataBaseOperation.QuerySingle(req => req.ObjectId == reqId, out UserChangeRequest requests))
                                 {
                                     case DBQueryStatus.INTERNAL_ERROR:
                                     case DBQueryStatus.NO_RESULTS:

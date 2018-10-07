@@ -10,6 +10,7 @@ using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
 using WBPlatform.WebManagement.Tools;
 using System.Security.Cryptography;
+using WBPlatform.DataBase_ng;
 
 namespace WBPlatform.WebManagement.Controllers
 {
@@ -20,9 +21,14 @@ namespace WBPlatform.WebManagement.Controllers
         private static AutoDictionary<string, UserIdentity> SessionCollection { get; set; } = new AutoDictionary<string, UserIdentity>();
 
         protected UserObject CurrentUser => CurrentIdentity.User;
-        protected UserIdentity CurrentIdentity { get; private set; } = UserIdentity.Default;
+        protected UserIdentity CurrentIdentity { get; private set; }
         protected TelemetryClient Telemetry { get; set; } = new TelemetryClient();
-
+        protected readonly DataBaseContext DBContext;
+        public BaseController() { }
+        public BaseController(DataBaseContext context) : this()
+        {
+            DBContext = context;
+        }
         public static bool CheckSessions()
         {
             return true;
@@ -45,10 +51,10 @@ namespace WBPlatform.WebManagement.Controllers
         private string GetNewSession()
             => (Cryptography.RandomString(10, true) +
                 CurrentUser.UserName +
-                CurrentUser.UserGroup.ToString() +
+                CurrentUser.ToString() +
                 DateTime.Now.TimeOfDay.TotalMilliseconds.ToString() +
                 Request.Headers["User-Agent"] +
-                CurrentUser.UserGroup.ToString()).SHA512Encrypt();
+                CurrentUser.ToString()).SHA512Encrypt();
 
         protected void UpdateUser(UserObject _user)
         {
@@ -78,7 +84,7 @@ namespace WBPlatform.WebManagement.Controllers
                 Telemetry.Context.Session.Id = Session;
 
                 ViewData[UID_CookieName] = _userIC;
-                ViewData["cUser"] = CurrentUser.Stringify().Replace(CurrentUser.Password, "Looking for Password?");
+                ViewData["cUser"] = CurrentUser.Stringify();
                 ViewData["CurrentRequest"] = HttpContext;
 
                 Response.Cookies.Append("ai_user", _userIC);

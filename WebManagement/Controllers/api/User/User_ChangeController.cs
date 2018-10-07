@@ -38,14 +38,11 @@ namespace WBPlatform.WebManagement.Controllers
             if (ValidateSession() && SessionVerify[0] == (CurrentUser.ObjectId + Content + SessionVerify[1]).SHA256Encrypt())
             {
                 //user.objectId = SessionUser.objectId;
-                //user.UserGroup = SessionUser.UserGroup;
+                //user = SessionUser;
                 switch (Column.ToLower())
                 {
                     case "realname":
                         CurrentUser.RealName = (string)Equals2Obj;
-                        break;
-                    case "password":
-                        CurrentUser.Password = (string)Equals2Obj;
                         break;
                     default:
                         break;

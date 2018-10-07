@@ -12,7 +12,7 @@ namespace WBPlatform.StaticClasses
         public static DateTime FromUnixTimestamp(this DateTime dt, double d)
         {
             DateTime time = DateTime.MinValue;
-            DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            DateTime startTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1970, 1, 1), TimeZoneInfo.GetSystemTimeZones()[0]);
             time = startTime.AddMilliseconds(d);
             return time;
         }

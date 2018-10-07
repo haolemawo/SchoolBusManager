@@ -17,17 +17,17 @@ namespace WBPlatform.WebManagement.Controllers
         public JsonResult Get(string UserID)
         {
             if (!ValidateSession()) return SessionError;
-            if (CurrentUser.ObjectId != UserID || !CurrentUser.UserGroup.IsBusManager) return RequestIllegal;
-            if (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("TeacherObjectID", UserID), out List<SchoolBusObject> BusList) >= DBQueryStatus.NO_RESULTS)
+            if (CurrentUser.ObjectId != UserID || !CurrentUser.IsBusManager) return RequestIllegal;
+            if (DataBaseOperation.QueryMultiple(b => b.Teacher.ObjectId == UserID, out List<SchoolBusObject> BusList) >= DBQueryStatus.NO_RESULTS)
             {
-                if (BusList.Count == 0) BusList.Add(new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到班车", TeacherID = CurrentUser.ObjectId });
+                if (BusList.Count == 0) BusList.Add(new SchoolBusObject() { ObjectId = "0000000000", BusName = "未找到班车", Teacher = CurrentUser });
             }
             else return DataBaseError;
             int _LSChecked = 0, _CSChecked = 0, _AHChecked = 0, _DirectGoHome = 0;
 
-            string[] weekType = XConfig.ServerConfig["WeekType"] == "big" ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
+            string[] weekType = ServerConfig.Current["WeekType"] == "big" ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
 
-            if (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId).WhereValueContainedInArray("WeekType", weekType), out List<StudentObject> StudentList) >= DBQueryStatus.NO_RESULTS)
+            if (DataBaseOperation.QueryMultiple(b => b.ObjectId == BusList[0].ObjectId && weekType.Contains(((int)b.WeekType).ToString()), out List<StudentObject> StudentList) >= DBQueryStatus.NO_RESULTS)
             {
                 foreach (StudentObject item in StudentList)
                 {

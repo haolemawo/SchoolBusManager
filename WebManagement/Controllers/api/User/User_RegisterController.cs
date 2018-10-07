@@ -29,10 +29,10 @@ namespace WBPlatform.WebManagement.Controllers
                 {
                     if (ValidateSession())
                     {
-                        string password = dict["Password"].SHA256Encrypt();
+                        //string password = dict["Password"].SHA256Encrypt();
                         if (CurrentUser.UserName == dict["UserName"])
                         {
-                            CurrentUser.Password = password;
+                            //CurrentUser.Password = password;
                             var temp = CurrentUser;
                             if (DataBaseOperation.UpdateData(ref temp) == DBQueryStatus.ONE_RESULT)
                             {
@@ -78,34 +78,35 @@ namespace WBPlatform.WebManagement.Controllers
             {
                 if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(mode)) return RequestIllegal;
                 if (userId != CurrentUser.ObjectId) return RequestIllegal;
-                switch (mode)
-                {
-                    case "true":
-                        //Create Password
-                        if (!string.IsNullOrWhiteSpace(CurrentUser.Password))
-                        {
-                            return RequestIllegal;
-                        }
-                        else
-                        {
-                            string token = OnePassTicket.CreateTicket();
-                            OnePassTicket.TryAdd(token, new TicketInfo(TicketUsage.AddPassword, Request.Headers["User-Agent"], CurrentUser.UserName, 600));
-                            return SpecialisedInfo(token);
-                        }
-                    case "false":
-                        //Register User....
-                        if (string.IsNullOrEmpty(CurrentUser.Password))
-                        {
-                            return RequestIllegal;
-                        }
-                        else
-                        {
-                            string token = OnePassTicket.CreateTicket();
-                            OnePassTicket.TryAdd(token, new TicketInfo(TicketUsage.UserRegister, Request.Headers["User-Agent"], CurrentUser.UserName, 600));
-                            return SpecialisedInfo(token);
-                        }
-                    default: return RequestIllegal;
-                }
+                //switch (mode)
+                //{
+                //    case "true":
+                //        //Create Password
+                //        if (!string.IsNullOrWhiteSpace(CurrentUser.Password))
+                //        {
+                //            return RequestIllegal;
+                //        }
+                //        else
+                //        {
+                //            string token = OnePassTicket.CreateTicket();
+                //            OnePassTicket.TryAdd(token, new TicketInfo(TicketUsage.AddPassword, Request.Headers["User-Agent"], CurrentUser.UserName, 600));
+                //            return SpecialisedInfo(token);
+                //        }
+                //    case "false":
+                //        //Register User....
+                //        if (string.IsNullOrEmpty(CurrentUser.Password))
+                //        {
+                //            return RequestIllegal;
+                //        }
+                //        else
+                //        {
+                //            string token = OnePassTicket.CreateTicket();
+                //            OnePassTicket.TryAdd(token, new TicketInfo(TicketUsage.UserRegister, Request.Headers["User-Agent"], CurrentUser.UserName, 600));
+                //            return SpecialisedInfo(token);
+                //        }
+                //    default: return RequestIllegal;
+                //}
+                return RequestIllegal;
             }
             else return SessionError;
         }

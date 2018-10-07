@@ -4,13 +4,10 @@ using System;
 using System.IO.Pipes;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 
 using WBPlatform.Config;
-using WBPlatform.Database.Connection;
-using WBPlatform.Logging;
-using WBPlatform.StaticClasses;
 using WBPlatform.ServiceStatus;
+using WBPlatform.StaticClasses;
 using WBPlatform.WebManagement.Controllers;
 
 namespace WBPlatform.WebManagement.Tools
@@ -34,7 +31,7 @@ namespace WBPlatform.WebManagement.Tools
                 WeChatSENTThreadStatus = wcStatus.Item2,
                 WeChatRCVDListCount = wcStatus.Item3,
                 WeChatSENTListCount = wcStatus.Item4,
-                Database = DatabaseSocketsClient.Connected,
+                Database = true,
                 CoreMessageSystemThread = MessagingSystem.GetStatus,
                 CoreMessageSystemCount = MessagingSystem.GetCount,
                 MessageBackupThread = WeChatMessageBackupService.GetStatus,

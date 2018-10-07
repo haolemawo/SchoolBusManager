@@ -68,8 +68,8 @@
                     <div class="container">@Model.DetailTexts&nbsp;</div>
                     <label>提交者ID：</label>
                     <div id="userID" class="container">
-                        @Model.UserID
-                        <button class="btn btn-sm btn-default" onclick="GetName('@Model.UserID', 'userID')">查看</button>
+                        @Model.User.ObjectId
+                        <button class="btn btn-sm btn-default" onclick="GetName('@Model.User.ObjectId', 'userID')">查看</button>
                     </div>
                     <label>处理状态：</label>
                     @switch (Model.Status)
@@ -90,8 +90,8 @@
                     {
                         <label>处理者ID：</label>
                         <div id="solveID" class="container">
-                            @(string.IsNullOrEmpty(Model.SolverID) ? "未处理" : Model.SolverID)
-                            <button class="btn btn-sm btn-default" onclick="GetName('@Model.SolverID', 'solveID')">查看</button>
+                            @(string.IsNullOrEmpty(Model.Solver.ObjectId) ? "未处理" : Model.Solver.ObjectId)
+                            <button class="btn btn-sm btn-default" onclick="GetName('@Model.Solver.ObjectId', 'solveID')">查看</button>
                         </div>
                     }
                 </div>

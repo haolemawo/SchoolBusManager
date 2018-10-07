@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>WBPlatform.WebManagement</RootNamespace>
     <UserSecretsId>5b336559-346a-40e3-8458-681de1ec5c08</UserSecretsId>
-    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -43,10 +43,11 @@
     <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="ClosedXML" Version="0.93.1" />
     <PackageReference Include="jquery.TypeScript.DefinitelyTyped" Version="3.1.2" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.0-beta1" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.0-beta2" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.0-preview2-35157" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0-preview2-35157" />
     <PackageReference Include="QRCoder" Version="1.3.3" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,8 +35,8 @@ namespace WBPlatform.WebManagement.Tools
             NotificationObject notification = new NotificationObject()
             {
                 Content = Content ?? "",
-                Receivers = targetUsers,
-                Sender = "WebServer",
+                ReceiversList = targetUsers,
+                Sender = null,
                 Title = Title ?? "",
                 Type = _type
             };

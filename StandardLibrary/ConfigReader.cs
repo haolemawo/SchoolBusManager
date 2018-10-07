@@ -74,7 +74,6 @@ namespace WBPlatform.Config
 
     public static class XConfig
     {
-        public static ServerConfigCollection ServerConfig { get; } = new ServerConfigCollection();
         public static ConfigCollection Current { get; set; } = new ConfigCollection();
         public static LocalisedMessages Messages { get; set; } = new LocalisedMessages();
 

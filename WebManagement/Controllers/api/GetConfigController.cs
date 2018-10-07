@@ -22,7 +22,7 @@ namespace WBPlatform.WebManagement.Controllers
 
                 string apiTcket = Cryptography.RandomString(32, false).ToLower();
                 CurrentIdentity.SetApiTicket(apiTcket);
-                FileString += $"wbWeb.Initialise({CurrentUser.Stringify().Replace(CurrentUser.Password, "Looking for Password?")},\"{apiTcket}-{CurrentIdentity.Identity.Name}\", keys, values);\r\n";
+                FileString += $"wbWeb.Initialise({CurrentUser.Stringify()},\"{apiTcket}-{CurrentIdentity.Identity.Name}\", keys, values);\r\n";
                 FileString += "json = null;";
             }
             else

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using System.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -22,7 +23,7 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = "Home";
             if (ValidateSession())
             {
-                if (CurrentUser.UserGroup.AnyThing)
+                if (CurrentUser.AnyThing)
                 {
                     if (Request.Cookies["LoginRedirect"] != null)
                     {
@@ -104,7 +105,7 @@ namespace WBPlatform.WebManagement.Controllers
                     return null;
                 }
                 string WeiXinID = JSON["UserId"];
-                switch (DataBaseOperation.QuerySingle(new DBQuery().WhereEqualTo("Username", WeiXinID), out UserObject User))
+                switch (DataBaseOperation.QuerySingle(u => u.UserName == WeiXinID, out UserObject User))
                 {
                     //Internal Error...
                     case DBQueryStatus.INTERNAL_ERROR:

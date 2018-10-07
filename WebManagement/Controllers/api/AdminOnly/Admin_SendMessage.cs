@@ -13,7 +13,7 @@ namespace WBPlatform.WebManagement.Controllers
         public JsonResult Get(string targ, string msg)
         {
             if (!ValidateSession()) return SessionError;
-            if (!CurrentUser.UserGroup.IsAdmin) return UserGroupError;
+            if (!CurrentUser.IsAdmin) return UserGroupError;
             bool flag = targ == "bteachers" || targ == "cteachers" || targ == "parents" || targ == "all";
             if (!flag) return RequestIllegal;
             InternalMessage message = new InternalMessage() { DataObject = msg, Identifier = targ, User = CurrentUser, _Type = InternalMessageTypes.Admin_WeChat_SendMsg };
