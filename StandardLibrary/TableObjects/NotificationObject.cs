@@ -1,5 +1,4 @@
-﻿//Game表对应的模型类
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using WBPlatform.Database.IO;
@@ -9,11 +8,10 @@ namespace WBPlatform.TableObject
 {
     public class NotificationObject : DataTableObject<NotificationObject>
     {
-        //以下对应云端字段名称
         public string Title { get; set; }
         public string Content { get; set; }
         public string Sender { get; set; }
-        public NotificationType Type { get; set; }
+        public WeChatNotificationType Type { get; set; }
         public List<string> Receivers { get; set; }
 
         public NotificationObject() { }
@@ -28,7 +26,7 @@ namespace WBPlatform.TableObject
             Content = input.GetString("Content");
             Sender = input.GetString("Sender");
             Receivers = input.GetString("Receiver").Split(';').ToList();
-            Type = (NotificationType)input.GetInt("type");
+            Type = (WeChatNotificationType)input.GetInt("type");
         }
 
         //写字段信息

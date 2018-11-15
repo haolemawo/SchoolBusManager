@@ -38,9 +38,9 @@ namespace WBPlatform.WebManagement.Controllers
                             string SType = DataCollection[0];
                             if (SType.ToLower() == "leave") Student.LSChecked = Value;
                             else if (SType.ToLower() == "pleave") Student.AHChecked = Value;
-                            else if (SType.ToLower() == "come") Student.CSChecked = Value; 
+                            else if (SType.ToLower() == "come") Student.CSChecked = Value;
                             else if (SType.ToLower() == "gohome") Student.DirectGoHome = Value ? DirectGoHomeMode.DirectlyGoHome : DirectGoHomeMode.NeedParentsSign;
-                            else if (SType.ToLower() == "week") Student.WeekType = Value ? StudentBigWeekMode.BothTwoTypes : StudentBigWeekMode.BigWeekOnly;
+                            else if (SType.ToLower() == "week") Student.WeekType = Value ? StudentBigWeekMode.BigAndSmall : StudentBigWeekMode.BigWeekOnly;
                             else return RequestIllegal;
                             if (DataBaseOperation.UpdateData(ref Student) == DBQueryStatus.ONE_RESULT)
                             {

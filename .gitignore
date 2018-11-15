@@ -36,3 +36,5 @@ node_modules/
 databaset.txt
 *.conf
 *.sql
+.directory
+WebManagement/build_run.sh

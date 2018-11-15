@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using WBPlatform.Database;
 using WBPlatform.StaticClasses;
 using WBPlatform.TableObject;
+using WBPlatform.Config;
 using WBPlatform.WebManagement.Tools;
 
 namespace WBPlatform.WebManagement.Controllers
@@ -20,9 +21,8 @@ namespace WBPlatform.WebManagement.Controllers
             if (!ValidateSession()) return SessionError;
             if (!(CurrentUser.ClassList.Contains(ClassID) && CurrentUser.ObjectId == TeacherID)) return UserGroupError;
 
-            DBQuery StudentQuery = new DBQuery();
-            StudentQuery.WhereEqualTo("ClassID", ClassID);
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            string[] weekType = XConfig.ServerConfig.IsBigWeek() ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
+            DBQuery StudentQuery = new DBQuery().WhereEqualTo("ClassID", ClassID).WhereValueContainedInArray("WeekType", weekType);
             switch (DataBaseOperation.QueryMultiple(StudentQuery, out List<StudentObject> StudentList))
             {
                 case DBQueryStatus.INTERNAL_ERROR: return InternalError;

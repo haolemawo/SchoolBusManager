@@ -24,7 +24,7 @@ namespace WBPlatform.WebManagement.Controllers
             BusQuery.WhereEqualTo("TeacherObjectID", TeacherID);
             if (DataBaseOperation.QueryMultiple(BusQuery, out List<SchoolBusObject> BusList) != DBQueryStatus.ONE_RESULT) return InternalError;
 
-            string[] weekType = XConfig.ServerConfig["WeekType"] == "big" ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
+            string[] weekType = XConfig.ServerConfig.IsBigWeek() ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
 
             switch (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId).WhereValueContainedInArray("WeekType", weekType), out List<StudentObject> StudentList))
             {

@@ -86,7 +86,8 @@ namespace WBPlatform.WebManagement.Controllers
             ViewData["where"] = ControllerName;
             if (ValidateSession())
             {
-                if (!CurrentUser.UserGroup.IsParent) return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
+                if (!CurrentUser.UserGroup.IsParent)
+                    return PermissionDenied(ServerAction.MyChild_MarkAsArrived, XConfig.Messages["NotParent"], ResponceCode.PermisstionDenied);
 
                 if (DataBaseOperation.QueryMultiple(new DBQuery()
                     .WhereEqualTo("WeekType", 0)

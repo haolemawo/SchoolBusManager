@@ -12,11 +12,11 @@
 
 [![Build Status](https://travis-ci.org/lhy0403/SchoolBusManager.svg?branch=master)](https://travis-ci.org/lhy0403/SchoolBusManager)
 
-[![GitHub forks](https://img.shields.io/github/forks/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/network) 
+ 存储库状态：
 
-[![GitHub stars](https://img.shields.io/github/stars/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/network) [![GitHub stars](https://img.shields.io/github/stars/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/stargazers)[![GitHub issues](https://img.shields.io/github/issues/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/issues) 
 
-[![GitHub issues](https://img.shields.io/github/issues/lhy0403/SchoolBusManager.svg)](https://github.com/lhy0403/SchoolBusManager/issues) 
+作者：
 
 [![Author](https://img.shields.io/badge/Author-Leroy.H.Y-brightgreen.svg)](https://www.lhy0403.top)
 
@@ -219,17 +219,17 @@
 
 *暂不支持用户上传头像，所有用户将暂时使用默认头像
 
-### *地理位置
+### **地理位置*
 
-*地理位置的收集和使用，仅被用于定位和跟踪校车运行状态，但在本项目V1版本中不会被启用。
+**地理位置的收集和使用，仅被用于定位和跟踪校车运行状态，但在本项目V1版本中不会被启用。*
 
-*用户将会在第一时间收到我们开始收集地理位置的通知，但这不代表我们对其进行分析和使用。
+**用户将会在第一时间收到我们开始收集地理位置的通知，但这不代表我们对其进行分析和使用。*
 
-### **年龄，出生日期，家庭住址
+### ***年龄，出生日期，家庭住址*
 
-\** 我们可能会在将来开始收集用户年龄，出生日期和家庭住址，但在本项目V1版本时不会收集这些信息。
+*我们可能会在将来开始收集用户年龄，出生日期和家庭住址，但在本项目V1版本时不会收集这些信息。*
 
-**我们将会在第一时间向所有用户发送有关收集这些信息的通知。
+***我们将会在第一时间向所有用户发送有关收集这些信息的通知。*
 
 ## Application Insights 收集并使用的内容
 
@@ -237,11 +237,11 @@
 
 Application Insights 收集的用户数据有：
 
-|       A        |          B           |              C               |     D      |
-| :------------: | :------------------: | :--------------------------: | :--------: |
-|   浏览器名称   |     浏览器版本号     |  User-Agent （浏览器标识）   |   用户名   |
-| 登录时间和时长 | Session （会话标识） |        IP地址/端口号         | 异常调用栈 |
-| 出错的页面地址 |       错误代码       | 用户地理位置（由IP地址判断） |            |
+|       A        |          B           |                 C                  |     D      |
+| :------------: | :------------------: | :--------------------------------: | :--------: |
+|   浏览器名称   |     浏览器版本号     |     User-Agent （浏览器标识）      |   用户名   |
+| 登录时间和时长 | Session （会话标识） |           IP地址/端口号            | 异常调用栈 |
+| 出错的页面地址 |       错误代码       | 用户粗略地理位置（由 IP 地址判断） |            |
 
 Application Insights 会收集，分析以上遥测信息，这些信息可能会包含个人信息，例如：精确到市的地理位置，但是由于班车位置精度高于此信息提供的位置精度，此地理位置实际使用意义不大。
 

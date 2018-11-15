@@ -9,13 +9,13 @@ namespace WBPlatform.StaticClasses
     {
         private const long tsMagicNumber = 621355968000000000;
 
-        public static DateTime FromUnixTimestamp(this DateTime dt, double d)
-        {
-            DateTime time = DateTime.MinValue;
-            DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
-            time = startTime.AddMilliseconds(d);
-            return time;
-        }
+        // public static DateTime FromUnixTimestamp(this DateTime dt, double d)
+        // {
+        //     DateTime time = DateTime.MinValue;
+        //     DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+        //     time = startTime.AddMilliseconds(d);
+        //     return time;
+        // }
         public static string AsUnixTimeStamp(this DateTime dt) => ((dt.ToUniversalTime().Ticks - tsMagicNumber) / 10000000).ToString();
         public static string CurrentTimeStamp => ((DateTime.Now.ToUniversalTime().Ticks - tsMagicNumber) / 10000000).ToString();
         public static string RandomString(int Length, bool Symbols, string CustomStr = "")

@@ -63,7 +63,16 @@ namespace WBPlatform.WebManagement.Tools
             {
                 IsRunning = true;
                 LastStartTime = DateTime.Now;
-                IsLastProcessSuccessful = Factory();
+                try
+                {
+                    IsLastProcessSuccessful = Factory();
+                }
+                catch (System.Exception ex)
+                {
+                    ex.LogException();
+                    IsLastProcessSuccessful = false;
+                }
+                //IsLastProcessSuccessful = Factory();
                 IsRunning = false;
             }
             public bool NeedStart => !IsRunning && DateTime.Now.Subtract(LastStartTime) >= SleepTime;

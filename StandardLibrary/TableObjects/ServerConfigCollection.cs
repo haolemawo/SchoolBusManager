@@ -38,7 +38,7 @@ namespace WBPlatform.Config
         }
 
         private ConcurrentDictionary<string, ConfigObject> _collection;
-        public string this[string key]
+        internal string this[string key]
         {
             get
             {

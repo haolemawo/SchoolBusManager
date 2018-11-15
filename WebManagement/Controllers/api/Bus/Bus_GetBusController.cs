@@ -25,7 +25,7 @@ namespace WBPlatform.WebManagement.Controllers
             else return DataBaseError;
             int _LSChecked = 0, _CSChecked = 0, _AHChecked = 0, _DirectGoHome = 0;
 
-            string[] weekType = XConfig.ServerConfig["WeekType"] == "big" ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
+            string[] weekType = XConfig.ServerConfig.IsBigWeek() ? new string[] { "0", "1", "2" } : new string[] { "0", "2" };
 
             if (DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("BusID", BusList[0].ObjectId).WhereValueContainedInArray("WeekType", weekType), out List<StudentObject> StudentList) >= DBQueryStatus.NO_RESULTS)
             {

@@ -29,10 +29,10 @@ namespace WBPlatform.StaticClasses
     {
         NotSet = 0,
         BigWeekOnly = 1,
-        BothTwoTypes = 2
+        BigAndSmall = 2
     }
 
-    public enum NotificationType
+    public enum WeChatNotificationType
     {
         WindowsClient = 1,
         WeChatC2C = 2,
@@ -45,9 +45,9 @@ namespace WBPlatform.StaticClasses
         堵车 = 0,
         事故 = 1,
         学生迟到 = 2,
-        到校 = 3,
-        到家 = 4,
-        其他 = 9,
+        //到校 = 3,
+        //到家 = 4,
+        其他问题 = 9,
     }
 
     public enum UCRProcessStatus

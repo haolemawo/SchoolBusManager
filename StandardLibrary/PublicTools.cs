@@ -41,19 +41,19 @@ namespace WBPlatform.StaticClasses
 
         public static Dictionary<string, string> HTTPGet(string URL)
         {
-            L.I("HTTP - GET-rqst: " + URL);
+            L.D("HTTP - GET-rqst: " + URL);
             HttpWebRequest request = WebRequest.Create(URL) as HttpWebRequest;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
             string resp = reader.ReadToEnd();
-            L.I("HTTP - GET-rply: " + resp);
+            L.D("HTTP - GET-rply: " + resp);
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(resp);
         }
 
         public static Dictionary<string, string> HTTPPost(string postUrl, string paramData)
         {
-            L.I("HTTP - POST-rqst: " + postUrl + " WITH DATA : " + paramData);
+            L.D("HTTP - POST-rqst: " + postUrl + " WITH DATA : " + paramData);
             byte[] byteArray = Encoding.UTF8.GetBytes(paramData);
             HttpWebRequest webReq = (HttpWebRequest)WebRequest.Create(new Uri(postUrl));
             webReq.Method = "POST";
@@ -71,7 +71,7 @@ namespace WBPlatform.StaticClasses
             sr.Close();
             response.Close();
 
-            L.I("HTTP - POST-rply: " + ret);
+            L.D("HTTP - POST-rply: " + ret);
             Dictionary<string, string> dict = new Dictionary<string, string>();
             foreach (KeyValuePair<string, object> item in JsonConvert.DeserializeObject<Dictionary<string, object>>(ret))
             {
@@ -85,23 +85,30 @@ namespace WBPlatform.StaticClasses
             byte[] fsBytes;
             int ContentLenth;
             byte[] arrServerRecMsg = new byte[1];
-            stream.Read(arrServerRecMsg, 0, 1);
-            int HeaderLenth = arrServerRecMsg.ToInt32();
-
-            arrServerRecMsg = new byte[HeaderLenth];
-            stream.Read(arrServerRecMsg, 0, HeaderLenth);
-            ContentLenth = arrServerRecMsg.ToInt32();
-
-            int total = 0;
-            int dataleft = ContentLenth;
-            fsBytes = new byte[ContentLenth];
-            int recv;
-            while (total < ContentLenth)
+            try
             {
-                recv = stream.Read(fsBytes, total, dataleft);
-                if (recv == 0) break;
-                total += recv;
-                dataleft -= recv;
+                stream.Read(arrServerRecMsg, 0, 1);
+                int HeaderLenth = arrServerRecMsg.ToInt32();
+
+                arrServerRecMsg = new byte[HeaderLenth];
+                stream.Read(arrServerRecMsg, 0, HeaderLenth);
+                ContentLenth = arrServerRecMsg.ToInt32();
+
+                int total = 0;
+                int dataleft = ContentLenth;
+                fsBytes = new byte[ContentLenth];
+                int recv;
+                while (total < ContentLenth)
+                {
+                    recv = stream.Read(fsBytes, total, dataleft);
+                    if (recv == 0) break;
+                    total += recv;
+                    dataleft -= recv;
+                }
+            }
+            catch (System.ObjectDisposedException)
+            {
+                return "";
             }
             return Encoding.UTF8.GetString(fsBytes, 0, ContentLenth);
         }

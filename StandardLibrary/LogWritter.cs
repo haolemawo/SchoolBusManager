@@ -38,8 +38,8 @@ namespace WBPlatform.Logging
 
         public static void InitLog()
         {
-            LogFilePath = Environment.CurrentDirectory + "\\Logs\\" + DateTime.Now.ToFileNameString() + ".log";
-            Directory.CreateDirectory(Environment.CurrentDirectory + "\\Logs\\");
+            LogFilePath = Environment.CurrentDirectory + "/Logs/" + DateTime.Now.ToFileNameString() + ".log";
+            Directory.CreateDirectory(Environment.CurrentDirectory + "/Logs/");
             Fs = File.CreateText(LogFilePath);
             Fs.AutoFlush = true;
             WriteLogInternal(_LogLevel, "Log is Now Initialised!");
@@ -86,35 +86,38 @@ namespace WBPlatform.Logging
             OnLog?.Invoke(LogEvent, null);
         }
 
-        private static string GetCallerClassName => new StackTrace().GetFrame(2).GetMethod().ReflectedType.Name;
+        private static string CallerName => new StackTrace().GetFrame(2).GetMethod().ReflectedType.Name;
 
         /// <summary>
         /// Write debug log message into logfile. Using <see cref="LogLevel.DBG"/>
         /// </summary>
         /// <param name="Message">Log Message</param>
         /// <param name="memberName">[Auto-Fill] Do Not Fill In This Field</param>
-        public static void D(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.DBG, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void D(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.DBG, CallerName + "::" + memberName + "\t" + Message);
 
         /// <summary>
         /// Write info log message into logfile. Using <see cref="LogLevel.INF"/>
         /// </summary>
         /// <param name="Message">Log Message</param>
         /// <param name="memberName">[Auto-Fill] Do Not Fill In This Field</param>
-        public static void I(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.INF, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void I(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.INF, CallerName + "::" + memberName + "\t" + Message);
 
         /// <summary>
         /// Write warn log message into logfile. Using <see cref="LogLevel.WRN"/>
         /// </summary>
         /// <param name="Message">Log Message</param>
         /// <param name="memberName">[Auto-Fill] Do Not Fill In This Field</param>
-        public static void W(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.WRN, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void W(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.WRN, CallerName + "::" + memberName + "\t" + Message);
 
         /// <summary>
         /// Write error log message into logfile. Using <see cref="LogLevel.ERR"/>
         /// </summary>
         /// <param name="Message">Log Message</param>
         /// <param name="memberName">[Auto-Fill] Do Not Fill In This Field</param>
-        public static void E(string Message, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.ERR, GetCallerClassName + "::" + memberName + "\t" + Message);
+        public static void E(string Message, [CallerMemberName] string memberName = "")
+        {
+            WriteLogInternal(LogLevel.ERR, CallerName + "::" + memberName + "\t" + Message + "\r\n" + new StackTrace(skipFrames: 1).ToString());
+        }
 
         /// <summary>
         /// Extension Method: 
@@ -122,7 +125,7 @@ namespace WBPlatform.Logging
         /// </summary>
         /// <param name="ex">The Exeption to be logged</param>
         /// <param name="memberName">[Auto-Fill] Do Not Fill In This Field</param>
-        public static void LogException(this Exception ex, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.ERR, GetCallerClassName + "::" + memberName + "\r\n" + ex + "\r\n");
+        public static void LogException(this Exception ex, [CallerMemberName] string memberName = "") => WriteLogInternal(LogLevel.ERR, CallerName + "::" + memberName + "\r\n" + ex + "\r\n");
     }
     public enum LogLevel { DBG = 0, INF = 1, WRN = 2, ERR = 3, }
 }

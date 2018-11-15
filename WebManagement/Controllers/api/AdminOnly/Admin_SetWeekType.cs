@@ -18,11 +18,11 @@ namespace WBPlatform.WebManagement.Controllers
             type = type.ToLower();
             if (type == "big" || type == "small")
             {
-                XConfig.ServerConfig["WeekType"] = type;
+                XConfig.ServerConfig.SetWeekType(type == "big");
                 XConfig.ServerConfig.SaveConfig();
             }
             else return RequestIllegal;
-            return SpecialisedInfo("已经切换为：" + (XConfig.ServerConfig["WeekType"] == "big" ? "大周" : "小周"));
+            return SpecialisedInfo("已经切换为：" + (XConfig.ServerConfig.IsBigWeek() ? "大周" : "小周"));
         }
     }
 }

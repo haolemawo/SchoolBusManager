@@ -37,7 +37,7 @@ namespace WBPlatform.WebManagement.Tools
             while (true)
             {
                 if (!MessageList.TryDequeue(out InternalMessage message)) Thread.Sleep(500);
-                else if (_ProcessMessage(message))
+                else if (!_ProcessMessage(message))
                 {
                     L.E("Internal Messaging System Process Failed! " + message.Stringify());
                     MessageList.Enqueue(message);
@@ -128,7 +128,7 @@ namespace WBPlatform.WebManagement.Tools
 
             void FillStudentsDataIntoSheet(IXLWorksheet sheet, StudentObject[] students)
             {
-                sheet.Row(1).SetValues("学部", "年级", "班级", "班主任", "学生姓名", "性别", "班车方向", "本周是否坐班车", "带车老师", "离校签到", "返校签到", "免接送状态", "到家签到", "家长信息");
+                sheet.Row(1).SetValues("学部", "年级", "班级", "班主任", "学生姓名", "性别", "班车方向", "免接送状态", "本周是否坐班车", "带车老师", "离校签到", "返校签到", "到家签到", "家长信息");
                 for (int i = 0; i < students.Length; i++)
                 {
                     // HERE NEEDS SOME DATA PROCESS ABOUT 'NULL'
@@ -156,6 +156,18 @@ namespace WBPlatform.WebManagement.Tools
                         ? UsersDictionary[_bus.TeacherID]
                         : emptyUserObject;
 
+                    bool TakingBus;
+                    if (XConfig.ServerConfig.IsBigWeek())
+                    {
+                        //Big and small means this is BIG WEEK....
+                        //EVERYONE SHOULD TAKE THE BUS.....
+                        TakingBus = _student.TakingBus;
+                    }
+                    else
+                    {
+                        //SMALL week, only big and small will go....
+                        TakingBus = _student.TakingBus && (_student.WeekType == StudentBigWeekMode.BigAndSmall || _student.WeekType == StudentBigWeekMode.NotSet);
+                    }
 
                     List<string> values = new List<string>
                     {
@@ -164,22 +176,22 @@ namespace WBPlatform.WebManagement.Tools
                         _student.StudentName,
                         _student.Sex == "M" ? "男" : "女",
                         _bus.BusName,
-                        _student.TakingBus ? "是" : "否"
+                        _student.DirectGoHome == DirectGoHomeMode.NotSet ? "未设置" : _student.DirectGoHome == DirectGoHomeMode.DirectlyGoHome ? "免接送" : "非免接送",
+                        //_student.TakingBus ? "是" : "否"
+                        TakingBus ? "是" : "否(" + (!_student.TakingBus ? "手动设置" : "小周") + ")"
                     };
 
-                    if (_student.TakingBus)
+                    if (TakingBus)
                     {
                         values.Add(_busTeacher.RealName);
-                        values.Add(_student.LSChecked ? "签到" : "未签到");
-                        values.Add(_student.AHChecked ? "签到" : "未签到");
+                        values.Add(_student.LSChecked ? "已签到" : "未签到");
+                        values.Add(_student.AHChecked ? "已签到" : "未签到");
+                        values.Add(_student.CSChecked ? "已签到" : "未签到");
                     }
-                    else values.AddRange(new string[] { "---", "---", "---" });
-
-                    values.Add(_student.DirectGoHome == DirectGoHomeMode.NotSet ? "未设置" : _student.DirectGoHome == DirectGoHomeMode.DirectlyGoHome ? "免接送" : "非免接送");
-                    values.Add(_student.TakingBus ? (_student.CSChecked ? "签到" : "未签到") : "---");
+                    else values.AddRange(new string[] { "---", "---", "---", "---" });
 
                     var _parents = from k in UsersDictionary where k.Value.ChildList.Contains(_student.ObjectId) select k.Value;
-                    values.Add(string.Join(';', from _ in _parents select _.RealName + "(" + _.PhoneNumber + ")"));
+                    values.Add(string.Join("; ", from _ in _parents select _.RealName + "(" + _.PhoneNumber + ")"));
 
                     sheet.Row(i + 2).SetValues(values.ToArray());
                 }
@@ -294,6 +306,7 @@ namespace WBPlatform.WebManagement.Tools
                     return false;
             }
         }
+
         //private static bool UserVerify(InternalMessage message)
         //{
         //    if ((int)GetAdminUsers(out List<UserObject> adminUsers_createUser) < 1)
@@ -344,7 +357,7 @@ namespace WBPlatform.WebManagement.Tools
                         $"你的班级 {_class.CDepartment} {_class.CGrade} {_class.CNumber} \r\n" +
                         $"有 {_StudentInClass.Length} 名学生受到班车 {_report.ReportType} 影响: \r\n" +
                         $"原因：{_report.OtherData}\r\n" +
-                        $"学生列表: {string.Join(", ", _StudentInClass)}", null, _ClassTeacher.UserName);
+                        $"学生: {string.Join(", ", _StudentInClass)}", null, _ClassTeacher.UserName);
                     WeChatMessageSystem.AddToSendList(busReportMsg_Teacher);
                 }
             }
@@ -373,7 +386,6 @@ namespace WBPlatform.WebManagement.Tools
             }
             return true;
         }
-
 
         private static DBQueryStatus GetAdminUsers(out List<UserObject> adminUsers) => DataBaseOperation.QueryMultiple(new DBQuery().WhereEqualTo("isAdmin", true), out adminUsers);
         public static void SetContentColor(this IXLWorksheet sheet)
