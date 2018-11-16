@@ -42,8 +42,8 @@ namespace WBPlatform.Config
 
         public string DBServerIP { get; set; }
         public int DBServerPort { get; set; }
-        public int ClientTimeout { get; set; }
-        public int FailedRetryTime { get; set; }
+        public int ClientTimeout { get; set; } = 20;
+        public int FailedRetryTime { get; set; } = 5;
     }
     public class WeChatConfig
     {

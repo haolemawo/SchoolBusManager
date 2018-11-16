@@ -37,7 +37,7 @@ namespace WBPlatform.Database.Connection
             if (IsShutdownStarted) return false;
             socketClient = new TcpClient();
             remoteEndpoint = new IPEndPoint(ServerIP, Port);
-            int FailedRetry = XConfig.Current.Database.FailedRetryTime ?? 5;
+            int FailedRetry = XConfig.Current.Database.FailedRetryTime;
             for (int i = 0; i < FailedRetry; i++)
             {
                 try
