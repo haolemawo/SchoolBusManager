@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <ApplicationInsightsResourceId>/subscriptions/8dc7966f-2d0e-4614-8988-57911d06e773/resourcegroups/WoodenBench-Platform/providers/microsoft.insights/components/WBStatus_Dev</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/8dc7966f-2d0e-4614-8988-57911d06e773/resourcegroups/WoodenBench-Platform/providers/microsoft.insights/components/WoodenBench</ApplicationInsightsAnnotationResourceId>
     <ApplicationIcon />
