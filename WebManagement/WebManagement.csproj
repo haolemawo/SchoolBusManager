@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>WBPlatform.WebManagement</RootNamespace>
     <UserSecretsId>5b336559-346a-40e3-8458-681de1ec5c08</UserSecretsId>
     <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
